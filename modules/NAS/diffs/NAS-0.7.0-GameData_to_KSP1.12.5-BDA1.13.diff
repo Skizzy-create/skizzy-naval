@@ -1,0 +1,2239 @@
+diff --git a/GameData/NAS/BulletDefs/NAS_Bullets.cfg b/GameData/NAS/BulletDefs/NAS_Bullets.cfg
+index 8013611..518bff9 100644
+--- a/GameData/NAS/BulletDefs/NAS_Bullets.cfg
++++ b/GameData/NAS/BulletDefs/NAS_Bullets.cfg
+@@ -1,690 +1,884 @@
+-BULLET
+-{
+-    name = 9mmBullet
++// NAS bullet definitions, updated for BDArmory Plus 1.13 (KSP 1.12.5).
++// - explosive/tntMass/fuzeType replace the BDAc 1.2 keys; blastPower/blastHeat/blastRadius were removed (all were 0).
++// - HE shells: explosive = Standard, tntMass unchanged. Shells fired by guns that had airDetonation = true use
++//   fuzeType = Timed (bursts at the predicted target range, also detonates on impact). Other HE uses fuzeType = Impact.
++//   Flak (proximity + timed backup) is an alternative for the AA shells, but proximity fuzes also trigger near friendly ships.
++// - AP/ball rounds: explosive = None, tntMass = 0, fuzeType = None (pure kinetic, as before).
++// - apBulletMod was 0 for every bullet; in BDArmory 1.13 that gives 0 mm penetration. HE now uses 0.8 and AP/ball 1.0
++//   (BDArmory's own conventions).
++// - Tracer colours moved here from the weapons (BDArmory 1.13 reads them from the bullet).
++// - 9mmBullet renamed 9mmBulletNAS: BDArmory defines its own 9mmBullet and skips duplicate names.
++BULLET
++{
++	name = 9mmBulletNAS	// was 9mmBullet in NAS 0.7.0
++	DisplayName = 9mm Ball (Sten)
+ 	caliber = 9
+ 	bulletVelocity = 350
+ 	bulletMass = 0.0064
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 50, 0, 160
++	fadeColor = True
++	startColor = 255, 105, 25, 120
+ }
+ BULLET
+ {
+-    name = 12.7mmUSSR
++	name = 12.7mmUSSR
++	DisplayName = 12.7mm Ball (Soviet)
+ 	caliber = 12.7
+ 	bulletVelocity = 860
+-	bulletMass = 0.0443	
++	bulletMass = 0.0443
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 50, 0, 160
++	fadeColor = True
++	startColor = 220, 220, 255, 120
+ }
+ BULLET
+ {
+-    name = 20mmAPShort
++	name = 20mmAPShort
++	DisplayName = 20mm AP (short)
+ 	caliber = 20
+ 	bulletVelocity = 830
+ 	bulletMass = 0.096
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 50, 0, 160
++	fadeColor = True
++	startColor = 220, 220, 255, 120
+ }
+ BULLET
+ {
+-    name = 20mmAPLong
++	name = 20mmAPLong
++	DisplayName = 20mm AP (long)
+ 	caliber = 20
+ 	bulletVelocity = 835
+ 	bulletMass = 0.0984
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 50, 0, 160
++	fadeColor = True
++	startColor = 220, 220, 255, 120
+ }
+ BULLET
+ {
+-    name = 25mmAP
++	name = 25mmAP
++	DisplayName = 25mm AP
+ 	caliber = 25
+ 	bulletVelocity = 900
+ 	bulletMass = 0.208
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 50, 0, 160
++	fadeColor = True
++	startColor = 220, 220, 255, 120
+ }
+ BULLET
+ {
+-    name = 25mmHE
++	name = 25mmHE
++	DisplayName = 25mm HE
+ 	caliber = 25
+ 	bulletVelocity = 900
+ 	bulletMass = 0.2
+ 	//HE Bullet Values
+-	explosive = True
++	explosive = Standard
++	incendiary = False
+ 	tntMass = 0.01
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = Impact
++	apBulletMod = 0.8
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 50, 0, 160
++	fadeColor = True
++	startColor = 220, 220, 255, 120
+ }
+ BULLET
+ {
+-    name = 37mmFlaKGER
++	name = 37mmFlaKGER
++	DisplayName = 37mm HE (German)
+ 	caliber = 37
+ 	bulletVelocity = 870
+ 	bulletMass = 0.594
+ 	//HE Bullet Values
+-	explosive = True
++	explosive = Standard
++	incendiary = False
+ 	tntMass = 0.0274
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = Timed	// gun had airDetonation = true
++	apBulletMod = 0.8
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 50, 0, 160
++	fadeColor = True
++	startColor = 220, 220, 255, 120
+ }
+ BULLET
+ {
+-    name = 37mmFlaKITA
++	name = 37mmFlaKITA
++	DisplayName = 37mm HE (Italian)
+ 	caliber = 37
+ 	bulletVelocity = 870
+ 	bulletMass = 0.6584
+ 	//HE Bullet Values
+-	explosive = True
++	explosive = Standard
++	incendiary = False
+ 	tntMass = 0.036
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = Timed	// gun had airDetonation = true
++	apBulletMod = 0.8
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 50, 0, 160
++	fadeColor = True
++	startColor = 220, 220, 255, 120
+ }
+ BULLET
+ {
+-    name = 37mmFlaKUSSR
++	name = 37mmFlaKUSSR
++	DisplayName = 37mm HE (Soviet)
+ 	caliber = 37
+ 	bulletVelocity = 880
+ 	bulletMass = 0.52
+ 	//HE Bullet Values
+-	explosive = True
++	explosive = Standard
++	incendiary = False
+ 	tntMass = 0.0539
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = Timed	// gun had airDetonation = true
++	apBulletMod = 0.8
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 50, 0, 160
++	fadeColor = True
++	startColor = 220, 220, 255, 120
+ }
+ BULLET
+ {
+-    name = 40mmHE2pdr
++	name = 40mmHE2pdr
++	DisplayName = 40mm HE (2-pdr)
+ 	caliber = 40
+ 	bulletVelocity = 701
+ 	bulletMass = 1.30
+ 	//HE Bullet Values
+-	explosive = True
++	explosive = Standard
++	incendiary = False
+ 	tntMass = 0.068
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = Timed	// gun had airDetonation = true
++	apBulletMod = 0.8
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 50, 0, 160
++	fadeColor = True
++	startColor = 220, 220, 255, 120
+ }
+ BULLET
+ {
+-    name = 40mmHEBofors
++	name = 40mmHEBofors
++	DisplayName = 40mm HE (Bofors)
+ 	caliber = 40
+ 	bulletVelocity = 881
+ 	bulletMass = 0.72
+ 	//HE Bullet Values
+-	explosive = True
++	explosive = Standard
++	incendiary = False
+ 	tntMass = 0.068
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = Timed	// gun had airDetonation = true
++	apBulletMod = 0.8
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 50, 0, 160
++	fadeColor = True
++	startColor = 220, 220, 255, 120
+ }
+ BULLET
+ {
+-    name = 3inchHEShort
++	name = 3inchHEShort
++	DisplayName = 3in HE (short)
+ 	caliber = 76.2
+ 	bulletVelocity = 503
+ 	bulletMass = 4.72
+ 	//HE Bullet Values
+-	explosive = True
++	explosive = Standard
++	incendiary = False
+ 	tntMass = 0.34
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = Impact
++	apBulletMod = 0.8
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 3inchHELong
++	name = 3inchHELong
++	DisplayName = 3in HE (long)
+ 	caliber = 76.2
+ 	bulletVelocity = 823
+ 	bulletMass = 8.72
+ 	//HE Bullet Values
+-	explosive = True
++	explosive = Standard
++	incendiary = False
+ 	tntMass = 0.24
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = Timed	// gun had airDetonation = true
++	apBulletMod = 0.8
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 90mmHEITA
++	name = 90mmHEITA
++	DisplayName = 90mm HE (Italian)
+ 	caliber = 90
+ 	bulletVelocity = 860
+ 	bulletMass = 8.08
+ 	//HE Bullet Values
+-	explosive = True
++	explosive = Standard
++	incendiary = False
+ 	tntMass = 0.68
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = Timed	// gun had airDetonation = true
++	apBulletMod = 0.8
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 100mmHEJAP
++	name = 100mmHEJAP
++	DisplayName = 100mm HE (Japanese)
+ 	caliber = 100
+ 	bulletVelocity = 1000
+ 	bulletMass = 10.4
+ 	//HE Bullet Values
+-	explosive = True
++	explosive = Standard
++	incendiary = False
+ 	tntMass = 0.95
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = Timed	// gun had airDetonation = true
++	apBulletMod = 0.8
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 105mmHECHN
++	name = 105mmHECHN
++	DisplayName = 105mm HE (Chinese)
+ 	caliber = 105
+ 	bulletVelocity = 690
+ 	bulletMass = 13.92
+ 	//HE Bullet Values
+-	explosive = True
++	explosive = Standard
++	incendiary = False
+ 	tntMass = 1.68
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = Impact
++	apBulletMod = 0.8
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 105mmHEGER
++	name = 105mmHEGER
++	DisplayName = 105mm HE (German)
+ 	caliber = 105
+ 	bulletVelocity = 900
+ 	bulletMass = 21.88
+ 	//HE Bullet Values
+-	explosive = True
++	explosive = Standard
++	incendiary = False
+ 	tntMass = 2.176
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = Timed	// gun had airDetonation = true
++	apBulletMod = 0.8
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 4p5inchHE
++	name = 4p5inchHE
++	DisplayName = 4.5in HE
+ 	caliber = 114
+ 	bulletVelocity = 716
+ 	bulletMass = 20
+ 	//HE Bullet Values
+-	explosive = True
++	explosive = Standard
++	incendiary = False
+ 	tntMass = 2.8
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = Timed	// gun had airDetonation = true
++	apBulletMod = 0.8
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 5inchHEJAP
++	name = 5inchHEJAP
++	DisplayName = 5in HE (Japanese)
+ 	caliber = 127
+ 	bulletVelocity = 915
+ 	bulletMass = 18.4
+ 	//HE Bullet Values
+-	explosive = True
++	explosive = Standard
++	incendiary = False
+ 	tntMass = 2.2
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = Impact
++	apBulletMod = 0.8
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 5inchHEUS
++	name = 5inchHEUS
++	DisplayName = 5in HE (US)
+ 	caliber = 127
+ 	bulletVelocity = 762
+ 	bulletMass = 20
+ 	//HE Bullet Values
+-	explosive = True
++	explosive = Standard
++	incendiary = False
+ 	tntMass = 3.135
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = Timed	// gun had airDetonation = true
++	apBulletMod = 0.8
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 130mmHEUSSR
++	name = 130mmHEUSSR
++	DisplayName = 130mm HE (Soviet)
+ 	caliber = 130
+ 	bulletVelocity = 870
+ 	bulletMass = 26.72
+ 	//HE Bullet Values
+-	explosive = True
++	explosive = Standard
++	incendiary = False
+ 	tntMass = 3.58
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = Impact
++	apBulletMod = 0.8
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 138-140mmAP
++	name = 138-140mmAP
++	DisplayName = 138-140mm AP
+ 	caliber = 140
+ 	bulletVelocity = 855
+ 	bulletMass = 30.4
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 138-140mmHE
++	name = 138-140mmHE
++	DisplayName = 138-140mm HE
+ 	caliber = 138.6
+ 	bulletVelocity = 840
+ 	bulletMass = 32.16
+ 	//HE Bullet Values
+-	explosive = True
++	explosive = Standard
++	incendiary = False
+ 	tntMass = 4.1
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = Impact
++	apBulletMod = 0.8
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 6inchAPCHN
++	name = 6inchAPCHN
++	DisplayName = 6in AP (Chinese)
+ 	caliber = 152
+ 	bulletVelocity = 780
+ 	bulletMass = 39.05
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 6inchAPJAP
++	name = 6inchAPJAP
++	DisplayName = 6in AP (Japanese)
+ 	caliber = 155
+ 	bulletVelocity = 925
+ 	bulletMass = 44.696
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 6inchCPBCUK
++	name = 6inchCPBCUK
++	DisplayName = 6in CPBC (British)
+ 	caliber = 152
+ 	bulletVelocity = 841
+ 	bulletMass = 50.8
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 6inchHEUK
++	name = 6inchHEUK
++	DisplayName = 6in HE (British)
+ 	caliber = 152
+ 	bulletVelocity = 841
+ 	bulletMass = 50.8
+ 	//HE Bullet Values
+-	explosive = true
++	explosive = Standard
++	incendiary = False
+ 	tntMass = 3.6
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = Timed	// gun had airDetonation = true
++	apBulletMod = 0.8
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 6inchAPUS
++	name = 6inchAPUS
++	DisplayName = 6in AP (US)
+ 	caliber = 152
+ 	bulletVelocity = 762
+ 	bulletMass = 47.2
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 180mmAPUSSR
++	name = 180mmAPUSSR
++	DisplayName = 180mm AP (Soviet)
+ 	caliber = 180
+ 	bulletVelocity = 920
+ 	bulletMass = 78
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 6inchHEUS
++	name = 6inchHEUS
++	DisplayName = 6in HE (US)
+ 	caliber = 152
+ 	bulletVelocity = 762
+ 	bulletMass = 38.08
+ 	//HE Bullet Values
+-	explosive = True
++	explosive = Standard
++	incendiary = False
+ 	tntMass = 7.68
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = Timed	// gun had airDetonation = true
++	apBulletMod = 0.8
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 8inchAPGER
++	name = 8inchAPGER
++	DisplayName = 8in AP (German)
+ 	caliber = 203
+ 	bulletVelocity = 925
+ 	bulletMass = 97.6
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 8inchAPJAP
++	name = 8inchAPJAP
++	DisplayName = 8in AP (Japanese)
+ 	caliber = 203
+ 	bulletVelocity = 840
+ 	bulletMass = 100.68
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 8inchAPUS-QF
++	name = 8inchAPUS-QF
++	DisplayName = 8in AP (US)
+ 	caliber = 203
+ 	bulletVelocity = 762
+ 	bulletMass = 121.6
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 11inchAPLong
++	name = 11inchAPLong
++	DisplayName = 11in AP
+ 	caliber = 283
+ 	bulletVelocity = 910
+ 	bulletMass = 240
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 12inchAP
++	name = 12inchAP
++	DisplayName = 12in AP
+ 	caliber = 305
+ 	bulletVelocity = 762
+ 	bulletMass = 413.6744
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 14inchAPJAP
++	name = 14inchAPJAP
++	DisplayName = 14in AP (Japanese)
+ 	caliber = 356
+ 	bulletVelocity = 775
+ 	bulletMass = 538.8
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 14inchAPUK
++	name = 14inchAPUK
++	DisplayName = 14in AP (British)
+ 	caliber = 356
+ 	bulletVelocity = 757
+ 	bulletMass = 576.8
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 14inchAPUS-Coastal
++	name = 14inchAPUS-Coastal
++	DisplayName = 14in AP (US coastal)
+ 	caliber = 356
+ 	bulletVelocity = 680
+ 	bulletMass = 600
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 15inchAPFRA
++	name = 15inchAPFRA
++	DisplayName = 15in AP (French)
+ 	caliber = 380
+ 	bulletVelocity = 800
+ 	bulletMass = 708
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 15inchAPGER
++	name = 15inchAPGER
++	DisplayName = 15in AP (German)
+ 	caliber = 380
+ 	bulletVelocity = 820
+ 	bulletMass = 640
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 15inchAPITA
++	name = 15inchAPITA
++	DisplayName = 15in AP (Italian)
+ 	caliber = 381
+ 	bulletVelocity = 850
+ 	bulletMass = 707.84
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 15inchAPUK
++	name = 15inchAPUK
++	DisplayName = 15in AP (British)
+ 	caliber = 381
+ 	bulletVelocity = 804
+ 	bulletMass = 879
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 16inchAPUK
++	name = 16inchAPUK
++	DisplayName = 16in AP (British)
+ 	caliber = 406
+ 	bulletVelocity = 788
+ 	bulletMass = 743.2
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 16inchAPJAP
++	name = 16inchAPJAP
++	DisplayName = 16in AP (Japanese)
+ 	caliber = 410
+ 	bulletVelocity = 780
+ 	bulletMass = 816
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 16inchSHS
++	name = 16inchSHS
++	DisplayName = 16in AP super-heavy (US)
+ 	caliber = 406
+ 	bulletVelocity = 739
+ 	bulletMass = 980
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+ BULLET
+ {
+-    name = 18inchAP
++	name = 18inchAP
++	DisplayName = 18in AP
+ 	caliber = 460
+ 	bulletVelocity = 780
+ 	bulletMass = 1168
+ 	//HE Bullet Values
+-	explosive = False
++	explosive = None
++	incendiary = False
+ 	tntMass = 0
+-	blastPower = 0 
+-	blastHeat = 0
+-	blastRadius = 0
+-	apBulletMod = 0
++	fuzeType = None
++	apBulletMod = 1.0
++	projectileCount = 1
+ 	bulletDragTypeName = AnalyticEstimate
++	projectileColor = 255, 250, 0, 255
++	fadeColor = False
++	startColor = 255, 250, 0, 255
+ }
+diff --git a/GameData/NAS/Changelog.txt b/GameData/NAS/Changelog.txt
+index 6743042..6378ab0 100644
+--- a/GameData/NAS/Changelog.txt
++++ b/GameData/NAS/Changelog.txt
+@@ -1,4 +1,18 @@
+-﻿0.7.0 (IMPORTANT) - "Land of Dragon"
++﻿0.7.0-bda1.13 (UNOFFICIAL) - community update for KSP 1.12.5 + BDArmory Plus 1.13
++Not an official Kerwis/NAS release. See CHANGES.md in the patch set for details.
++Removed the bundled ModuleManager 3.0.6 and Firespitter 7.6 (install current ModuleManager 4.x and Firespitter 7.17+ separately).
++Rebuilt AntiSubmarineWeapon.dll (0.6.6.0) against BDArmory Plus 1.13 / .NET Framework 4.8.
++Depth charges no longer reset to the toolbar depth on launch; they keep the depth set in the editor.
++Depth charges wait for BDArmory's safe-arming distance before detonating, and get a native BDArmory depth fuze at max depth as a backstop.
++Torpedo propellers now use the RPM/direction from their part configs.
++Bullets: replaced BDAc 1.2 keys with BDArmory 1.13 ones (explosive/fuzeType/apBulletMod/tracer colours). AA shells use Timed fuzes.
++Fixed every bullet having apBulletMod = 0 (zero armour penetration in BDArmory 1.13).
++Weapons: removed airDetonation/airDetonationTiming/maxAirDetonationRange, defaultAirDetonationRange -> defaultDetonationRange, weaponType cannon -> ballistic.
++Radars: removed obsolete rangeIncrements/slaveTurrets/boresightScan, fixed canReceiveRadarData spelling, removed the duplicate canLock that let FuMO 61 lock.
++Removed ModuleKineticBombarder (no KSP 1.12 plugin) and the obsolete BDACategoryModule.
++Renamed bullet 9mmBullet to 9mmBulletNAS (BDArmory ships its own 9mmBullet).
++
++0.7.0 (IMPORTANT) - "Land of Dragon"
+ Used new compression method to get a slightly lighter package.
+ Updated plugin to adapt to latest BDArmory Continued.
+ Tweaked yaw speed of 12.7 cm/50 cal Type 3 Naval Gun Dual Mount Turret up to 6 dps.
+diff --git a/GameData/NAS/Parts/AirForces/NAS_AB_FritzX_LW/NAS_AB_FritzX_LW.cfg b/GameData/NAS/Parts/AirForces/NAS_AB_FritzX_LW/NAS_AB_FritzX_LW.cfg
+index 44cd6ae..1201824 100644
+--- a/GameData/NAS/Parts/AirForces/NAS_AB_FritzX_LW/NAS_AB_FritzX_LW.cfg
++++ b/GameData/NAS/Parts/AirForces/NAS_AB_FritzX_LW/NAS_AB_FritzX_LW.cfg
+@@ -90,13 +90,7 @@ MODULE
+   ArmorThickness = 40
+   maxHitPoints = 50000
+  }
+-MODULE
+-{
+-  name = ModuleKineticBombarder
+-  baseBlastRadius = 0.875
+-  baseBlastPower = 2
+-  explModelPath = North Kerbin Weaponry/effects/Explosion_KBW
+-}
++// ModuleKineticBombarder (North Kerbin Weaponry) removed: no plugin exists for KSP 1.12 / BDArmory 1.13. The BDExplosivePart warhead still detonates on impact.
+ MODULE
+ {
+ 	name = NASCategoryModule
+diff --git a/GameData/NAS/Parts/AirForces/NAS_AB_Tallboy12klb_RAF/NAS_AB_Tallboy12klb_RAF.cfg b/GameData/NAS/Parts/AirForces/NAS_AB_Tallboy12klb_RAF/NAS_AB_Tallboy12klb_RAF.cfg
+index 7be2147..6a865a3 100644
+--- a/GameData/NAS/Parts/AirForces/NAS_AB_Tallboy12klb_RAF/NAS_AB_Tallboy12klb_RAF.cfg
++++ b/GameData/NAS/Parts/AirForces/NAS_AB_Tallboy12klb_RAF/NAS_AB_Tallboy12klb_RAF.cfg
+@@ -87,13 +87,7 @@ MODULE
+ 	ArmorThickness = 30
+ 	maxHitPoints = 25000
+ }
+-MODULE
+-{
+-  name = ModuleKineticBombarder
+-  baseBlastRadius = 0.9
+-  baseBlastPower = 2.6
+-  explModelPath = North Kerbin Weaponry/effects/Explosion_KBW
+-}
++// ModuleKineticBombarder (North Kerbin Weaponry) removed: no plugin exists for KSP 1.12 / BDArmory 1.13. The BDExplosivePart warhead still detonates on impact.
+ MODULE
+ {
+ 	name = NASCategoryModule
+diff --git a/GameData/NAS/Parts/FNFL/NAS_DD_138M1929x2_FNFL/NAS_DD_138M1929x2_FNFL.cfg b/GameData/NAS/Parts/FNFL/NAS_DD_138M1929x2_FNFL/NAS_DD_138M1929x2_FNFL.cfg
+index a5f0e7c..2fa14d8 100644
+--- a/GameData/NAS/Parts/FNFL/NAS_DD_138M1929x2_FNFL/NAS_DD_138M1929x2_FNFL.cfg
++++ b/GameData/NAS/Parts/FNFL/NAS_DD_138M1929x2_FNFL/NAS_DD_138M1929x2_FNFL.cfg
+@@ -102,7 +102,7 @@ MODULE
+ 	bulletDrop = true
+ 	useRippleFire = true
+ 	
+-	weaponType = cannon	
++	weaponType = ballistic	
+ 	
+ 	projectileColor = 255, 250, 0, 255
+ 	
+diff --git a/GameData/NAS/Parts/IJN/NAS_AA_DD_100x2_IJN/NAS_AA_DD_100x2_IJN.cfg b/GameData/NAS/Parts/IJN/NAS_AA_DD_100x2_IJN/NAS_AA_DD_100x2_IJN.cfg
+index 821fe17..b527fc7 100644
+--- a/GameData/NAS/Parts/IJN/NAS_AA_DD_100x2_IJN/NAS_AA_DD_100x2_IJN.cfg
++++ b/GameData/NAS/Parts/IJN/NAS_AA_DD_100x2_IJN/NAS_AA_DD_100x2_IJN.cfg
+@@ -88,10 +88,8 @@ MODULE
+ 	maxDeviation = 0.62
+ 	maxTargetingRange = 19500
+ 	maxEffectiveDistance = 14000
+-	airDetonation = true
+-	airDetonationTiming = true
++	// BDArmory 1.13: airDetonation/airDetonationTiming/maxAirDetonationRange were removed. The fuze now comes from fuzeType in the BULLET definition (NAS/BulletDefs/NAS_Bullets.cfg).
+ 	defaultDetonationRange = 7500
+-	maxAirDetonationRange = 7500
+ 	
+ 	bulletType = 100mmHEJAP//bulletMass = 0.005325
+ 	//bulletVelocity = 1000
+@@ -108,7 +106,7 @@ MODULE
+ 	bulletDrop = true
+ 	useRippleFire = true
+ 	
+-	weaponType = cannon	
++	weaponType = ballistic	
+ 	
+ 	projectileColor = 255, 250, 0, 255
+ 	
+diff --git a/GameData/NAS/Parts/IJN/NAS_AB_Type99No80_IJN/NAS_AB_Type99No80_IJN.cfg b/GameData/NAS/Parts/IJN/NAS_AB_Type99No80_IJN/NAS_AB_Type99No80_IJN.cfg
+index f77333f..cdf7c7f 100644
+--- a/GameData/NAS/Parts/IJN/NAS_AB_Type99No80_IJN/NAS_AB_Type99No80_IJN.cfg
++++ b/GameData/NAS/Parts/IJN/NAS_AB_Type99No80_IJN/NAS_AB_Type99No80_IJN.cfg
+@@ -84,12 +84,7 @@ MODULE
+ 	ArmorThickness = 25
+ 	maxHitPoints = 25000
+ }
+-MODULE
+-{
+-  name = ModuleKineticBombarder
+-  baseBlastRadius = 0.8
+-  baseBlastPower = 2
+-}
++// ModuleKineticBombarder (North Kerbin Weaponry) removed: no plugin exists for KSP 1.12 / BDArmory 1.13. The BDExplosivePart warhead still detonates on impact.
+ MODULE
+ {
+ 	name = NASCategoryModule
+diff --git a/GameData/NAS/Parts/IJN/NAS_CA_203x2_IJN/NAS_CA_203x2_IJN.cfg b/GameData/NAS/Parts/IJN/NAS_CA_203x2_IJN/NAS_CA_203x2_IJN.cfg
+index 0f75519..cf3d49c 100644
+--- a/GameData/NAS/Parts/IJN/NAS_CA_203x2_IJN/NAS_CA_203x2_IJN.cfg
++++ b/GameData/NAS/Parts/IJN/NAS_CA_203x2_IJN/NAS_CA_203x2_IJN.cfg
+@@ -102,7 +102,7 @@ MODULE
+ 	bulletDrop = true
+ 	useRippleFire = false
+ 	
+-	weaponType = cannon
++	weaponType = ballistic
+ 	
+ 	projectileColor = 255, 250, 0, 255
+ 	
+diff --git a/GameData/NAS/Parts/IJN/NAS_DC_Type3_IJN/NAS_DC_Type3_IJN.cfg b/GameData/NAS/Parts/IJN/NAS_DC_Type3_IJN/NAS_DC_Type3_IJN.cfg
+index ea7c1bf..ad3f0c6 100644
+--- a/GameData/NAS/Parts/IJN/NAS_DC_Type3_IJN/NAS_DC_Type3_IJN.cfg
++++ b/GameData/NAS/Parts/IJN/NAS_DC_Type3_IJN/NAS_DC_Type3_IJN.cfg
+@@ -63,6 +63,17 @@
+  		waterImpactTolerance = 400
+   
+  		missileType = depthcharge
++ 		// BDArmory 1.13: hydrostatic failsafe. ModuleAntiSubmarineWeapon detonates at the depth set in the PAW/toolbar;
++ 		// this native altitude fuze (DescendingMSL) only fires if the plugin is missing or the charge reaches maxDepth.
++ 		altitudeFuzeMode = -2
++ 		altitudeDetonationAlt = -200
++ 		// AI: depth charges are only useful against submerged targets at short range.
++ 		engageAir = false
++ 		engageMissile = false
++ 		engageGround = false
++ 		engageSLW = true
++ 		minStaticLaunchRange = 10
++ 		maxStaticLaunchRange = 300
+ 		homingType = none
+ 	}
+ 	MODULE
+diff --git a/GameData/NAS/Parts/IJN/NAS_DD_127x2_IJN/NAS_DD_127x2_IJN.cfg b/GameData/NAS/Parts/IJN/NAS_DD_127x2_IJN/NAS_DD_127x2_IJN.cfg
+index 7276b1f..afeee4b 100644
+--- a/GameData/NAS/Parts/IJN/NAS_DD_127x2_IJN/NAS_DD_127x2_IJN.cfg
++++ b/GameData/NAS/Parts/IJN/NAS_DD_127x2_IJN/NAS_DD_127x2_IJN.cfg
+@@ -100,7 +100,7 @@ MODULE
+ 	bulletDrop = true
+ 	useRippleFire = false
+ 	
+-	weaponType = cannon
++	weaponType = ballistic
+ 	
+ 	projectileColor = 255, 250, 0, 255
+ 	
+diff --git a/GameData/NAS/Parts/IJN/NAS_RA_21GoKai2_IJN/NAS_RA_21GoKai2_IJN.cfg b/GameData/NAS/Parts/IJN/NAS_RA_21GoKai2_IJN/NAS_RA_21GoKai2_IJN.cfg
+index ae0ac7b..25b8e16 100644
+--- a/GameData/NAS/Parts/IJN/NAS_RA_21GoKai2_IJN/NAS_RA_21GoKai2_IJN.cfg
++++ b/GameData/NAS/Parts/IJN/NAS_RA_21GoKai2_IJN/NAS_RA_21GoKai2_IJN.cfg
+@@ -53,20 +53,17 @@ MODULE
+   resourceDrain = 1.2
+ 
+   omnidirectional = true
+-  boresightScan = false
+   scanRotationSpeed = 45
+   lockRotationSpeed = 15
+   
+   showDirectionWhileScan =true
+   //minSignalThreshold = 30
+   //minLockedSignalThreshold = 10
+-  rangeIncrements = 6000, 15000, 24000
+   
+   canLock = true
+   canScan = true
+-  canRecieveRadarData = false
++  canReceiveRadarData = false
+   canTrackWhileScan = false
+-  slaveTurrets = true
+   radarDetectionCurve
+   {
+     //key = distance	rcs
+diff --git a/GameData/NAS/Parts/IJN/NAS_TO_Type93_IJN/NAS_TO_Type93_IJN.cfg b/GameData/NAS/Parts/IJN/NAS_TO_Type93_IJN/NAS_TO_Type93_IJN.cfg
+index d9c38b4..c310376 100644
+--- a/GameData/NAS/Parts/IJN/NAS_TO_Type93_IJN/NAS_TO_Type93_IJN.cfg
++++ b/GameData/NAS/Parts/IJN/NAS_TO_Type93_IJN/NAS_TO_Type93_IJN.cfg
+@@ -68,7 +68,6 @@ breakingTorque = 5000
+   missileType = torpedo
+   targetingType = none
+   optimumAirspeed = 34
+-  isTubeLoaded = true
+   
+   engageAir = false
+   engageMissile = false
+diff --git a/GameData/NAS/Parts/IJN/NAS_TP_610x4_IJN/NAS_TP_610x4_IJN.cfg b/GameData/NAS/Parts/IJN/NAS_TP_610x4_IJN/NAS_TP_610x4_IJN.cfg
+index 6a796f8..716c626 100644
+--- a/GameData/NAS/Parts/IJN/NAS_TP_610x4_IJN/NAS_TP_610x4_IJN.cfg
++++ b/GameData/NAS/Parts/IJN/NAS_TP_610x4_IJN/NAS_TP_610x4_IJN.cfg
+@@ -90,10 +90,7 @@
+ 		ArmorThickness = 40
+ 		maxHitPoints = 100000
+ 	}
+-	MODULE
+-	{
+-		name = BDACategoryModule
+-	}
++	// BDACategoryModule removed: no longer exists in BDArmory 1.13 (BDArmory categorises parts by their modules).
+ 	MODULE
+ 	{
+ 		name = NASCategoryModule
+diff --git a/GameData/NAS/Parts/KM/NAS_AA_MG_37SKC30_KM/NAS_AA_MG_37SKC30_KM.cfg b/GameData/NAS/Parts/KM/NAS_AA_MG_37SKC30_KM/NAS_AA_MG_37SKC30_KM.cfg
+index df80ca4..4da45f9 100644
+--- a/GameData/NAS/Parts/KM/NAS_AA_MG_37SKC30_KM/NAS_AA_MG_37SKC30_KM.cfg
++++ b/GameData/NAS/Parts/KM/NAS_AA_MG_37SKC30_KM/NAS_AA_MG_37SKC30_KM.cfg
+@@ -80,10 +80,8 @@ MODULE
+ 	maxDeviation = 1.25
+ 	maxEffectiveDistance = 4800
+ 	maxTargetingRange = 8500
+-	airDetonation = true
+-	airDetonationTiming = true
++	// BDArmory 1.13: airDetonation/airDetonationTiming/maxAirDetonationRange were removed. The fuze now comes from fuzeType in the BULLET definition (NAS/BulletDefs/NAS_Bullets.cfg).
+ 	defaultDetonationRange = 4800
+-	maxAirDetonationRange = 8500
+ 	
+ 	bulletType = 37mmFlaKGER//bulletMass = 5.936e-4
+ 	//bulletVelocity = 1000
+@@ -101,7 +99,7 @@ MODULE
+ 	bulletDrop = true
+ 	useRippleFire = true
+ 	
+-	weaponType = cannon
++	weaponType = ballistic
+ 	
+ 	projectileColor = 255, 50, 0, 160 //RGBA 0-255
+ 	startColor = 220, 220, 255, 120
+diff --git a/GameData/NAS/Parts/KM/NAS_AA_SC_105SKC33_KM/NAS_AA_SC_105SKC33_KM.cfg b/GameData/NAS/Parts/KM/NAS_AA_SC_105SKC33_KM/NAS_AA_SC_105SKC33_KM.cfg
+index 06f283f..ea4527b 100644
+--- a/GameData/NAS/Parts/KM/NAS_AA_SC_105SKC33_KM/NAS_AA_SC_105SKC33_KM.cfg
++++ b/GameData/NAS/Parts/KM/NAS_AA_SC_105SKC33_KM/NAS_AA_SC_105SKC33_KM.cfg
+@@ -86,10 +86,8 @@ MODULE
+ 	maxDeviation = 0.46
+ 	maxTargetingRange = 17700
+ 	maxEffectiveDistance = 12500
+-	airDetonation = true
+-	airDetonationTiming = true
++	// BDArmory 1.13: airDetonation/airDetonationTiming/maxAirDetonationRange were removed. The fuze now comes from fuzeType in the BULLET definition (NAS/BulletDefs/NAS_Bullets.cfg).
+ 	defaultDetonationRange = 7500
+-	maxAirDetonationRange = 7500
+ 	
+ 	bulletType = 105mmHEGER//bulletMass = 0.0062
+ 	//bulletVelocity = 900
+@@ -106,7 +104,7 @@ MODULE
+ 	bulletDrop = true
+ 	useRippleFire = true
+ 	
+-	weaponType = cannon	
++	weaponType = ballistic	
+ 	
+ 	projectileColor = 255, 250, 0, 255
+ 	
+diff --git a/GameData/NAS/Parts/KM/NAS_RA_FuMO61_KM/NAS_RA_FuMO61_KM.cfg b/GameData/NAS/Parts/KM/NAS_RA_FuMO61_KM/NAS_RA_FuMO61_KM.cfg
+index a86502a..43d4d38 100644
+--- a/GameData/NAS/Parts/KM/NAS_RA_FuMO61_KM/NAS_RA_FuMO61_KM.cfg
++++ b/GameData/NAS/Parts/KM/NAS_RA_FuMO61_KM/NAS_RA_FuMO61_KM.cfg
+@@ -59,13 +59,10 @@ MODULE
+   showDirectionWhileScan = true
+   //minSignalThreshold = 120
+   //minLockedSignalThreshold = 200
+-  rangeIncrements = 5000, 10000, 20000
+   
+-  canLock = true
+   canScan = true
+-  canRecieveRadarData = true
++  canReceiveRadarData = true
+   canTrackWhileScan = false
+-  slaveTurrets = false
+   rwrThreatType = 5
+   
+   radarDetectionCurve
+diff --git a/GameData/NAS/Parts/Misc/NAS_DepthChargeRack/NAS_DepthChargeRack.cfg b/GameData/NAS/Parts/Misc/NAS_DepthChargeRack/NAS_DepthChargeRack.cfg
+index 04e27d9..922a2e9 100644
+--- a/GameData/NAS/Parts/Misc/NAS_DepthChargeRack/NAS_DepthChargeRack.cfg
++++ b/GameData/NAS/Parts/Misc/NAS_DepthChargeRack/NAS_DepthChargeRack.cfg
+@@ -55,10 +55,7 @@
+ 		maxHitPoints = 100000
+ 		ExplodeMode = Never
+ 	}
+-	MODULE
+-	{
+-		name = BDACategoryModule
+-	}
++	// BDACategoryModule removed: no longer exists in BDArmory 1.13 (BDArmory categorises parts by their modules).
+ 
+ 	MODULE
+ 	{
+diff --git a/GameData/NAS/Parts/Misc/NAS_FD_356FortDrum_USA/NAS_FD_356FortDrum_USA.cfg b/GameData/NAS/Parts/Misc/NAS_FD_356FortDrum_USA/NAS_FD_356FortDrum_USA.cfg
+index b74041d..10e2ff7 100644
+--- a/GameData/NAS/Parts/Misc/NAS_FD_356FortDrum_USA/NAS_FD_356FortDrum_USA.cfg
++++ b/GameData/NAS/Parts/Misc/NAS_FD_356FortDrum_USA/NAS_FD_356FortDrum_USA.cfg
+@@ -102,7 +102,7 @@ MODULE
+ 	bulletDrop = true
+ 	useRippleFire = false
+ 	
+-	weaponType = cannon	
++	weaponType = ballistic	
+ 	
+ 	projectileColor = 255, 250, 0, 255
+ 	
+diff --git a/GameData/NAS/Parts/Misc/NAS_FPS_StenSMG_BA/NAS_FPS_StenSMG_BA.cfg b/GameData/NAS/Parts/Misc/NAS_FPS_StenSMG_BA/NAS_FPS_StenSMG_BA.cfg
+index 3c9e29f..5e9edd5 100644
+--- a/GameData/NAS/Parts/Misc/NAS_FPS_StenSMG_BA/NAS_FPS_StenSMG_BA.cfg
++++ b/GameData/NAS/Parts/Misc/NAS_FPS_StenSMG_BA/NAS_FPS_StenSMG_BA.cfg
+@@ -1,139 +1,139 @@
+-﻿PART
+-{
+-// Kerbal Space Program - Part Config
+-// 
+-// 
+-
+-// --- general parameters ---
+-name = NAS_FPS_StenSMG_BA
+-module = Part
+-author = BahamutoD & Kerwis
+-
+-// --- asset parameters ---
+-mesh = model.mu
+-rescaleFactor = 0.512
+-
+-
+-// --- node definitions ---
+-node_attach = 0.0, -0.071329, 0.058411, 0, -1, 0, 1
+-
+-
+-// --- editor parameters ---
+-TechRequired = start
+-entryCost = 0
+-cost = 60
+-category = none
+-subcategory = 0
+-title = #autoLOC_NAS_FPS_StenSMG_BA_title  //Sten Mk. II Submachine Gun
+-manufacturer = #autoLOC_NAS_KerbinNavy_name //Kerbin Navy
+-description = #autoLOC_NAS_FPS_StenSMG_BA_description  //The Sten Mk. II submachine gun was chambered in 9×19mm and used extensively by British and Commonwealth forces throughout World War II and the Korean War. It was notable for having a simple design and very low production cost making them effective insurgency weapons for resistance groups. (KIS weapon, firing 9x19mmParaAmmo)
+-// attachment rules: stack, srfAttach, allowStack, allowSrfAttach, allowCollision
+-attachRules = 0,1,0,0,0
+-
+-// --- standard part parameters ---
+-mass = 0.0032
+-dragModelType = default
+-maximum_drag = 0.2
+-minimum_drag = 0.2
+-angularDrag = 2
+-crashTolerance = 50
+-maxTemp = 2400
+-buoyancy = -1
+-tags = nas bdarmory gun fps auto small machine uk britain
+-
+-stagingIcon = SOLID_BOOSTER
+-
+-MODULE
+-{
+-	name = ModuleWeapon
+-	
+-	//shortName = Sten Mk.II
+-	
+-	fireTransformName = fireTransform
+-	
+-	hasDeployAnim = true
+-	deployAnimName = m1
+-	hasFireAnimation = false
+-	
+-	roundsPerMinute = 500
+-	maxDeviation = 2
+-	maxEffectiveDistance = 100
+-	maxTargetingRange = 500
+-	
+-	bulletType = 9mmBullet//bulletMass = 4.1e-6
+-	//bulletVelocity = 365
+-	bulletDmgMult = 2
+-	
+-	ammoName = 9x19mmParaAmmo
+-	requestResourceAmount = 1
+-	shellScale = 0.084
+-	
+-	hasRecoil = true
+-	onlyFireInRange = false
+-	bulletDrop = true
+-	
+-	weaponType = ballistic
+-	
+-	projectileColor = 255, 50, 0, 160 //RGBA 0-255 
+-	startColor = 255, 105, 25, 120
+-	fadeColor = true
+-	
+-	tracerStartWidth = 0.09
+-	tracerEndWidth = 0.06
+-	tracerLength = 0
+-	tracerDeltaFactor = 3.6
+-	
+-	oneShotWorldParticles = true
+-	
+-	maxHeat = 2400
+-	heatPerShot = 120
+-	heatLoss = 820
+-	
+-	engageAir = true
+-	engageMissile = false
+-	engageGround = true
+-	engageSLW = false
+-	
+-	fireSoundPath = BDArmory/Sounds/subExplode
+-	overheatSoundPath = BDArmory/Parts/50CalTurret/sounds/turretOverheat
+-	oneShotSound = true
+-}
+-MODULE
+- {
+-  name = HitpointTracker
+-  ArmorThickness = 10
+-  maxHitPoints = 9000
+-  ExplodeMode = Never
+- }
+-MODULE
+-{
+-	name = ModuleKISItem
+-	allowPartAttach = 0
+-	shortcutKeyAction = equip
+-	equipRemoveHelmet = false
+-	volumeOverride = 0.0025
+-	equipable = true
+-	equipMode = physic
+-	editorItemsCategory = true	
+-	equipable = true
+-	equipSlot = rightHand
+-	equipMeshName = body01
+-	equipBoneName = bn_r_mid_a01
+-	// Shift L/R ,Shift Up/Dn, Shift F/B
+-	equipPos = (-0.0625,0,0)
+-	//ROT Up/Dn, ROT L/R, Spin
+-	equipDir = (0,-3.125,90)
+-}
+-MODULE
+-{
+-	name = MissileFire
+-}
+-MODULE
+-{
+-	name = CFEnable
+-}
+-MODULE
+-{
+-	name = NASCategoryModule
+-}
+-}
++﻿PART
++{
++// Kerbal Space Program - Part Config
++// 
++// 
++
++// --- general parameters ---
++name = NAS_FPS_StenSMG_BA
++module = Part
++author = BahamutoD & Kerwis
++
++// --- asset parameters ---
++mesh = model.mu
++rescaleFactor = 0.512
++
++
++// --- node definitions ---
++node_attach = 0.0, -0.071329, 0.058411, 0, -1, 0, 1
++
++
++// --- editor parameters ---
++TechRequired = start
++entryCost = 0
++cost = 60
++category = none
++subcategory = 0
++title = #autoLOC_NAS_FPS_StenSMG_BA_title  //Sten Mk. II Submachine Gun
++manufacturer = #autoLOC_NAS_KerbinNavy_name //Kerbin Navy
++description = #autoLOC_NAS_FPS_StenSMG_BA_description  //The Sten Mk. II submachine gun was chambered in 9×19mm and used extensively by British and Commonwealth forces throughout World War II and the Korean War. It was notable for having a simple design and very low production cost making them effective insurgency weapons for resistance groups. (KIS weapon, firing 9x19mmParaAmmo)
++// attachment rules: stack, srfAttach, allowStack, allowSrfAttach, allowCollision
++attachRules = 0,1,0,0,0
++
++// --- standard part parameters ---
++mass = 0.0032
++dragModelType = default
++maximum_drag = 0.2
++minimum_drag = 0.2
++angularDrag = 2
++crashTolerance = 50
++maxTemp = 2400
++buoyancy = -1
++tags = nas bdarmory gun fps auto small machine uk britain
++
++stagingIcon = SOLID_BOOSTER
++
++MODULE
++{
++	name = ModuleWeapon
++	
++	//shortName = Sten Mk.II
++	
++	fireTransformName = fireTransform
++	
++	hasDeployAnim = true
++	deployAnimName = m1
++	hasFireAnimation = false
++	
++	roundsPerMinute = 500
++	maxDeviation = 2
++	maxEffectiveDistance = 100
++	maxTargetingRange = 500
++	
++	bulletType = 9mmBulletNAS//bulletMass = 4.1e-6
++	//bulletVelocity = 365
++	bulletDmgMult = 2
++	
++	ammoName = 9x19mmParaAmmo
++	requestResourceAmount = 1
++	shellScale = 0.084
++	
++	hasRecoil = true
++	onlyFireInRange = false
++	bulletDrop = true
++	
++	weaponType = ballistic
++	
++	projectileColor = 255, 50, 0, 160 //RGBA 0-255 
++	startColor = 255, 105, 25, 120
++	fadeColor = true
++	
++	tracerStartWidth = 0.09
++	tracerEndWidth = 0.06
++	tracerLength = 0
++	tracerDeltaFactor = 3.6
++	
++	oneShotWorldParticles = true
++	
++	maxHeat = 2400
++	heatPerShot = 120
++	heatLoss = 820
++	
++	engageAir = true
++	engageMissile = false
++	engageGround = true
++	engageSLW = false
++	
++	fireSoundPath = BDArmory/Sounds/subExplode
++	overheatSoundPath = BDArmory/Parts/50CalTurret/sounds/turretOverheat
++	oneShotSound = true
++}
++MODULE
++ {
++  name = HitpointTracker
++  ArmorThickness = 10
++  maxHitPoints = 9000
++  ExplodeMode = Never
++ }
++MODULE
++{
++	name = ModuleKISItem
++	allowPartAttach = 0
++	shortcutKeyAction = equip
++	equipRemoveHelmet = false
++	volumeOverride = 0.0025
++	equipable = true
++	equipMode = physic
++	editorItemsCategory = true	
++	equipable = true
++	equipSlot = rightHand
++	equipMeshName = body01
++	equipBoneName = bn_r_mid_a01
++	// Shift L/R ,Shift Up/Dn, Shift F/B
++	equipPos = (-0.0625,0,0)
++	//ROT Up/Dn, ROT L/R, Spin
++	equipDir = (0,-3.125,90)
++}
++MODULE
++{
++	name = MissileFire
++}
++MODULE
++{
++	name = CFEnable
++}
++MODULE
++{
++	name = NASCategoryModule
++}
++}
+diff --git a/GameData/NAS/Parts/Misc/NAS_UnivAmmoBox/univAmmoBox.cfg b/GameData/NAS/Parts/Misc/NAS_UnivAmmoBox/univAmmoBox.cfg
+index 6418549..9d2089f 100644
+--- a/GameData/NAS/Parts/Misc/NAS_UnivAmmoBox/univAmmoBox.cfg
++++ b/GameData/NAS/Parts/Misc/NAS_UnivAmmoBox/univAmmoBox.cfg
+@@ -58,10 +58,7 @@ PART
+ 		ArmorThickness = 20
+ 		maxHitPoints = 10000
+ 	}
+-	MODULE
+-	{
+-		name = BDACategoryModule
+-	}
++	// BDACategoryModule removed: no longer exists in BDArmory 1.13 (BDArmory categorises parts by their modules).
+ 	MODULE
+ 	{
+ 		name = TweakScale
+diff --git a/GameData/NAS/Parts/RM/NAS_AA_MG_37Breda_RM/NAS_AA_MG_37Breda_RM.cfg b/GameData/NAS/Parts/RM/NAS_AA_MG_37Breda_RM/NAS_AA_MG_37Breda_RM.cfg
+index e137d00..84fc601 100644
+--- a/GameData/NAS/Parts/RM/NAS_AA_MG_37Breda_RM/NAS_AA_MG_37Breda_RM.cfg
++++ b/GameData/NAS/Parts/RM/NAS_AA_MG_37Breda_RM/NAS_AA_MG_37Breda_RM.cfg
+@@ -82,10 +82,8 @@ MODULE
+ 	maxDeviation = 0.75
+ 	maxEffectiveDistance = 4000
+ 	maxTargetingRange = 7800
+-	airDetonation = true
+-	airDetonationTiming = true
++	// BDArmory 1.13: airDetonation/airDetonationTiming/maxAirDetonationRange were removed. The fuze now comes from fuzeType in the BULLET definition (NAS/BulletDefs/NAS_Bullets.cfg).
+ 	defaultDetonationRange = 4000
+-	maxAirDetonationRange = 7800
+ 	
+ 	bulletType = 37mmFlaKITA//bulletMass = 6.584e-4
+ 	//bulletVelocity = 800
+@@ -103,7 +101,7 @@ MODULE
+ 	bulletDrop = true
+ 	useRippleFire = true
+ 	
+-	weaponType = cannon
++	weaponType = ballistic
+ 	
+ 	projectileColor = 255, 50, 0, 160 //RGBA 0-255
+ 	startColor = 220, 220, 255, 120
+diff --git a/GameData/NAS/Parts/RM/NAS_AA_SC_90A1938_RM/NAS_AA_SC_90A1938_RM.cfg b/GameData/NAS/Parts/RM/NAS_AA_SC_90A1938_RM/NAS_AA_SC_90A1938_RM.cfg
+index 62981e7..227c777 100644
+--- a/GameData/NAS/Parts/RM/NAS_AA_SC_90A1938_RM/NAS_AA_SC_90A1938_RM.cfg
++++ b/GameData/NAS/Parts/RM/NAS_AA_SC_90A1938_RM/NAS_AA_SC_90A1938_RM.cfg
+@@ -86,10 +86,8 @@ MODULE
+ 	maxDeviation = 0.53
+ 	maxTargetingRange = 13000
+ 	maxEffectiveDistance = 10800
+-	airDetonation = true
+-	airDetonationTiming = true
++	// BDArmory 1.13: airDetonation/airDetonationTiming/maxAirDetonationRange were removed. The fuze now comes from fuzeType in the BULLET definition (NAS/BulletDefs/NAS_Bullets.cfg).
+ 	defaultDetonationRange = 7500
+-	maxAirDetonationRange = 7500
+ 	
+ 	bulletType = 90mmHEITA//bulletMass = 0.00414
+ 	//bulletVelocity = 860
+@@ -106,7 +104,7 @@ MODULE
+ 	bulletDrop = true
+ 	useRippleFire = true
+ 	
+-	weaponType = cannon	
++	weaponType = ballistic	
+ 	
+ 	projectileColor = 255, 250, 0, 255
+ 	
+diff --git a/GameData/NAS/Parts/RN/NAS_AA_MG_40Boforsx2_RN/NAS_AA_MG_40Boforsx2_RN.cfg b/GameData/NAS/Parts/RN/NAS_AA_MG_40Boforsx2_RN/NAS_AA_MG_40Boforsx2_RN.cfg
+index 376737c..d00b711 100644
+--- a/GameData/NAS/Parts/RN/NAS_AA_MG_40Boforsx2_RN/NAS_AA_MG_40Boforsx2_RN.cfg
++++ b/GameData/NAS/Parts/RN/NAS_AA_MG_40Boforsx2_RN/NAS_AA_MG_40Boforsx2_RN.cfg
+@@ -86,10 +86,8 @@ MODULE
+ 	maxDeviation = 1
+ 	maxEffectiveDistance = 2400
+ 	maxTargetingRange = 5000
+-	airDetonation = true
+-	airDetonationTiming = true
++	// BDArmory 1.13: airDetonation/airDetonationTiming/maxAirDetonationRange were removed. The fuze now comes from fuzeType in the BULLET definition (NAS/BulletDefs/NAS_Bullets.cfg).
+ 	defaultDetonationRange = 2400
+-	maxAirDetonationRange = 5000
+ 	
+ 	bulletType = 40mmHEBofors//bulletMass = 7.152e-4
+ 	//bulletVelocity = 829
+@@ -107,7 +105,7 @@ MODULE
+ 	bulletDrop = true
+ 	useRippleFire = true
+ 	
+-	weaponType = cannon
++	weaponType = ballistic
+ 	
+ 	projectileColor = 255, 50, 0, 160 //RGBA 0-255
+ 	startColor = 220, 220, 255, 120
+diff --git a/GameData/NAS/Parts/RN/NAS_AA_MG_QF2pdrx8_RN/NAS_AA_MG_QF2pdrx8_RN.cfg b/GameData/NAS/Parts/RN/NAS_AA_MG_QF2pdrx8_RN/NAS_AA_MG_QF2pdrx8_RN.cfg
+index 8c178ff..db2e270 100644
+--- a/GameData/NAS/Parts/RN/NAS_AA_MG_QF2pdrx8_RN/NAS_AA_MG_QF2pdrx8_RN.cfg
++++ b/GameData/NAS/Parts/RN/NAS_AA_MG_QF2pdrx8_RN/NAS_AA_MG_QF2pdrx8_RN.cfg
+@@ -87,10 +87,8 @@ MODULE
+ 	maxDeviation = 2.5
+ 	maxEffectiveDistance = 1550
+ 	maxTargetingRange = 4572
+-	airDetonation = true
+-	airDetonationTiming = true
++	// BDArmory 1.13: airDetonation/airDetonationTiming/maxAirDetonationRange were removed. The fuze now comes from fuzeType in the BULLET definition (NAS/BulletDefs/NAS_Bullets.cfg).
+ 	defaultDetonationRange = 1550
+-	maxAirDetonationRange = 4572
+ 	
+ 	bulletType = 40mmHE2pdr//bulletMass = 6.56e-4
+ 	//bulletVelocity = 701
+@@ -108,7 +106,7 @@ MODULE
+ 	bulletDrop = true
+ 	useRippleFire = true
+ 	
+-	weaponType = cannon
++	weaponType = ballistic
+ 	
+ 	projectileColor = 255, 50, 0, 160 //RGBA 0-255
+ 	startColor = 220, 220, 255, 120
+diff --git a/GameData/NAS/Parts/RN/NAS_DD_QF45_RN/NAS_DD_QF45_RN.cfg b/GameData/NAS/Parts/RN/NAS_DD_QF45_RN/NAS_DD_QF45_RN.cfg
+index c217d1f..4bbebbc 100644
+--- a/GameData/NAS/Parts/RN/NAS_DD_QF45_RN/NAS_DD_QF45_RN.cfg
++++ b/GameData/NAS/Parts/RN/NAS_DD_QF45_RN/NAS_DD_QF45_RN.cfg
+@@ -84,11 +84,9 @@ MODULE
+ 	roundsPerMinute = 14
+ 	maxDeviation = 0.45
+ 	maxTargetingRange = 18970
+-	airDetonation = true
+-	airDetonationTiming = true
++	// BDArmory 1.13: airDetonation/airDetonationTiming/maxAirDetonationRange were removed. The fuze now comes from fuzeType in the BULLET definition (NAS/BulletDefs/NAS_Bullets.cfg).
+ 	maxEffectiveDistance = 9120
+-	defaultAirDetonationRange = 7500
+-	maxAirDetonationRange = 7500
++	defaultDetonationRange = 7500
+ 	
+ 	bulletType = 4p5inchHE//bulletMass = 0.01
+ 	//bulletVelocity = 716
+@@ -105,7 +103,7 @@ MODULE
+ 	onlyFireInRange = false
+ 	bulletDrop = true
+ 	
+-	weaponType = cannon	
++	weaponType = ballistic	
+ 	
+ 	projectileColor = 255, 250, 0, 255
+ 	
+diff --git a/GameData/NAS/Parts/RN/NAS_RA_Type281_RN/NAS_RA_Type281_RN.cfg b/GameData/NAS/Parts/RN/NAS_RA_Type281_RN/NAS_RA_Type281_RN.cfg
+index 336dffe..a09368f 100644
+--- a/GameData/NAS/Parts/RN/NAS_RA_Type281_RN/NAS_RA_Type281_RN.cfg
++++ b/GameData/NAS/Parts/RN/NAS_RA_Type281_RN/NAS_RA_Type281_RN.cfg
+@@ -57,13 +57,11 @@ MODULE
+   
+   showDirectionWhileScan = true
+   //minSignalThreshold = 10
+-  rangeIncrements = 5000, 10000, 20000, 40000
+   
+   canLock = false
+   canScan = true
+-  canRecieveRadarData = false
++  canReceiveRadarData = false
+   canTrackWhileScan = false
+-  slaveTurrets = false
+   
+   radarDetectionCurve
+   {
+diff --git a/GameData/NAS/Parts/ROCN/NAS_CD_105SKL40_ROCN/NAS_CD_105SKL40_ROCN.cfg b/GameData/NAS/Parts/ROCN/NAS_CD_105SKL40_ROCN/NAS_CD_105SKL40_ROCN.cfg
+index 73f208a..97b0dca 100644
+--- a/GameData/NAS/Parts/ROCN/NAS_CD_105SKL40_ROCN/NAS_CD_105SKL40_ROCN.cfg
++++ b/GameData/NAS/Parts/ROCN/NAS_CD_105SKL40_ROCN/NAS_CD_105SKL40_ROCN.cfg
+@@ -101,7 +101,7 @@ MODULE
+ 	onlyFireInRange = false
+ 	bulletDrop = true
+ 	
+-	weaponType = cannon	
++	weaponType = ballistic	
+ 	
+ 	projectileColor = 255, 250, 0, 255
+ 	
+diff --git a/GameData/NAS/Parts/ROCN/NAS_CL_BL6inMk21x2_ROCN/NAS_CL_BL6inMk21x2_ROCN.cfg b/GameData/NAS/Parts/ROCN/NAS_CL_BL6inMk21x2_ROCN/NAS_CL_BL6inMk21x2_ROCN.cfg
+index f72640f..f6b26d9 100644
+--- a/GameData/NAS/Parts/ROCN/NAS_CL_BL6inMk21x2_ROCN/NAS_CL_BL6inMk21x2_ROCN.cfg
++++ b/GameData/NAS/Parts/ROCN/NAS_CL_BL6inMk21x2_ROCN/NAS_CL_BL6inMk21x2_ROCN.cfg
+@@ -86,10 +86,8 @@ MODULE
+ 	maxDeviation = 0.39
+ 	maxTargetingRange = 25480
+ 	maxEffectiveDistance = 20120
+-	airDetonation = true
+-	airDetonationTiming = false
++	// BDArmory 1.13: airDetonation/airDetonationTiming/maxAirDetonationRange were removed. The fuze now comes from fuzeType in the BULLET definition (NAS/BulletDefs/NAS_Bullets.cfg).
+ 	defaultDetonationRange = 8000
+-	maxAirDetonationRange = 11430
+ 	
+ 	bulletType = 6inchHEUK//bulletMass = 0.0508
+ 	//bulletVelocity = 841
+@@ -106,7 +104,7 @@ MODULE
+ 	bulletDrop = true
+ 	useRippleFire = false
+ 	
+-	weaponType = cannon
++	weaponType = ballistic
+ 	//bulletType = 6inchAPLight	
+ 	
+ 	projectileColor = 255, 250, 0, 255
+diff --git a/GameData/NAS/Parts/SN/NAS_AA_MG_66K_SN/NAS_AA_MG_66K_SN.cfg b/GameData/NAS/Parts/SN/NAS_AA_MG_66K_SN/NAS_AA_MG_66K_SN.cfg
+index 8b8afd4..b8689e4 100644
+--- a/GameData/NAS/Parts/SN/NAS_AA_MG_66K_SN/NAS_AA_MG_66K_SN.cfg
++++ b/GameData/NAS/Parts/SN/NAS_AA_MG_66K_SN/NAS_AA_MG_66K_SN.cfg
+@@ -85,10 +85,8 @@ MODULE
+ 	maxDeviation = 1.25
+ 	maxEffectiveDistance = 4800
+ 	maxTargetingRange = 8500
+-	airDetonation = true
+-	airDetonationTiming = true
++	// BDArmory 1.13: airDetonation/airDetonationTiming/maxAirDetonationRange were removed. The fuze now comes from fuzeType in the BULLET definition (NAS/BulletDefs/NAS_Bullets.cfg).
+ 	defaultDetonationRange = 4800
+-	maxAirDetonationRange = 5000
+ 	
+ 	bulletType = 37mmFlaKUSSR//bulletMass = 5.856e-4
+ 	//bulletVelocity = 880
+@@ -105,7 +103,7 @@ MODULE
+ 	onlyFireInRange = false
+ 	bulletDrop = true
+ 	
+-	weaponType = cannon
++	weaponType = ballistic
+ 	
+ 	projectileColor = 255, 50, 0, 160 //RGBA 0-255
+ 	startColor = 220, 220, 255, 120
+diff --git a/GameData/NAS/Parts/SN/NAS_DD_130B-2LM_SN/NAS_DD_130B-2LM_SN.cfg b/GameData/NAS/Parts/SN/NAS_DD_130B-2LM_SN/NAS_DD_130B-2LM_SN.cfg
+index 89bbff0..447f7eb 100644
+--- a/GameData/NAS/Parts/SN/NAS_DD_130B-2LM_SN/NAS_DD_130B-2LM_SN.cfg
++++ b/GameData/NAS/Parts/SN/NAS_DD_130B-2LM_SN/NAS_DD_130B-2LM_SN.cfg
+@@ -101,7 +101,7 @@ MODULE
+ 	onlyFireInRange = false
+ 	bulletDrop = true
+ 	
+-	weaponType = cannon	
++	weaponType = ballistic	
+ 	
+ 	projectileColor = 255, 250, 0, 255
+ 	
+diff --git a/GameData/NAS/Parts/USN/NAS_AA_MG_40Boforsx4_USN/NAS_AA_MG_40Boforsx4_USN.cfg b/GameData/NAS/Parts/USN/NAS_AA_MG_40Boforsx4_USN/NAS_AA_MG_40Boforsx4_USN.cfg
+index bb5e1dc..6ffb87d 100644
+--- a/GameData/NAS/Parts/USN/NAS_AA_MG_40Boforsx4_USN/NAS_AA_MG_40Boforsx4_USN.cfg
++++ b/GameData/NAS/Parts/USN/NAS_AA_MG_40Boforsx4_USN/NAS_AA_MG_40Boforsx4_USN.cfg
+@@ -87,10 +87,8 @@ MODULE
+ 	maxDeviation = 0.9
+ 	maxEffectiveDistance = 2500
+ 	maxTargetingRange = 5000
+-	airDetonation = true
+-	airDetonationTiming = true
++	// BDArmory 1.13: airDetonation/airDetonationTiming/maxAirDetonationRange were removed. The fuze now comes from fuzeType in the BULLET definition (NAS/BulletDefs/NAS_Bullets.cfg).
+ 	defaultDetonationRange = 2500
+-	maxAirDetonationRange = 5000
+ 	
+ 	bulletType = 40mmHEBofors//bulletMass = 7.152e-4
+ 	//bulletVelocity = 829
+@@ -108,7 +106,7 @@ MODULE
+ 	bulletDrop = true
+ 	useRippleFire = true
+ 	
+-	weaponType = cannon
++	weaponType = ballistic
+ 	
+ 	projectileColor = 255, 50, 0, 160 //RGBA 0-255
+ 	startColor = 220, 220, 255, 120
+diff --git a/GameData/NAS/Parts/USN/NAS_AA_SC_3inchMark21_USN/NAS_AA_SC_3inchMark21_USN.cfg b/GameData/NAS/Parts/USN/NAS_AA_SC_3inchMark21_USN/NAS_AA_SC_3inchMark21_USN.cfg
+index 8dc90fd..249628b 100644
+--- a/GameData/NAS/Parts/USN/NAS_AA_SC_3inchMark21_USN/NAS_AA_SC_3inchMark21_USN.cfg
++++ b/GameData/NAS/Parts/USN/NAS_AA_SC_3inchMark21_USN/NAS_AA_SC_3inchMark21_USN.cfg
+@@ -81,11 +81,9 @@ MODULE
+ 	roundsPerMinute = 15
+ 	maxDeviation = 0.61
+ 	maxTargetingRange = 13350
+-	airDetonation = true
+-	airDetonationTiming = true
++	// BDArmory 1.13: airDetonation/airDetonationTiming/maxAirDetonationRange were removed. The fuze now comes from fuzeType in the BULLET definition (NAS/BulletDefs/NAS_Bullets.cfg).
+ 	maxEffectiveDistance = 4150
+ 	defaultDetonationRange = 4150
+-	maxAirDetonationRange = 7500
+ 	
+ 	bulletType = 3inchHELong//bulletMass = 0.0024
+ 	//bulletVelocity = 823
+@@ -101,7 +99,7 @@ MODULE
+ 	onlyFireInRange = false
+ 	bulletDrop = true
+ 	
+-	weaponType = cannon	
++	weaponType = ballistic	
+ 	
+ 	projectileColor = 255, 250, 0, 255
+ 	
+diff --git a/GameData/NAS/Parts/USN/NAS_AB_AN-Mk1_USN/NAS_AB_AN-Mk1_USN.cfg b/GameData/NAS/Parts/USN/NAS_AB_AN-Mk1_USN/NAS_AB_AN-Mk1_USN.cfg
+index 53f8b3d..c8e5631 100644
+--- a/GameData/NAS/Parts/USN/NAS_AB_AN-Mk1_USN/NAS_AB_AN-Mk1_USN.cfg
++++ b/GameData/NAS/Parts/USN/NAS_AB_AN-Mk1_USN/NAS_AB_AN-Mk1_USN.cfg
+@@ -86,12 +86,7 @@ MODULE
+ 	ArmorThickness = 25
+ 	maxHitPoints = 25000
+ }
+-MODULE
+-{
+-  name = ModuleKineticBombarder
+-  baseBlastRadius = 0.75
+-  baseBlastPower = 1.8
+-}
++// ModuleKineticBombarder (North Kerbin Weaponry) removed: no plugin exists for KSP 1.12 / BDArmory 1.13. The BDExplosivePart warhead still detonates on impact.
+ MODULE
+ {
+ 	name = NASCategoryModule
+diff --git a/GameData/NAS/Parts/USN/NAS_CL_152x3Mk16_USN/NAS_CL_152x3Mk16_USN.cfg b/GameData/NAS/Parts/USN/NAS_CL_152x3Mk16_USN/NAS_CL_152x3Mk16_USN.cfg
+index 53e8596..ae12a82 100644
+--- a/GameData/NAS/Parts/USN/NAS_CL_152x3Mk16_USN/NAS_CL_152x3Mk16_USN.cfg
++++ b/GameData/NAS/Parts/USN/NAS_CL_152x3Mk16_USN/NAS_CL_152x3Mk16_USN.cfg
+@@ -86,10 +86,8 @@ MODULE
+ 	maxDeviation = 0.39
+ 	maxTargetingRange = 23770
+ 	maxEffectiveDistance = 14630
+-	airDetonation = true
+-	airDetonationTiming = true
++	// BDArmory 1.13: airDetonation/airDetonationTiming/maxAirDetonationRange were removed. The fuze now comes from fuzeType in the BULLET definition (NAS/BulletDefs/NAS_Bullets.cfg).
+ 	defaultDetonationRange = 7500
+-	maxAirDetonationRange = 14630
+ 	
+ 	bulletType = 6inchHEUS//bulletMass = 0.02416
+ 	//bulletVelocity = 762
+@@ -106,7 +104,7 @@ MODULE
+ 	bulletDrop = true
+ 	useRippleFire = true
+ 	
+-	weaponType = cannon
++	weaponType = ballistic
+ 	
+ 	projectileColor = 255, 250, 0, 255
+ 	
+diff --git a/GameData/NAS/Parts/USN/NAS_DC_Mark9_USN/NAS_DC_Mark9_USN.cfg b/GameData/NAS/Parts/USN/NAS_DC_Mark9_USN/NAS_DC_Mark9_USN.cfg
+index 3eb17b0..54c2b4a 100644
+--- a/GameData/NAS/Parts/USN/NAS_DC_Mark9_USN/NAS_DC_Mark9_USN.cfg
++++ b/GameData/NAS/Parts/USN/NAS_DC_Mark9_USN/NAS_DC_Mark9_USN.cfg
+@@ -77,6 +77,17 @@ MODULE
+   waterImpactTolerance = 50
+   
+   missileType = depthcharge
++  // BDArmory 1.13: hydrostatic failsafe. ModuleAntiSubmarineWeapon detonates at the depth set in the PAW/toolbar;
++  // this native altitude fuze (DescendingMSL) only fires if the plugin is missing or the charge reaches maxDepth.
++  altitudeFuzeMode = -2
++  altitudeDetonationAlt = -500
++  // AI: depth charges are only useful against submerged targets at short range.
++  engageAir = false
++  engageMissile = false
++  engageGround = false
++  engageSLW = true
++  minStaticLaunchRange = 10
++  maxStaticLaunchRange = 300
+   homingType = none
+ }
+ MODULE
+diff --git a/GameData/NAS/Parts/USN/NAS_DD_127_USN/NAS_DD_127_USN.cfg b/GameData/NAS/Parts/USN/NAS_DD_127_USN/NAS_DD_127_USN.cfg
+index 8ca4e84..c1c9093 100644
+--- a/GameData/NAS/Parts/USN/NAS_DD_127_USN/NAS_DD_127_USN.cfg
++++ b/GameData/NAS/Parts/USN/NAS_DD_127_USN/NAS_DD_127_USN.cfg
+@@ -85,11 +85,9 @@ MODULE
+ 	roundsPerMinute = 15
+ 	maxDeviation = 0.54
+ 	maxTargetingRange = 16000
+-	airDetonation = true
+-	airDetonationTiming = true
++	// BDArmory 1.13: airDetonation/airDetonationTiming/maxAirDetonationRange were removed. The fuze now comes from fuzeType in the BULLET definition (NAS/BulletDefs/NAS_Bullets.cfg).
+ 	maxEffectiveDistance = 5000
+ 	defaultDetonationRange = 5000
+-	maxAirDetonationRange = 7500
+ 	
+ 	bulletType = 5inchHEUS//bulletMass = 0.0098
+ 	//bulletVelocity = 792
+@@ -105,7 +103,7 @@ MODULE
+ 	onlyFireInRange = false
+ 	bulletDrop = true
+ 	
+-	weaponType = cannon	
++	weaponType = ballistic	
+ 	
+ 	projectileColor = 255, 250, 0, 255
+ 	
+diff --git a/GameData/NAS/Parts/USN/NAS_DD_127x2_USN/NAS_DD_127x2_USN.cfg b/GameData/NAS/Parts/USN/NAS_DD_127x2_USN/NAS_DD_127x2_USN.cfg
+index 7252409..f2f8d7b 100644
+--- a/GameData/NAS/Parts/USN/NAS_DD_127x2_USN/NAS_DD_127x2_USN.cfg
++++ b/GameData/NAS/Parts/USN/NAS_DD_127x2_USN/NAS_DD_127x2_USN.cfg
+@@ -85,11 +85,9 @@ MODULE
+ 	roundsPerMinute = 15
+ 	maxDeviation = 0.54
+ 	maxTargetingRange = 16000
+-	airDetonation = true
+-	airDetonationTiming = true
++	// BDArmory 1.13: airDetonation/airDetonationTiming/maxAirDetonationRange were removed. The fuze now comes from fuzeType in the BULLET definition (NAS/BulletDefs/NAS_Bullets.cfg).
+ 	maxEffectiveDistance = 5000
+ 	defaultDetonationRange = 5000
+-	maxAirDetonationRange = 7500
+ 	
+ 	bulletType = 5inchHEUS//bulletMass = 0.0098
+ 	//bulletVelocity = 792
+@@ -106,7 +104,7 @@ MODULE
+ 	bulletDrop = true
+ 	useRippleFire = true
+ 	
+-	weaponType = cannon	
++	weaponType = ballistic	
+ 	
+ 	projectileColor = 255, 250, 0, 255
+ 	
+diff --git a/GameData/NAS/Parts/USN/NAS_RA_Mk25FC_USN/NAS_RA_Mk25FC_USN.cfg b/GameData/NAS/Parts/USN/NAS_RA_Mk25FC_USN/NAS_RA_Mk25FC_USN.cfg
+index ea5a7d8..060f8d0 100644
+--- a/GameData/NAS/Parts/USN/NAS_RA_Mk25FC_USN/NAS_RA_Mk25FC_USN.cfg
++++ b/GameData/NAS/Parts/USN/NAS_RA_Mk25FC_USN/NAS_RA_Mk25FC_USN.cfg
+@@ -59,13 +59,11 @@ MODULE
+   showDirectionWhileScan = true
+   //minSignalThreshold = 100
+   //minLockedSignalThreshold = 250
+-  rangeIncrements = 9000, 25000, 40000
+   
+   canLock = true
+   canScan = true
+-  canRecieveRadarData = true
++  canReceiveRadarData = true
+   canTrackWhileScan = true
+-  slaveTurrets = true
+   
+   radarDetectionCurve
+   {
+diff --git a/GameData/NAS/Parts/USN/NAS_TO_Mark15_USN/NAS_TO_Mark15_USN.cfg b/GameData/NAS/Parts/USN/NAS_TO_Mark15_USN/NAS_TO_Mark15_USN.cfg
+index f829de1..7f312d3 100644
+--- a/GameData/NAS/Parts/USN/NAS_TO_Mark15_USN/NAS_TO_Mark15_USN.cfg
++++ b/GameData/NAS/Parts/USN/NAS_TO_Mark15_USN/NAS_TO_Mark15_USN.cfg
+@@ -68,7 +68,6 @@ breakingTorque = 5000
+   missileType = torpedo
+   targetingType = none
+   optimumAirspeed = 34
+-  isTubeLoaded = true
+   
+   engageAir = false
+   engageMissile = false
+diff --git a/GameData/NAS/Parts/USN/NAS_TP_Mk14x5_USN/NAS_TP_Mk14x5_USN.cfg b/GameData/NAS/Parts/USN/NAS_TP_Mk14x5_USN/NAS_TP_Mk14x5_USN.cfg
+index 15092eb..9b06674 100644
+--- a/GameData/NAS/Parts/USN/NAS_TP_Mk14x5_USN/NAS_TP_Mk14x5_USN.cfg
++++ b/GameData/NAS/Parts/USN/NAS_TP_Mk14x5_USN/NAS_TP_Mk14x5_USN.cfg
+@@ -91,10 +91,7 @@
+ 		ArmorThickness = 25
+ 		maxHitPoints = 100000
+ 	}
+-	MODULE
+-	{
+-		name = BDACategoryModule
+-	}
++	// BDACategoryModule removed: no longer exists in BDArmory 1.13 (BDArmory categorises parts by their modules).
+ 	MODULE
+ 	{
+ 		name = NASCategoryModule
+diff --git a/GameData/NAS/Plugins/AntiSubmarineWeapon.dll b/GameData/NAS/Plugins/AntiSubmarineWeapon.dll
+index 827f8ba..c6152a3 100644
+Binary files a/GameData/NAS/Plugins/AntiSubmarineWeapon.dll and b/GameData/NAS/Plugins/AntiSubmarineWeapon.dll differ
+diff --git a/GameData/NAS/Plugins/Source.txt b/GameData/NAS/Plugins/Source.txt
+index 0ccb86d..cb4136e 100644
+--- a/GameData/NAS/Plugins/Source.txt
++++ b/GameData/NAS/Plugins/Source.txt
+@@ -1,3 +1,7 @@
+ ﻿https://github.com/Summerfirefly/ASW
+ 
+-Released under CC BY-SA 4.0 license.
+\ No newline at end of file
++Released under CC BY-SA 4.0 license.
++
++AntiSubmarineWeapon.dll 0.6.6.0: ported to KSP 1.12.x / BDArmory Plus 1.13 (.NET Framework 4.8).
++Based on Summerfirefly/ASW commit c640ea3 plus FlagWave (reconstructed from the 0.6.5.2 DLL that shipped with NAS 0.7.0).
++Source and project file: see src/AntiSubmarineWeapon in this patch set. Same CC BY-SA 4.0 license.

@@ -1,0 +1,164 @@
+# Release: on a version tag (v1.2.3), build every enabled module into its own zip, publish
+# them as GitHub release assets, regenerate the .ckan files from the real sizes and hashes,
+# check the uploaded assets against them, and push the .ckan files to skizzy-ckan.
+#
+# Secret:   SKIZZY_CKAN_TOKEN   fine-grained token with Contents + Pull requests read/write on
+#                               Skizzy-create/skizzy-ckan (see RELEASING.md). Without it the
+#                               release still succeeds and the .ckan files are left as an
+#                               artifact for a manual push.
+# Variable: CKAN_PUBLISH_MODE   "pr" (default): open a pull request on skizzy-ckan;
+#                               "push": commit straight to its main branch.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to rebuild and re-publish, e.g. v0.1.0"
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.event.inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+env:
+  TAG: ${{ github.event.inputs.tag || github.ref_name }}
+  PYTHONUTF8: "1"
+
+jobs:
+  build:
+    name: Build, release, generate .ckan
+    runs-on: ubuntu-latest
+    timeout-minutes: 120   # MNWS alone is a 581 MB download and a ~580 MB asset
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.TAG }}
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Work out the version
+        id: ver
+        run: |
+          case "$TAG" in
+            v[0-9]*) ;;
+            *) echo "::error::Release tags must look like v1.2.3 (got '$TAG')"; exit 1 ;;
+          esac
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Offline checks (registry, manifests, sizes, forbidden libraries)
+        run: python scripts/skizzy.py check
+
+      - name: Cache upstream archives
+        uses: actions/cache@v6
+        with:
+          path: .cache/upstream
+          key: upstream-${{ hashFiles('registry.toml') }}
+          restore-keys: upstream-
+
+      - name: Package modules
+        run: python scripts/skizzy.py package --version "${{ steps.ver.outputs.version }}"
+
+      - name: Generate .ckan files
+        run: python scripts/skizzy.py ckan --version "${{ steps.ver.outputs.version }}" --tag "$TAG"
+
+      - name: Validate .ckan files against CKAN.schema
+        run: python scripts/skizzy.py validate dist/ckan
+
+      - name: Write release notes
+        run: python scripts/skizzy.py notes --tag "$TAG"
+
+      - name: Create or update the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release upload "$TAG" dist/*.zip dist/SHA256SUMS.txt --clobber
+            gh release edit "$TAG" --notes-file dist/RELEASE_NOTES.md
+          else
+            gh release create "$TAG" dist/*.zip dist/SHA256SUMS.txt \
+              --verify-tag --title "Skizzy Naval $TAG" --notes-file dist/RELEASE_NOTES.md
+          fi
+
+      - name: Check the published assets match the .ckan files
+        run: python scripts/skizzy.py verify-downloads dist/ckan
+
+      - name: Keep the .ckan files
+        uses: actions/upload-artifact@v7
+        with:
+          name: ckan-${{ env.TAG }}
+          path: dist/ckan
+          if-no-files-found: error
+
+  publish-ckan:
+    name: Push .ckan files to skizzy-ckan
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CKAN_TOKEN: ${{ secrets.SKIZZY_CKAN_TOKEN }}
+      CKAN_REPO: Skizzy-create/skizzy-ckan
+      PUBLISH_MODE: ${{ vars.CKAN_PUBLISH_MODE || 'pr' }}
+    steps:
+      - name: Check for the token
+        id: token
+        run: |
+          if [ -z "$CKAN_TOKEN" ]; then
+            echo "::warning::SKIZZY_CKAN_TOKEN is not set, so the .ckan files were not pushed. Download the ckan-$TAG artifact from this run and commit it to $CKAN_REPO (see RELEASING.md)."
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/download-artifact@v8
+        if: steps.token.outputs.present == 'true'
+        with:
+          name: ckan-${{ env.TAG }}
+          path: ckan
+
+      - uses: actions/checkout@v7
+        if: steps.token.outputs.present == 'true'
+        with:
+          repository: ${{ env.CKAN_REPO }}
+          token: ${{ secrets.SKIZZY_CKAN_TOKEN }}
+          path: skizzy-ckan
+
+      - name: Commit, then push or open a pull request
+        if: steps.token.outputs.present == 'true'
+        working-directory: skizzy-ckan
+        env:
+          GH_TOKEN: ${{ secrets.SKIZZY_CKAN_TOKEN }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          git config user.name "Skizzy-create"
+          git config user.email "kartik@clarigenai.com"
+          cp -R ../ckan/. .
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No metadata changes."
+            exit 0
+          fi
+          msg="SkizzyNaval $TAG metadata"
+          if [ "$PUBLISH_MODE" = "push" ]; then
+            git commit -m "$msg"
+            git push origin HEAD:main
+          else
+            branch="release/$TAG"
+            git switch -c "$branch"
+            git commit -m "$msg"
+            git push --force origin "$branch"
+            if ! gh pr view "$branch" --repo "$CKAN_REPO" > /dev/null 2>&1; then
+              gh pr create --repo "$CKAN_REPO" --base main --head "$branch" \
+                --title "$msg" --body "Generated by $RUN_URL"
+            fi
+          fi

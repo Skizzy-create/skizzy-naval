@@ -1,0 +1,484 @@
+# skizzy-naval module registry.
+#
+# One [[module]] entry per sub-mod. Adding a module = one folder under modules/<key>/ plus
+# one entry here. Field reference and the release flow: RELEASING.md.
+#
+# Relationship lists (depends/recommends/suggests/supports/conflicts) accept:
+#   "Identifier"         -> {"name": "Identifier"}
+#   "@alias"             -> the entry from [aliases]
+#   { name = ..., min_version = ... } or { any_of = [...] }  -> passed through as is
+# CKAN identifiers were checked against the KSP-default CKAN repository on 2026-11-07.
+
+[pack]
+name = "Skizzy Naval"
+release_repo = "Skizzy-create/skizzy-naval"
+ckan_repo = "Skizzy-create/skizzy-ckan"
+asset_prefix = "SkizzyNaval"          # release assets: SkizzyNaval-<key>-<version>.zip
+spec_version = "v1.26"                # any_of needs v1.26
+ksp_version_min = "1.12.0"
+ksp_version_max = "1.12.99"
+
+[aliases]
+# BDArmory Plus 1.13.x from the main CKAN repo, or the Skizzy fork build when it ships.
+bdarmory = { any_of = [
+  { name = "BDArmoryForRunwayProject", min_version = "2:v1.13.0.0" },
+  { name = "BDArmory-Skizzy" },
+], choice_help_text = "BDArmory Plus 1.13 (BDArmoryForRunwayProject) or the Skizzy fork build (BDArmory-Skizzy)." }
+
+[policy]
+max_file_mb = 95
+# Never ship shared third-party libraries; users get them from CKAN.
+forbidden = [
+  "ModuleManager*.dll",
+  "Firespitter.dll", "*/Firespitter/*",
+  "0Harmony.dll", "*/000_Harmony/*",
+  "ClickThroughBlocker.dll", "ToolbarController.dll",
+  "KSPCommunityFixes.dll", "B9PartSwitch.dll", "Scale.dll", "999_Scale_Redist.dll",
+  "PhysicsRangeExtender.dll",
+  "SMIndustries.dll",
+]
+
+# ============================================================================ released
+
+[[module]]
+key = "HullBreach"
+identifier = "SkizzyNaval-HullBreach"
+strategy = "bundle"
+enabled = true
+pack = "depends"
+name = "HullBreach (SkizzyNaval port)"
+abstract = "Hull flooding, foundering and crush depth for BDArmory naval combat. Unofficial 1.8.0 port of HullBreach 1.7.0.5 to KSP 1.12.5 and BDArmory Plus 1.13."
+description = """
+Rewritten flood model: per-compartment flooding toward each part's waterline, severity from
+BDArmory hit points and armour, submarine damage control, foundering, crush depth, one 10 Hz
+vessel module instead of per-part updates. ModuleManager patches for Large Boat Parts, MNWS,
+SACD, Kerbal Powers Naval, BDArmory, NAS, CVX and stock hulls (333 parts). Replaces the
+original HullBreach (it provides and conflicts with it). Original by gomker, SpannerMonkey,
+Gedas-S and zzhwudiaa, CC BY-NC-SA 3.0. Plugin source is in the repository.
+"""
+author = ["gomker", "SpannerMonkey", "Gedas-S", "zzhwudiaa", "Skizzy-create"]
+license = "CC-BY-NC-SA-3.0"
+tags = ["plugin", "physics", "parts", "combat"]
+provides = ["HullBreach"]
+conflicts = ["HullBreach"]
+depends = ["ModuleManager", "@bdarmory"]
+recommends = ["SkizzyNaval-LargeBoatPartsPack"]
+suggests = ["KerbalPowersNaval", "StockalikeAircraftCarrierDecks", "SkizzyNaval-NAS"]
+install = [{ file = "GameData/HullBreach", install_to = "GameData" }]
+resources = { x_upstream = "https://github.com/gomker/HullBreach" }
+
+[[module]]
+key = "NAS"
+identifier = "SkizzyNaval-NAS"
+strategy = "rebuild"
+enabled = true
+pack = "depends"
+name = "NAS - Naval Artillery System (SkizzyNaval update)"
+abstract = "WWII naval guns, torpedoes and depth charges for BDArmory. NAS 0.7.0 configs and the AntiSubmarineWeapon plugin ported to KSP 1.12.5 and BDArmory Plus 1.13."
+description = """
+All 46 bullets rewritten for BDArmory 1.13 (fixes zero penetration from apBulletMod = 0,
+bullet fuzes replace the removed airDetonation keys), radar and weapon keys updated,
+AntiSubmarineWeapon.dll 0.6.6 rebuilt against BDArmory 1.13.1 with depth-charge arming and
+torpedo fixes. The bundled ModuleManager 3.0.6 and Firespitter 7.6 are not shipped.
+Replaces the original NAS (provides and conflicts with it). Original by Acea and
+Summerfirefly, CC BY-SA 4.0.
+"""
+author = ["Acea", "Summerfirefly", "Skizzy-create"]
+license = "CC-BY-SA-4.0"
+tags = ["parts", "plugin", "combat"]
+provides = ["NAS"]
+conflicts = ["NAS"]
+depends = ["ModuleManager", "@bdarmory"]
+recommends = ["FirespitterCore", "SkizzyNaval-HullBreach"]
+suggests = ["SkizzyNaval-LargeBoatPartsPack", "KIS"]
+install = [{ file = "GameData/NAS", install_to = "GameData" }]
+resources = { x_upstream = "https://spacedock.info/mod/83/NAS%20-%20Naval%20Artillery%20System" }
+
+[module.upstream]
+name = "NAS 0.7.0 (SpaceDock; the file CKAN lists for NAS 1:v0.7.0)"
+urls = [
+  "https://spacedock.info/mod/83/NAS%20-%20Naval%20Artillery%20System/download/0.7.0",
+  "https://archive.org/download/NAS-1-v0.7.0/D8627DCF-NAS-1-v0.7.0.zip",
+]
+size = 64781203
+sha256 = "94BD6789B82A8E28E09107D4177B28BAD8E2FBA3D346BCBD86B2A6483EECF1A5"
+extract = [{ from = "GameData/NAS", to = "GameData/NAS" }]
+
+[[module]]
+key = "LargeBoatPartsPack"
+identifier = "SkizzyNaval-LargeBoatPartsPack"
+strategy = "rebuild"
+enabled = true
+pack = "depends"
+name = "Large Boat Parts Pack (SkizzyNaval compatibility build)"
+abstract = "Large Boat Parts Pack 3.9.2 (Modern, WW2 and common parts) fixed for KSP 1.12.5 and BDArmory Plus 1.13."
+description = """
+Drops the KSP 1.3-era SMIndustries.dll (it threw MissingMethodException in the editor),
+fixes MM patches that edited the wrong module or stripped BuoyancyControl from every mod,
+sets fireFOV 180 on VLS cells so BDArmory 1.13 launches without turret timeouts, adds Kerbal
+Powers Naval ballast to submarine hulls, and fixes several asset paths. Installs all four
+folders at the GameData root (as the original zip intends), so HullBreach's
+NEEDS[LShipPartsModern] patches apply. Replaces the three CKAN LargeBoatPartsPack modules.
+Original by Laythe and SpannerMonkey, CC BY-SA 4.0; SM_Industries (localisation, resources)
+GPL-3.0.
+"""
+author = ["Laythe", "SpannerMonkey", "gomker", "Skizzy-create"]
+license = ["CC-BY-SA-4.0", "GPL-3.0"]
+tags = ["parts"]
+provides = ["LargeBoatPartsPack", "LargeBoatPartsPack-Modern", "LargeBoatPartsPack-WW2"]
+conflicts = ["LargeBoatPartsPack", "LargeBoatPartsPack-Modern", "LargeBoatPartsPack-WW2"]
+depends = ["ModuleManager"]
+recommends = ["SkizzyNaval-HullBreach"]
+suggests = ["KerbalPowersNaval", "Hangar", "FirespitterCore"]
+install = [
+  { file = "GameData/LShipPartsModern", install_to = "GameData" },
+  { file = "GameData/LShipPartsRequired", install_to = "GameData" },
+  { file = "GameData/LShipPartsWW2", install_to = "GameData" },
+  { file = "GameData/SM_Industries", install_to = "GameData" },
+]
+resources = { x_upstream = "https://spacedock.info/mod/167/Large%20Boat%20Parts%20Pack" }
+
+[module.upstream]
+name = "Large Boat Parts Pack v3.9.2 (SpaceDock; the file CKAN lists for LargeBoatPartsPack 1:v3.9.2)"
+urls = [
+  "https://spacedock.info/mod/167/Large%20Boat%20Parts%20Pack/download/v3.9.2",
+  "https://archive.org/download/LargeBoatPartsPack-1-v3.9.2/B41190F3-LargeBoatPartsPack-1-v3.9.2.zip",
+]
+size = 29383511
+sha256 = "B174A2E0EAFED66B30827EC33BBB1A8014663F5904FCE5136E673FE890C67740"
+extract = [
+  { from = "LShipPartsModern", to = "GameData/LShipPartsModern" },
+  { from = "LShipPartsRequired", to = "GameData/LShipPartsRequired" },
+  { from = "LShipPartsWW2", to = "GameData/LShipPartsWW2" },
+  { from = "SM_Industries", to = "GameData/SM_Industries" },
+]
+
+[[module]]
+key = "MaritimePack"
+identifier = "SkizzyNaval-MaritimePack"
+strategy = "rebuild"
+enabled = true
+pack = "depends"
+name = "Maritime Pack (SkizzyNaval NRE-fix build)"
+abstract = "Fengist's Maritime Pack with its plugins rebuilt to stop the NullReferenceExceptions seen in KSP 1.12 and BDArmory fights."
+description = """
+MPUtils, MPHover, MPEngineSounds and FengistAnim rebuilt from source with null guards for
+destroyed or split vessels, own-vessel instead of active-vessel lookups, cached hover lists
+and NaN guards. A ModuleManager patch fixes a missing sound and the misspelt MaxDepth key.
+All class names and fields are unchanged, so craft and saves load as before. The Maritime
+Pack is not on CKAN; this build is made from the GitHub snapshot 2822417. Original by
+Fengist (DataInterlock), CC BY-NC 4.0, non-commercial use only. Bundled FSResizer.dll
+(Fengist's renamed resizer, needed by the hull parts) is shipped unchanged.
+"""
+author = ["Fengist", "Skizzy-create"]
+license = "CC-BY-NC-4.0"
+tags = ["parts", "plugin"]
+depends = ["ModuleManager"]
+suggests = ["CommunityResourcePack"]
+install = [
+  { file = "GameData/FengistAnim", install_to = "GameData" },
+  { file = "GameData/MPUtils", install_to = "GameData" },
+  { file = "GameData/Maritime Pack", install_to = "GameData" },
+]
+resources = { x_upstream = "https://github.com/Fengist/Maritime-Pack" }
+
+[module.upstream]
+name = "Fengist/Maritime-Pack @ 2822417 (GitHub archive)"
+urls = ["https://github.com/Fengist/Maritime-Pack/archive/2822417dcaac9ed1cd331546c5fa74951470a4cd.zip"]
+# GitHub archives are not guaranteed byte-stable, so no archive hash: the result is
+# verified file by file against manifest.json instead.
+strip_top = true
+extract = [
+  { from = "GameData/FengistAnim", to = "GameData/FengistAnim" },
+  { from = "GameData/MPUtils", to = "GameData/MPUtils" },
+  { from = "GameData/Maritime Pack", to = "GameData/Maritime Pack" },
+]
+
+[[module]]
+key = "AdvancedWeaponsPack"
+identifier = "SkizzyNaval-AdvancedWeaponsPack"
+strategy = "rebuild"
+enabled = true
+pack = "depends"
+name = "Advanced Weapons Pack (SkizzyNaval compatibility build)"
+abstract = "Advanced Weapons Pack 0.22 missiles for BDArmory Plus 1.13: the Castle Bravo bomb's dead ModuleShockwave becomes a BDArmory nuke."
+description = """
+Adds one ModuleManager patch: the 15 Mt bomb's ModuleShockwave (an old NKD plugin that no
+longer exists) and conventional warhead are replaced with BDModuleNuke using the same values
+as NKD Reborn's Castle Bravo. Shipped as a full copy because the CKAN AdvancedWeaponsPack
+depends on the KSP 1.3.1-only NorthKerbinDynamics and can't be installed on 1.12.5; this
+build recommends NKD Reborn instead. Replaces AdvancedWeaponsPack (provides and conflicts).
+Original by hentaichou, MIT.
+"""
+author = ["hentaichou", "Skizzy-create"]
+license = "MIT"
+tags = ["parts", "combat"]
+provides = ["AdvancedWeaponsPack"]
+conflicts = ["AdvancedWeaponsPack"]
+depends = ["ModuleManager", "@bdarmory"]
+recommends = ["NorthKerbinDynamicsRenewedExtended"]
+install = [{ file = "GameData/Advanced Weapons Pack", install_to = "GameData" }]
+resources = { x_upstream = "https://spacedock.info/mod/3102/Advanced%20Weapons%20Pack" }
+
+[module.upstream]
+name = "Advanced Weapons Pack 0.22 (SpaceDock; the file CKAN lists for AdvancedWeaponsPack 0.22)"
+urls = [
+  "https://spacedock.info/mod/3102/Advanced%20Weapons%20Pack/download/0.22",
+  "https://archive.org/download/AdvancedWeaponsPack-0.22/7B3C1089-AdvancedWeaponsPack-0.22.zip",
+]
+size = 4086368
+sha256 = "008C167EF93D5669E8869493AA722ACA67D4EC557DB46A9CB3BE4DFA77CDE303"
+extract = [{ from = "Advanced Weapons Pack", to = "GameData/Advanced Weapons Pack" }]
+
+[[module]]
+key = "AircraftCarrierAccessories"
+identifier = "SkizzyNaval-AircraftCarrierAccessories"
+strategy = "overlay"
+enabled = true
+pack = "depends"
+name = "Aircraft Carrier Accessories: KSP 1.12.5 / BDA 1.13 patch (SkizzyNaval)"
+abstract = "ModuleManager patch for Aircraft Carrier Accessories: removes the Enterprise's Hangar modules when Hangar isn't installed and works around the CLLS OnStart crash."
+description = """
+Installs one file, KFC/Patches/zz_KSP1125_BDA113_Compat.cfg, next to the original Aircraft
+Carrier Accessories from CKAN (pulled in as a dependency). The CLLS block is a stopgap until
+ACA.dll null-checks its missing Base transform. Patch by Skizzy-create; Aircraft Carrier
+Accessories by flywlyx, MIT.
+"""
+author = ["Skizzy-create"]
+license = "MIT"
+tags = ["config", "combat"]
+depends = ["ModuleManager", "AircraftCarrierAccessories"]
+suggests = ["Hangar"]
+install = [{ file = "GameData/KFC/Patches/zz_KSP1125_BDA113_Compat.cfg", install_to = "GameData/KFC/Patches" }]
+resources = { x_upstream = "https://spacedock.info/mod/1068/Aircraft%20Carrier%20Accessories" }
+
+[module.upstream]
+# Reference copy used by 'skizzy.py import' to find our additions; not downloaded by CI.
+name = "Aircraft Carrier Accessories 1.9.1 (SpaceDock; = CKAN AircraftCarrierAccessories 1:1.9.1)"
+urls = ["https://spacedock.info/mod/1068/Aircraft%20Carrier%20Accessories/download/1.9.1"]
+size = 25212387
+sha256 = "6EBDF6DA38C23DC150FE4002F434EF6D282F6D64DF9C335917EAA36C040CA1A3"
+extract = [{ from = "GameData/KFC", to = "GameData/KFC" }]
+
+[[module]]
+key = "FishyWeapons"
+identifier = "SkizzyNaval-FishyWeapons"
+strategy = "overlay"
+enabled = true
+pack = "depends"
+name = "Fishy Weapons: BDArmory Plus 1.13 patch (SkizzyNaval)"
+abstract = "ModuleManager patch for Fishy Weapons 0.10.0: completes all 52 bullet definitions, converts removed air-burst keys to fuzes, and fixes broken ammo, model and sound references."
+description = """
+Installs one file, fishy_weapons_dev/Patches/zz_FishyWeapons_BDA113_Compat.cfg, on top of
+Fishy Weapons (FishyAntiMissileSpam) and Fishy Mod Core from CKAN. No original file is
+replaced. Fishy Weapons by Diamant Gott, CC BY-SA 4.0 (models reused from BDArmory
+Continued). Fishy Mod Core is restricted and is never redistributed here.
+"""
+author = ["Skizzy-create"]
+license = "CC-BY-SA-4.0"
+tags = ["config", "combat"]
+depends = ["ModuleManager", "@bdarmory", "FishyAntiMissileSpam"]
+install = [{ file = "GameData/fishy_weapons_dev/Patches/zz_FishyWeapons_BDA113_Compat.cfg", install_to = "GameData/fishy_weapons_dev/Patches" }]
+resources = { x_upstream = "https://spacedock.info/mod/2961/fishy%20weapons%20(FAMS%20continued)" }
+
+[module.upstream]
+name = "Fishy Weapons 0.10.0 (SpaceDock; = CKAN FishyAntiMissileSpam 1:0.10.0)"
+urls = ["https://spacedock.info/mod/2961/fishy%20weapons%20(FAMS%20continued)/download/0.10.0"]
+size = 108355876
+sha256 = "A1FE1BE358439F76ADBDE417229B95F6F3C31886E46D8032D4FD6E65C7BE6ED6"
+extract = [{ from = "fishy_weapons_dev", to = "GameData/fishy_weapons_dev" }]
+
+[[module]]
+key = "TitansBDArmoryExtension"
+identifier = "SkizzyNaval-TitansBDArmoryExtension"
+strategy = "overlay"
+enabled = true
+pack = "suggests"
+name = "Titans BDArmory Extension: BDArmory Plus 1.13 patch (SkizzyNaval)"
+abstract = "ModuleManager patch for Titans BDArmory Extension (TBAE) 0.1.4. TBAE itself is not on CKAN: install it by hand from SpaceDock first."
+description = """
+MANUAL STEP: TBAE is not on CKAN. Download TBAE 0.1.4 from
+https://spacedock.info/mod/3399 and copy its TBAE folder into GameData before or after
+installing this patch. The patch updates TBAE's 39 bullets to BDArmory 1.13 keys, renames
+two radomes that clashed with BDArmory's, restores parts whose models pointed at other
+mods, and defines the missing PLSLBolt and LaserCharge resources. Not included: TBAE's
+one-line Waterfall header fix in Parts/J-627/j627ares_wf.cfg (an overlay can't replace an
+original file; see the module README). Patch by Skizzy-create.
+"""
+author = ["Skizzy-create"]
+license = "CC-BY-SA-4.0"
+tags = ["config", "combat"]
+depends = ["ModuleManager", "@bdarmory"]
+suggests = ["NorthKerbinDynamicsRenewedExtended"]
+install = [{ file = "GameData/TBAE/Patches/zz_TBAE_BDA113_Compat.cfg", install_to = "GameData/TBAE/Patches" }]
+resources = { x_upstream = "https://spacedock.info/mod/3399/Titans%20BDArmory%20Extension%20(TBAE)" }
+
+[module.upstream]
+name = "Titans BDArmory Extension 0.1.4 (SpaceDock only; not on CKAN)"
+urls = ["https://spacedock.info/mod/3399/Titans%20BDArmory%20Extension%20(TBAE)/download/0.1.4"]
+size = 30617820
+sha256 = "7D463B82DECBA01E7D9AB9E1239F28C4F3F67A4E0113CFB374EA6F11752226DF"
+extract = [{ from = "TBAE", to = "GameData/TBAE" }]
+
+# ============================================================================ metapackage
+
+[[module]]
+key = "SkizzyNavalPack"
+identifier = "SkizzyNavalPack"
+strategy = "metapackage"
+enabled = true
+pack = "none"
+name = "Skizzy Naval Pack"
+abstract = "Everything for KSP 1.12.5 + BDArmory Plus 1.13 naval combat: the SkizzyNaval compatibility builds plus recommended naval mods from the main CKAN repository."
+description = """
+Installs every SkizzyNaval module marked pack = depends in registry.toml, ModuleManager and
+BDArmory Plus 1.13 (or the Skizzy fork build), and recommends Kerbal Powers Naval, Buoyancy
+Adjuster and S.A.C.D. Hangar and the TBAE patch (TBAE needs a manual install) are
+suggestions.
+"""
+author = "Skizzy-create"
+license = "MIT"
+tags = ["combat"]
+depends = ["ModuleManager", "@bdarmory"]
+recommends = ["KerbalPowersNaval", "BuoyancyAdjuster", "StockalikeAircraftCarrierDecks"]
+suggests = ["Hangar"]
+
+# ============================================================================ BDArmory fork
+
+[[module]]
+key = "BDArmory-Skizzy"
+identifier = "BDArmory-Skizzy"
+strategy = "rebuild"
+enabled = true         # set to false to stop releasing it (see modules/BDArmory-Skizzy/README.md)
+pack = "none"          # alternative to BDArmoryForRunwayProject via the @bdarmory any_of
+version_template = "v1.13.1.0-skizzy.{version}"
+name = "BDArmory Plus (Skizzy fork build)"
+abstract = "BDArmory Plus 1.13.1 with the Skizzy-create/BDArmory multitarget-1.13.1 plugin (multi-target, parallel salvo, depth-charge fixes). Drop-in replacement for BDArmoryForRunwayProject."
+description = """
+The upstream BDArmory Plus 1.13.1.0 release zip with two files swapped:
+GameData/BDArmory/Plugins/BDArmory.dll (built from Skizzy-create/BDArmory branch
+multitarget-1.13.1, commit 01d0c9676585731e6fe9df85ee2be0ab802a20bf) and
+GameData/BDArmory/Localization/UI/en-us.cfg (the fork's new UI strings). Same install layout
+and dependencies as BDArmoryForRunwayProject 1.13.1.0. Provides and conflicts with BDArmory,
+so only one BDArmory can be installed. BDArmory by BahamutoD, Papa_Joe, jrodrigv,
+DocNappers and contributors, CC BY-SA 2.0.
+"""
+author = ["BahamutoD", "Papa_Joe", "jrodrigv", "ouloul", "Scott Manley", "JR", "DocNappers",
+          "Cl0by", "josue", "aubranium", "benbenwilde", "TheKurgan", "Skizzy-create"]
+license = "CC-BY-SA-2.0"
+tags = ["plugin", "parts", "sound", "combat"]
+provides = ["BDArmory"]
+conflicts = ["BDArmory"]
+depends = ["ModuleManager", "PhysicsRangeExtender"]
+install = [
+  { find = "BDArmory", install_to = "GameData" },
+  { find = "craft", install_to = "Ships", as = "SPH" },
+]
+resources = { homepage = "https://github.com/Skizzy-create/BDArmory/tree/multitarget-1.13.1", repository = "https://github.com/Skizzy-create/BDArmory", bugtracker = "https://github.com/Skizzy-create/BDArmory/issues", x_upstream = "https://github.com/BrettRyland/BDArmory" }
+
+[module.upstream]
+name = "BDArmory Plus 1.13.1.0 release zip (= CKAN BDArmoryForRunwayProject 2:v1.13.1.0)"
+urls = [
+  "https://github.com/BrettRyland/BDArmory/releases/download/v1.13.1.0/BDArmory.1.13.1.0_2026-08-15T09.11.53%2B00.00.zip",
+  "https://spacedock.info/mod/2487/BDArmory%20Plus/download/1.13.1.0",
+]
+size = 42969535
+sha256 = "83B59CC552A6F70CA9607343BEE9E794C55A1D3817915992FD5F8C545F0CCD6C"
+extract = [{ from = "", to = "" }]   # keep the whole upstream layout
+
+# ============================================================================ more naval modules
+
+[[module]]
+key = "MNWS"
+identifier = "SkizzyNaval-MNWS"
+strategy = "rebuild"
+enabled = true
+pack = "depends"
+name = "[MNWS] Modern Naval Weapon System (SkizzyNaval update)"
+abstract = "MNWS 2.4 modern warships, missiles, VLS and aircraft updated for KSP 1.12.5 and BDArmory Plus 1.13, with fixes for naval AI combat."
+description = """
+Adds MMPatches/MNWS_BDA113.cfg (removes modules from plugins that no longer exist, updates
+renamed BDArmory modules and keys, moves fuzes to bullets, SLW homing for torpedoes, naval AI
+fixes), an optional MNWS_BDA113_Balance.cfg, and the small MNWSFix.dll helper (AVLS launch
+transforms, hull bay links; source in the repository). No original file is edited. Shipped as
+a full copy because the CKAN MNWSModernNavalWeaponSystem targets KSP 1.4.4 and depends on
+BDArmory Continued; this build provides and conflicts with it. Original by Johnny005611,
+CC BY-SA 4.0.
+"""
+author = ["Johnny005611", "Skizzy-create"]
+license = "CC-BY-SA-4.0"
+tags = ["parts", "plugin", "combat"]
+provides = ["MNWSModernNavalWeaponSystem"]
+conflicts = ["MNWSModernNavalWeaponSystem"]
+depends = ["ModuleManager", "@bdarmory"]
+recommends = ["SkizzyNaval-HullBreach"]
+suggests = ["AircraftCarrierAccessories", "FirespitterCore", "VesselMoverContinued"]
+install = [{ file = "GameData/Johnny", install_to = "GameData" }]
+resources = { x_upstream = "https://spacedock.info/mod/1779/%5BMNWS%5DModern%20Naval%20Weapon%20System" }
+
+[module.upstream]
+name = "MNWS v2.4 (SpaceDock; the file CKAN lists for MNWSModernNavalWeaponSystem 1:v2.4)"
+urls = [
+  "https://spacedock.info/mod/1779/%5BMNWS%5DModern%20Naval%20Weapon%20System/download/v2.4",
+  "https://archive.org/download/MNWSModernNavalWeaponSystem-1-v2.4/B2D6F53D-MNWSModernNavalWeaponSystem-1-v2.4.zip",
+]
+size = 581015667
+sha256 = "DD25415032FE0513405E069C657D737CA153C26771DF3CF597C3D2E6BB35D588"
+extract = [{ from = "Johnny", to = "GameData/Johnny" }]
+
+[[module]]
+key = "IronSeasKANES"
+identifier = "SkizzyNaval-IronSeasKANES"
+strategy = "bundle"          # GPLv2: the complete patched mod (26 MB) is committed, with its sources
+enabled = true
+pack = "depends"
+extra_docs = ["diffs", "tools"]   # also packed into the zip's SkizzyNaval-docs/ (GPL source)
+name = "Iron Seas KANES Balao class fleet boat (SkizzyNaval update)"
+abstract = "SkunkWorksCommand's WWII Balao-class submarine updated for KSP 1.12.5, BDArmory Plus 1.13 and NAS: realistic deck guns, crush depth and dependency fallbacks."
+description = """
+Iron Seas KANES FIGHTING SHIPS 1 (1.0.0.1) regrouped under GameData/IronSeasKANES. The six
+deck guns get BDArmory 1.13 keys and real 20 mm Oerlikon, .50 M2, 40 mm Bofors and 4"/50
+ballistics (new 4"/50 HC shell), and only load with NAS and BDArmory. The hull and sail
+collapse at about 224 m, the boat spawns surfaced, and ModuleManager fallbacks remove
+WildBlueTools, KerbalActuators, BonVoyage and Firespitter modules when those mods are
+missing (Kerbal Powers Naval ballast is used if present). Remove an old
+GameData/BalaoClassFleetBoat and GameData/4BladeFastScrew first. Known upstream issue: the
+six gun models have no turret or fire transforms, so the guns cannot aim or fire until the
+models are fixed. Original by SkunkWorksCommand, GPLv2.
+"""
+author = ["SkunkWorksCommand", "Skizzy-create"]
+license = "GPL-2.0"
+tags = ["parts", "combat"]
+depends = ["ModuleManager"]
+recommends = ["SkizzyNaval-NAS", "@bdarmory", "WildBlueTools", "CommunityResourcePack", "FirespitterCore"]
+suggests = ["SubTrim", "KerbalPowersNaval", "BonVoyage", "Buffalo", "SkizzyNaval-HullBreach"]
+install = [{ file = "GameData/IronSeasKANES", install_to = "GameData" }]
+resources = { x_upstream = "https://spacedock.info/mod/2528/Iron%20Seas%20KANES%20FIGHTING%20SHIPS%201" }
+
+# ============================================================================ external releases
+
+# SubTrim is released from its own repository, Skizzy-create/SubTrim. Nothing is vendored
+# here; this entry only produces skizzy-ckan's SubTrim .ckan from its GitHub release asset
+# (size and hashes come from downloading it). For a new SubTrim release, bump `version` and
+# `release_date` (see RELEASING.md, "External modules").
+[[module]]
+key = "SubTrim"
+identifier = "SubTrim"
+strategy = "external"
+enabled = true
+pack = "depends"             # adds SubTrim to SkizzyNavalPack's depends
+version = "1.0.0"
+release_date = "2026-11-07T18:55:56Z"
+name = "SubTrim"
+abstract = "Automatic neutral trim and depth hold for KSP submarines (works with BDArmory AI, Kerbal Powers Naval, Buoyancy Adjuster and WildBlueTools)."
+author = "Skizzy-create"
+license = "MIT"
+tags = ["plugin", "control"]
+depends = ["ModuleManager"]
+suggests = ["BDArmory-Skizzy", "BDArmoryForRunwayProject"]
+supports = ["KerbalPowersNaval", "BuoyancyAdjuster", "WildBlueTools"]
+install = [{ file = "GameData/SubTrim", install_to = "GameData" }]
+resources = { homepage = "https://github.com/Skizzy-create/SubTrim", repository = "https://github.com/Skizzy-create/SubTrim", bugtracker = "https://github.com/Skizzy-create/SubTrim/issues" }
+
+[module.external]
+url = "https://github.com/Skizzy-create/SubTrim/releases/download/v{version}/SubTrim-{version}.zip"

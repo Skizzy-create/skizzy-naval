@@ -1,0 +1,707 @@
+diff --git a/AntiSubmarineWeapon.csproj b/AntiSubmarineWeapon.csproj
+index 4a9fedd..58c07e8 100644
+--- a/AntiSubmarineWeapon.csproj
++++ b/AntiSubmarineWeapon.csproj
+@@ -1,93 +1,61 @@
+-﻿<?xml version="1.0" encoding="utf-8"?>
+-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+-  <PropertyGroup>
+-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+-    <ProjectGuid>{E6FE265E-3352-4272-ADCF-36E7127EA4BC}</ProjectGuid>
+-    <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+-    <OutputType>Library</OutputType>
+-    <AppDesignerFolder>Properties</AppDesignerFolder>
+-    <RootNamespace>AntiSubmarineWeapon</RootNamespace>
+-    <AssemblyName>AntiSubmarineWeapon</AssemblyName>
+-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+-    <FileAlignment>512</FileAlignment>
+-    <LangVersion>6</LangVersion>
+-    <TargetFrameworkProfile />
+-  </PropertyGroup>
+-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+-    <PlatformTarget>AnyCPU</PlatformTarget>
+-    <DebugSymbols>true</DebugSymbols>
+-    <DebugType>full</DebugType>
+-    <Optimize>false</Optimize>
+-    <OutputPath>bin\Debug\</OutputPath>
+-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+-    <ErrorReport>prompt</ErrorReport>
+-    <WarningLevel>4</WarningLevel>
+-  </PropertyGroup>
+-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+-    <PlatformTarget>AnyCPU</PlatformTarget>
+-    <DebugType>pdbonly</DebugType>
+-    <Optimize>true</Optimize>
+-    <OutputPath>bin\Release\</OutputPath>
+-    <DefineConstants>TRACE</DefineConstants>
+-    <ErrorReport>prompt</ErrorReport>
+-    <WarningLevel>4</WarningLevel>
+-  </PropertyGroup>
+-  <ItemGroup>
+-    <Compile Include="DepthChargeLibs.cs" />
+-    <Compile Include="DepthContorllerApplicationLauncher.cs" />
+-    <Compile Include="AswData.cs" />
+-    <Compile Include="ModGlobal.cs" />
+-    <Compile Include="ModUiManager.cs" />
+-    <Compile Include="ModuleAntiSubmarineWeapon.cs" />
+-    <Compile Include="ModuleDepthChargeProjector.cs" />
+-    <Compile Include="NASCategory.cs" />
+-    <Compile Include="NASCategoryModule.cs" />
+-    <Compile Include="PartLoaderExtensions.cs" />
+-    <Compile Include="PidSystem.cs" />
+-    <Compile Include="Properties\AssemblyInfo.cs" />
+-    <Compile Include="ModuleRotor.cs" />
+-    <Compile Include="SonarSystem.cs" />
+-  </ItemGroup>
+-  <ItemGroup>
+-    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+-      <SpecificVersion>False</SpecificVersion>
+-      <HintPath>dlls\Assembly-CSharp.dll</HintPath>
+-    </Reference>
+-    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+-      <SpecificVersion>False</SpecificVersion>
+-      <HintPath>dlls\Assembly-CSharp-firstpass.dll</HintPath>
+-    </Reference>
+-    <Reference Include="BDArmory, Version=1.1.0.23471, Culture=neutral, processorArchitecture=MSIL">
+-      <SpecificVersion>False</SpecificVersion>
+-      <HintPath>dlls\BDArmory.dll</HintPath>
+-    </Reference>
+-    <Reference Include="KSPAssets, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+-      <SpecificVersion>False</SpecificVersion>
+-      <HintPath>dlls\KSPAssets.dll</HintPath>
+-    </Reference>
+-    <Reference Include="System">
+-      <HintPath>dlls\System.dll</HintPath>
+-    </Reference>
+-    <Reference Include="System.Xml">
+-      <HintPath>dlls\System.Xml.dll</HintPath>
+-    </Reference>
+-    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+-      <SpecificVersion>False</SpecificVersion>
+-      <HintPath>dlls\UnityEngine.dll</HintPath>
+-    </Reference>
+-    <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+-      <SpecificVersion>False</SpecificVersion>
+-      <HintPath>dlls\UnityEngine.UI.dll</HintPath>
+-    </Reference>
+-  </ItemGroup>
+-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+-       Other similar extension points exist, see Microsoft.Common.targets.
+-  <Target Name="BeforeBuild">
+-  </Target>
+-  <Target Name="AfterBuild">
+-  </Target>
+-  -->
+-</Project>
++﻿<Project Sdk="Microsoft.NET.Sdk">
++  <!--
++    AntiSubmarineWeapon (NAS anti-submarine plugin) for KSP 1.12.x + BDArmory Plus 1.13.
++    Build:   dotnet build -c Release  (or MSBuild 17+)
++    Override paths if KSP/BDArmory live elsewhere:
++      dotnet build -c Release -p:KSPDir="C:\KSP" -p:BDArmoryDll="C:\KSP\GameData\BDArmory\Plugins\BDArmory.dll"
++  -->
++  <PropertyGroup>
++    <TargetFramework>net48</TargetFramework>
++    <OutputType>Library</OutputType>
++    <RootNamespace>AntiSubmarineWeapon</RootNamespace>
++    <AssemblyName>AntiSubmarineWeapon</AssemblyName>
++    <LangVersion>9.0</LangVersion>
++    <Nullable>disable</Nullable>
++    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
++    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
++    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
++    <DebugType>portable</DebugType>
++    <Deterministic>true</Deterministic>
++    <ImportDirectoryBuildProps>false</ImportDirectoryBuildProps>
++    <ImportDirectoryBuildTargets>false</ImportDirectoryBuildTargets>
++    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
++    <KSPDir Condition=" '$(KSPDir)' == '' ">D:\Epic Games\KerbalSpaceProgram\English</KSPDir>
++    <KSPManaged Condition=" '$(KSPManaged)' == '' ">$(KSPDir)\KSP_x64_Data\Managed</KSPManaged>
++    <BDArmoryDll Condition=" '$(BDArmoryDll)' == '' ">$(KSPDir)\GameData\BDArmory\Plugins\BDArmory.dll</BDArmoryDll>
++  </PropertyGroup>
++
++  <ItemGroup>
++    <Compile Include="AswData.cs" />
++    <Compile Include="DepthChargeLibs.cs" />
++    <Compile Include="DepthContorllerApplicationLauncher.cs" />
++    <Compile Include="FlagWave.cs" />
++    <Compile Include="ModGlobal.cs" />
++    <Compile Include="ModUiManager.cs" />
++    <Compile Include="ModuleAntiSubmarineWeapon.cs" />
++    <Compile Include="ModuleDepthChargeProjector.cs" />
++    <Compile Include="ModuleRotor.cs" />
++    <Compile Include="NASCategory.cs" />
++    <Compile Include="NASCategoryModule.cs" />
++    <Compile Include="PartLoaderExtensions.cs" />
++    <Compile Include="PidSystem.cs" />
++    <Compile Include="SonarSystem.cs" />
++    <Compile Include="Properties\AssemblyInfo.cs" />
++  </ItemGroup>
++
++  <ItemGroup>
++    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" Condition="!Exists('$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8')" />
++  </ItemGroup>
++
++  <ItemGroup>
++    <Reference Include="Assembly-CSharp"><HintPath>$(KSPManaged)\Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
++    <Reference Include="Assembly-CSharp-firstpass"><HintPath>$(KSPManaged)\Assembly-CSharp-firstpass.dll</HintPath><Private>false</Private></Reference>
++    <Reference Include="UnityEngine"><HintPath>$(KSPManaged)\UnityEngine.dll</HintPath><Private>false</Private></Reference>
++    <Reference Include="UnityEngine.CoreModule"><HintPath>$(KSPManaged)\UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
++    <Reference Include="UnityEngine.PhysicsModule"><HintPath>$(KSPManaged)\UnityEngine.PhysicsModule.dll</HintPath><Private>false</Private></Reference>
++    <Reference Include="UnityEngine.IMGUIModule"><HintPath>$(KSPManaged)\UnityEngine.IMGUIModule.dll</HintPath><Private>false</Private></Reference>
++    <Reference Include="UnityEngine.AnimationModule"><HintPath>$(KSPManaged)\UnityEngine.AnimationModule.dll</HintPath><Private>false</Private></Reference>
++    <Reference Include="UnityEngine.UI"><HintPath>$(KSPManaged)\UnityEngine.UI.dll</HintPath><Private>false</Private></Reference>
++    <Reference Include="BDArmory"><HintPath>$(BDArmoryDll)</HintPath><Private>false</Private></Reference>
++  </ItemGroup>
++</Project>
+diff --git a/DepthContorllerApplicationLauncher.cs b/DepthContorllerApplicationLauncher.cs
+index 9232544..510841c 100644
+--- a/DepthContorllerApplicationLauncher.cs
++++ b/DepthContorllerApplicationLauncher.cs
+@@ -25,9 +25,18 @@ namespace AntiSubmarineWeapon
+             GameEvents.onGUIApplicationLauncherReady.Add(OnLauncherReady);
+         }
+ 
++        public void Start()
++        {
++            // The launcher may already be ready when this addon starts.
++            if (ApplicationLauncher.Ready)
++                OnLauncherReady();
++        }
++
+         public void OnDestroy()
+         {
+-            if (btn != null)
++            GameEvents.onGUIApplicationLauncherReady.Remove(OnLauncherReady);
++
++            if (btn != null && ApplicationLauncher.Instance != null)
+             {
+                 ApplicationLauncher.Instance.RemoveModApplication(btn);
+             }
+diff --git a/FlagWave.cs b/FlagWave.cs
+new file mode 100644
+index 0000000..1f92e86
+--- /dev/null
++++ b/FlagWave.cs
+@@ -0,0 +1,104 @@
++using UnityEngine;
++
++namespace AntiSubmarineWeapon
++{
++    // Waving flag animation for NAS_Flag. Not in the upstream repository (c640ea3); reconstructed from the
++    // AntiSubmarineWeapon.dll 0.6.5.2 shipped with NAS 0.7.0, made public and null-safe.
++    public class FlagWave : PartModule
++    {
++        [KSPField]
++        public float speed = 12f;
++
++        [KSPField]
++        public float scale = 0.09f;
++
++        private Transform flag1;
++        private Transform flag2;
++        private Transform flagm1;
++        private Transform flagm2;
++
++        private MeshFilter flagMesh1;
++        private MeshFilter flagMesh2;
++        private MeshFilter flagmMesh1;
++        private MeshFilter flagmMesh2;
++
++        private Vector3[] flagVertex1;
++        private Vector3[] flagVertex2;
++        private Vector3[] flagmVertex1;
++        private Vector3[] flagmVertex2;
++
++        public void PrintChild(Transform father)
++        {
++            if (father.name == "flagTransform")
++                flag1 = father;
++            if (father.name == "flagTransform2")
++                flag2 = father;
++            if (father.name == "flagMiddle")
++                flagm1 = father;
++            if (father.name == "flagMiddle2")
++                flagm2 = father;
++
++            for (int i = 0; i < father.childCount; i++)
++                PrintChild(father.GetChild(i));
++        }
++
++        private void Wave(Vector3[] flag, MeshFilter mesh)
++        {
++            if (flag == null || mesh == null) return;
++            for (int i = 0; i < flag.Length; i++)
++            {
++                if (flag[i].x != 0.5f)
++                {
++                    flag[i].z += Mathf.Sin(Time.time * speed + flag[i].x + 5f * (flag[i].y + flag[i].x));
++                    flag[i].z *= scale;
++                }
++            }
++            mesh.mesh.vertices = flag;
++        }
++
++        private void WaveT(Vector3[] flag, MeshFilter mesh)
++        {
++            if (flag == null || mesh == null) return;
++            for (int i = 0; i < flag.Length; i++)
++            {
++                if (flag[i].x != 0.5f)
++                {
++                    flag[i].z -= Mathf.Sin(Time.time * speed + flag[i].x + 5f * (-flag[i].y + flag[i].x));
++                    flag[i].z *= scale;
++                }
++            }
++            mesh.mesh.vertices = flag;
++        }
++
++        private static MeshFilter GetMesh(Transform t) => t != null ? t.GetComponent<MeshFilter>() : null;
++
++        private static Vector3[] GetVertices(MeshFilter mf) => mf != null ? mf.mesh.vertices : null;
++
++        public override void OnStart(StartState state)
++        {
++            base.OnStart(state);
++            if (!HighLogic.LoadedSceneIsFlight) return;
++
++            PrintChild(transform);
++            flagMesh1 = GetMesh(flag1);
++            flagMesh2 = GetMesh(flag2);
++            flagmMesh1 = GetMesh(flagm1);
++            flagmMesh2 = GetMesh(flagm2);
++            flagVertex1 = GetVertices(flagMesh1);
++            flagVertex2 = GetVertices(flagMesh2);
++            flagmVertex1 = GetVertices(flagmMesh1);
++            flagmVertex2 = GetVertices(flagmMesh2);
++            if (flagMesh1 == null && flagMesh2 == null && flagmMesh1 == null && flagmMesh2 == null)
++                Debug.LogWarning("[NAS-ASW] FlagWave: no flag meshes found on " + part.partInfo?.name);
++        }
++
++        public override void OnUpdate()
++        {
++            if (!HighLogic.LoadedSceneIsFlight) return;
++            Wave(flagVertex1, flagMesh1);
++            Wave(flagmVertex1, flagmMesh1);
++            Wave(flagVertex2, flagMesh2);
++            WaveT(flagmVertex2, flagmMesh2);
++        }
++    }
++}
+diff --git a/ModUiManager.cs b/ModUiManager.cs
+index e449cde..0f0803d 100644
+--- a/ModUiManager.cs
++++ b/ModUiManager.cs
+@@ -1,6 +1,6 @@
+ ﻿using UnityEngine;
+ using KSP.Localization;
+-using BDArmory.Parts;
++using BDArmory.Weapons.Missiles;
+ 
+ namespace AntiSubmarineWeapon
+ {
+@@ -21,7 +21,7 @@ namespace AntiSubmarineWeapon
+             GameEvents.onHideUI.Add(HideUi);
+         }
+ 
+-        public void OnDestory()
++        public void OnDestroy()
+         {
+             GameEvents.onShowUI.Remove(ShowUi);
+             GameEvents.onHideUI.Remove(HideUi);
+@@ -39,7 +39,7 @@ namespace AntiSubmarineWeapon
+ 
+         private void OnGUI()
+         {
+-            if (ModGlobal.LoadedSceneIsOn && ModGlobal.drawSettingsWindow && !_isHide)
++            if (ModGlobal.LoadedSceneIsOn && ModGlobal.drawSettingsWindow && !_isHide && FlightGlobals.ActiveVessel != null)
+             {
+                 settingsWindowRect = GUI.Window(976233, settingsWindowRect, DrawDepthContorllerWindow, Localizer.Format("#autoLOC_NAS_DepthSettings_title"));
+             }
+@@ -104,10 +104,13 @@ namespace AntiSubmarineWeapon
+             var min = -1.0f;
+             foreach (var current in FlightGlobals.ActiveVessel.Parts)
+             {
++                if (current == null)
++                    continue;
++
+                 var target =  current.GetComponent<ModuleAntiSubmarineWeapon>();
+                 var missileLauncher = current.GetComponent<MissileLauncher>();
+ 
+-                if (target == null || target.type != type || missileLauncher.HasFired)
++                if (target == null || target.type != type || missileLauncher == null || missileLauncher.HasFired)
+                     continue;
+ 
+                 min = target.maxDepth < min ? target.maxDepth : min;
+diff --git a/ModuleAntiSubmarineWeapon.cs b/ModuleAntiSubmarineWeapon.cs
+index 9e42d2e..300ad99 100644
+--- a/ModuleAntiSubmarineWeapon.cs
++++ b/ModuleAntiSubmarineWeapon.cs
+@@ -1,7 +1,8 @@
+ ﻿using System;
+ using KSP.Localization;
+ using UnityEngine;
+-using BDArmory.Parts;
++using BDArmory.Weapons;
++using BDArmory.Weapons.Missiles;
+ 
+ namespace AntiSubmarineWeapon
+ {
+@@ -22,6 +23,10 @@ namespace AntiSubmarineWeapon
+         [KSPField(isPersistant = false)]
+         public float volum;
+ 
++        // NAS part configs spell this key "volume"; accept both spellings.
++        [KSPField(isPersistant = false)]
++        public float volume = -1;
++
+         [KSPField(isPersistant = false)]
+         public float buoyancyForce;
+ 
+@@ -85,6 +90,9 @@ namespace AntiSubmarineWeapon
+         [KSPField(isPersistant = false)]
+         public float recognitionAccuracy;
+ 
++        private const float MinDetonationDepth = 25f; // matches the UI_FloatRange minimum below
++        private const float MinCruiseDepth = 1f;
++
+         private AswData _data;
+         private BombSystem _bomb;
+         private Buoyancy _buoyancy;
+@@ -95,18 +103,26 @@ namespace AntiSubmarineWeapon
+         private UI_Control _depthField;
+         private MissileLauncher _missileLauncher;
+         private Rigidbody _partRigidbodyValue;
+-        
++        private bool _waitingForArmingLogged;
++        private bool _cfgIsTimed;
++        private bool _missCancelLogged;
++
+         private Rigidbody PartRigidbody
+         {
+             get
+             {
+                 if (!_partRigidbodyValue)
+-                    _partRigidbodyValue = part.GetComponent<Rigidbody>();
++                    _partRigidbodyValue = part.rb != null ? part.rb : part.GetComponent<Rigidbody>();
+                 return _partRigidbodyValue;
+             }
+         }
+-        
+-        private float Height => (float)vessel.mainBody.GetAltitude(vessel.GetWorldPos3D());
++
++        // Altitude of this part (not the vessel root), so it is also correct before the weapon separates.
++        private float Height => (float)vessel.mainBody.GetAltitude(part.transform.position);
++
++        private Vector3 UpAxis => FlightGlobals.getUpAxis(vessel.mainBody, part.transform.position);
++
++        private float VolumeValue => volum != 0 ? volum : volume;
+ 
+         [KSPField(isPersistant = true, guiActive = false, guiActiveEditor = false, guiName = "Destroy Depth"),
+          UI_FloatRange(controlEnabled = true, maxValue = 500, minValue = 25, scene = UI_Scene.All, stepIncrement = 1f)]
+@@ -130,15 +146,17 @@ namespace AntiSubmarineWeapon
+                     _bomb.Ran();
+ 
+                     _buoyancy = new Buoyancy();
+-                    _buoyancy.BuoyancyDataWrite(volumebuoyancy,volum,buoyancyForce);
++                    _buoyancy.BuoyancyDataWrite(volumebuoyancy,VolumeValue,buoyancyForce);
+ 
+                     _rota = new RotationSystem();
+                     _rota.RotationData(airMaxTorque, waterMaxTorque, airCocf, waterCocf);
+ 
+-                    _missileLauncher = GetComponent<MissileLauncher>();
++                    _missileLauncher = part.FindModuleImplementing<MissileLauncher>();
+                     if(_missileLauncher == null)
+-                        Debug.LogError("Failed when find the MissileLauncher!");
+-                
++                        Debug.LogError("[NAS-ASW] Failed to find the MissileLauncher on " + part.partInfo?.name);
++                    else
++                        _cfgIsTimed = _missileLauncher.isTimed;
++
+                     _depthField = Fields["autoDestroyDepth"].uiControlFlight;
+ 
+                     Fields["cruiseDepth"].guiActive = false;
+@@ -149,6 +167,9 @@ namespace AntiSubmarineWeapon
+ 
+                     ((UI_FloatRange)Fields["autoDestroyDepth"].uiControlEditor).maxValue = maxDepth;
+                     ((UI_FloatRange)Fields["autoDestroyDepth"].uiControlFlight).maxValue = maxDepth;
++
++                    // Keep the per-part depth from the PAW/craft file; only clamp it into the valid range.
++                    autoDestroyDepth = Mathf.Clamp(autoDestroyDepth, Mathf.Min(MinDetonationDepth, maxDepth), maxDepth);
+                     break;
+                 case "Torpedo":
+                     _pida = new PidSystem();
+@@ -157,14 +178,16 @@ namespace AntiSubmarineWeapon
+                     _pidt.PidDataWrite(maxTorque.x, pidTorqueInfo.x, pidTorqueInfo.y, pidTorqueInfo.z);
+ 
+                     _buoyancy = new Buoyancy();
+-                    _buoyancy.BuoyancyDataWrite(volumebuoyancy, volum, buoyancyForce);
++                    _buoyancy.BuoyancyDataWrite(volumebuoyancy, VolumeValue, buoyancyForce);
+ 
+                     _rota = new RotationSystem();
+                     _rota.RotationData(airMaxTorque, waterMaxTorque, airCocf, waterCocf);
+ 
+-                    _missileLauncher = GetComponent<MissileLauncher>();
++                    _missileLauncher = part.FindModuleImplementing<MissileLauncher>();
+                     if (_missileLauncher == null)
+-                        Debug.LogError("Failed when find the MissileLauncher!");
++                        Debug.LogError("[NAS-ASW] Failed to find the MissileLauncher on " + part.partInfo?.name);
++                    else
++                        _cfgIsTimed = _missileLauncher.isTimed;
+ 
+                     Fields["autoDestroyDepth"].guiActive = false;
+                     Fields["autoDestroyDepth"].guiActiveEditor = false;
+@@ -174,65 +197,108 @@ namespace AntiSubmarineWeapon
+ 
+                     ((UI_FloatRange)Fields["cruiseDepth"].uiControlEditor).maxValue = maxDepth - 2;
+                     ((UI_FloatRange)Fields["cruiseDepth"].uiControlFlight).maxValue = maxDepth - 2;
++
++                    cruiseDepth = Mathf.Clamp(cruiseDepth, MinCruiseDepth, Mathf.Max(MinCruiseDepth, maxDepth - 2));
+                     break;
+                 default:
+-                    Debug.LogWarning("[NAS-ASW]Neither depth charge nor torpedo!");
++                    Debug.LogWarning("[NAS-ASW]Neither depth charge nor torpedo! (" + part.partInfo?.name + ")");
+                     break;
+             }
+-
+-            autoDestroyDepth = ModUiManager.setAllDepthCharges;
+-            cruiseDepth = ModUiManager.setAllTorpedos;
++            // NAS 0.7.0 overwrote both depths here with the toolbar window's values, which discarded the
++            // per-part setting from the editor. The toolbar window still sets every unfired weapon when moved.
+         }
+ 
+         public override void OnUpdate()
+         {
+             base.OnUpdate();
+-            
++
++            if (_data == null || !HighLogic.LoadedSceneIsFlight || vessel == null || _missileLauncher == null) return;
++            if (!_missileLauncher.HasFired || _missileLauncher.HasExploded) return;
++
++            CancelMissSelfDestruct();
++
+             if (_data.Type != "DepthCharge") return;
+-            if (!HighLogic.LoadedSceneIsFlight) return;
+-            if (!_missileLauncher.HasFired) return;
+-            
+-            if (_depthField.controlEnabled)
++
++            if (_depthField != null && _depthField.controlEnabled)
+                 _depthField.controlEnabled = false;
+-            
+-            if (!_bomb.Bomb(Height, autoDestroyDepth)) return;
+-            
+-            Debug.Log("DepthCharge Bombed At " + Height + "m on " + vessel.mainBody.name);
++
++            var height = Height;
++            if (!_bomb.Bomb(height, autoDestroyDepth)) return;
++
++            // BDArmory 1.13 keeps a missile warhead disarmed until it is 1.25x its blast radius away from the
++            // launching vessel, and Detonate() on a disarmed warhead deletes the charge without an explosion.
++            // Keep sinking until armed; BDArmory's altitude fuze (altitudeFuzeMode in the part cfg) is the backstop.
++            if (!WarheadsArmed())
++            {
++                if (!_waitingForArmingLogged)
++                {
++                    Debug.Log("[NAS-ASW] DepthCharge reached " + height + "m but is not armed yet (too close to the launching vessel); waiting.");
++                    _waitingForArmingLogged = true;
++                }
++                return;
++            }
++
++            Debug.Log("DepthCharge Bombed At " + height + "m on " + vessel.mainBody.name);
+             _missileLauncher.Detonate();
+-            part.temperature = part.maxTemp * 2;
++        }
++
++        // BDArmory 1.13 runs its missile "miss" check on unguided weapons too: once the weapon points away from, or
++        // passes, the dummy target it places 5 km ahead of the launch point, it is flagged as missed and self-destructs
++        // 1.5 s later (MissileBase.isTimed/detonationTime). For a depth charge that can happen right after it enters the
++        // water. NAS weapons have their own fuzes (depth fuze, contact, BDArmory altitude fuze), so cancel that timer
++        // unless the part config itself asked for a timed fuze.
++        private void CancelMissSelfDestruct()
++        {
++            if (_cfgIsTimed || !_missileLauncher.HasMissed || !_missileLauncher.isTimed) return;
++            _missileLauncher.isTimed = false;
++            if (!_missCancelLogged)
++            {
++                Debug.Log("[NAS-ASW] Cancelled BDArmory miss self-destruct for " + _data.Type + " " + part.partInfo?.name);
++                _missCancelLogged = true;
++            }
++        }
++
++        private bool WarheadsArmed()
++        {
++            var warheads = part.FindModulesImplementing<BDWarheadBase>();
++            for (int i = 0; i < warheads.Count; i++)
++            {
++                if (warheads[i] != null && !warheads[i].Armed)
++                    return false;
++            }
++            return true;
+         }
+ 
+         public override void OnFixedUpdate()
+         {
+             base.OnFixedUpdate();
++            if (_data == null || !HighLogic.LoadedSceneIsFlight || vessel == null || PartRigidbody == null) return;
++            // Only steer/float weapons that BDArmory has actually launched.
++            if (_missileLauncher == null || !_missileLauncher.HasFired || _missileLauncher.HasExploded) return;
++
++            var height = Height;
+             switch (_data.Type)
+             {
+                 case "DepthCharge":
+-                    if (HighLogic.LoadedSceneIsFlight)
+-                    {
+-                        if (_missileLauncher.HasFired)
+-                        {
+-                            if (Height<0)
+-                                PartRigidbody.AddForce(FlightGlobals.getUpAxis() * _buoyancy.Force(Height).y);
+-                            PartRigidbody.AddTorque(_rota.Torque(vessel.vesselTransform.forward, vessel.srf_velocity, Height));
+-                        }
+-                    }
++                    if (height < 0)
++                        PartRigidbody.AddForce(UpAxis * _buoyancy.Force(height).y);
++                    PartRigidbody.AddTorque(_rota.Torque(vessel.vesselTransform.forward, vessel.srf_velocity, height));
+                     break;
+                 case "Torpedo":
+-                    if (vessel.mainBody.GetAltitude(vessel.GetWorldPos3D()) < 0 &&
+-                        vessel.mainBody.GetAltitude(vessel.GetWorldPos3D()) > -Math.Abs(maxDepth))
++                    // zeroThrustSink (part cfg, default true; unused before): once the motor has burnt out, stop depth
++                    // keeping and buoyancy so the spent torpedo sinks instead of hovering at its cruise depth.
++                    if (zeroThrustSink && _missileLauncher.MissileState == MissileBase.MissileStates.PostThrust) break;
++                    if (height < 0 && height > -Math.Abs(maxDepth))
+                     {
+-                        var angle = _pida.PidControl(-cruiseDepth, (float) vessel.mainBody.GetAltitude(vessel.GetWorldPos3D()), TimeWarp.fixedDeltaTime);
+-                        var torque = _pidt.PidControl(angle, 90 - Vector3.Angle(part.transform.forward, FlightGlobals.getUpAxis(part.transform.position)), TimeWarp.fixedDeltaTime);
+-                        var horizonPitchAxis = Vector3.Cross(FlightGlobals.getUpAxis(transform.position), transform.forward).normalized;
+-                        PartRigidbody.AddTorque(_rota.Torque(vessel.vesselTransform.forward, vessel.srf_velocity, Height));
++                        var up = UpAxis;
++                        var angle = _pida.PidControl(-cruiseDepth, height, TimeWarp.fixedDeltaTime);
++                        var torque = _pidt.PidControl(angle, 90 - Vector3.Angle(part.transform.forward, up), TimeWarp.fixedDeltaTime);
++                        var horizonPitchAxis = Vector3.Cross(up, part.transform.forward).normalized;
++                        PartRigidbody.AddTorque(_rota.Torque(vessel.vesselTransform.forward, vessel.srf_velocity, height));
+                         PartRigidbody.AddTorque(-horizonPitchAxis * torque);
+-                        PartRigidbody.AddForce(FlightGlobals.getUpAxis() * _buoyancy.Force(Height).y);
++                        PartRigidbody.AddForce(up * _buoyancy.Force(height).y);
+                     }
+                     break;
+-                default:
+-                    Debug.LogWarning("[NAS-ASW]Neither depth charge nor torpedo!");
+-                    break;
+             }
+         }
+     }
+diff --git a/ModuleRotor.cs b/ModuleRotor.cs
+index 3d6472d..ed4620f 100644
+--- a/ModuleRotor.cs
++++ b/ModuleRotor.cs
+@@ -2,14 +2,18 @@
+ 
+ public class ModuleRotor : PartModule
+ {
+-    [KSPField]
+     private Transform[] RotateTransforms = null;
+     private float rotateAngle;
+ 
++    // These were plain fields in NAS 0.7.0, so the part cfg values (RPM, direction, torpedo) were ignored.
++    [KSPField]
+     public string RotateTransformName = "RotateTransform";
+ 
++    [KSPField]
+     public bool IsForwardRotation = true;
++    [KSPField]
+     public float rotateRPM = 30.0f;
++    [KSPField]
+     public bool torpedo = false;
+ 
+ 
+@@ -20,6 +24,8 @@ public class ModuleRotor : PartModule
+ 
+     void FixedUpdate()
+     {
++        if (!HighLogic.LoadedSceneIsFlight || vessel == null || RotateTransforms == null) return;
++
+         if (vessel.parts.Count == 1 && (!torpedo || vessel.Splashed)) //!torpedo || (torpedo && splashed)
+         {
+             rotateAngle = rotateRPM * 6 * TimeWarp.fixedDeltaTime; //DPS = RPM * 360 / 60 = RPM * 6
+@@ -31,7 +37,8 @@ public class ModuleRotor : PartModule
+ 
+             for (int i = 0; i < RotateTransforms.Length; i++)
+             {
+-                RotateTransforms[i].Rotate(0, 0, rotateAngle);
++                if (RotateTransforms[i] != null)
++                    RotateTransforms[i].Rotate(0, 0, rotateAngle);
+             }
+         }
+     }
+diff --git a/NASCategory.cs b/NASCategory.cs
+index c5d5547..6cd2397 100644
+--- a/NASCategory.cs
++++ b/NASCategory.cs
+@@ -12,9 +12,15 @@ namespace AntiSubmarineWeapon
+ 
+         void Awake()
+         {
++            DontDestroyOnLoad(this); // Startup.MainMenu once=true: keep the handler's owner alive across scenes
+             GameEvents.onGUIEditorToolbarReady.Add(NASCategoryFunc);
+         }
+ 
++        void OnDestroy()
++        {
++            GameEvents.onGUIEditorToolbarReady.Remove(NASCategoryFunc);
++        }
++
+         void NASCategoryFunc()
+         {
+             const string customCategoryName = "NAS";
+@@ -22,10 +28,12 @@ namespace AntiSubmarineWeapon
+             availableParts.AddRange(PartLoader.LoadedPartsList.NASParts());
+             Texture2D iconTex = GameDatabase.Instance.GetTexture("NAS/Plugins/NASIcon", false);
+             RUI.Icons.Selectable.Icon icon = new RUI.Icons.Selectable.Icon("NAS", iconTex, iconTex, false);
+-            PartCategorizer.Category filter = PartCategorizer.Instance.filters.Find(f => f.button.categoryName == "Filter by Function");
++            // "#autoLOC_453547" is the "Filter by Function" category (same lookup BDArmory uses); fall back to the old English name.
++            PartCategorizer.Category filter = PartCategorizer.Instance.filters.Find(f => f.button.categorydisplayName == "#autoLOC_453547")
++                ?? PartCategorizer.Instance.filters.Find(f => f.button.categoryName == "Filter by Function");
+ 
+             if (filter == null)
+-                Debug.Log("filter is null");
++                Debug.Log("[NAS-ASW] \"Filter by Function\" category not found; NAS subcategory not added");
+             else
+                 PartCategorizer.AddCustomSubcategoryFilter(filter, customCategoryName, Localizer.Format("#autoLOC_NAS_Category"), icon, p => availableParts.Contains(p));
+         }
+diff --git a/PidSystem.cs b/PidSystem.cs
+index a9df8eb..6b66bbd 100644
+--- a/PidSystem.cs
++++ b/PidSystem.cs
+@@ -26,6 +26,7 @@ namespace AntiSubmarineWeapon
+         private readonly PidData _data = new PidData();
+         public float PidControl(float target, float present, float deltaTime)
+         {
++            if (deltaTime <= 0f) return 0f; // avoid NaN torque from the derivative term
+             _data.Error = target - present;
+             _data.Integral = _data.Integral + _data.Error * deltaTime;
+             _data.Derivative = (_data.Error - _data.Lasterror) / deltaTime;
+diff --git a/Properties/AssemblyInfo.cs b/Properties/AssemblyInfo.cs
+index d56cad8..be0cd30 100644
+--- a/Properties/AssemblyInfo.cs
++++ b/Properties/AssemblyInfo.cs
+@@ -32,5 +32,10 @@ using System.Runtime.InteropServices;
+ // You can specify all the values or you can default the Build and Revision Numbers 
+ // by using the '*' as shown below:
+ // [assembly: AssemblyVersion("1.0.*")]
+-[assembly: AssemblyVersion("0.6.5.2")]
+-[assembly: AssemblyFileVersion("1.0.0.0")]
+\ No newline at end of file
++[assembly: AssemblyVersion("0.6.6.0")]
++[assembly: AssemblyFileVersion("0.6.6.0")]
++[assembly: AssemblyInformationalVersion("0.6.6.0 (KSP 1.12.x, BDArmory Plus 1.13)")]
++
++// KSP load-order metadata: load after BDArmory (BDArmory declares KSPAssembly("BDArmory", 1, 0)).
++[assembly: KSPAssembly("AntiSubmarineWeapon", 0, 6, 6)]
++[assembly: KSPAssemblyDependency("BDArmory", 1, 0)]
+\ No newline at end of file

@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "module": "FishyWeapons",
+ "strategy": "overlay",
+ "note": "Overlay: only these files are shipped; users install the original separately.",
+ "file_count": 1,
+ "total_size": 33245,
+ "files": {
+  "GameData/fishy_weapons_dev/Patches/zz_FishyWeapons_BDA113_Compat.cfg": [
+   33245,
+   "B026C1CBD5E3EA362507B255DAD16C6D7976FB63F447C58224D7BE6D77CEDBAA"
+  ]
+ }
+}

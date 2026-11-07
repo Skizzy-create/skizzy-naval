@@ -1,0 +1,188 @@
+diff --git a/GameData/TBAE/Parts/J-627/j627ares_wf.cfg b/GameData/TBAE/Parts/J-627/j627ares_wf.cfg
+--- a/GameData/TBAE/Parts/J-627/j627ares_wf.cfg
++++ b/GameData/TBAE/Parts/J-627/j627ares_wf.cfg
+@@ -1,4 +1,4 @@
+-@PART[j627ares]:NEEDS[Waterfall]:FOR[StockWaterfallEffects]
++@PART[j627ares]:NEEDS[Waterfall,StockWaterfallEffects]:AFTER[StockWaterfallEffects]
+ {
+   // Removes the stock effect block, and replace it with one that has no particles
+   !EFFECTS {}
+diff --git a/GameData/TBAE/Patches/zz_TBAE_BDA113_Compat.cfg b/GameData/TBAE/Patches/zz_TBAE_BDA113_Compat.cfg
+new file mode 100644
+--- /dev/null
++++ b/GameData/TBAE/Patches/zz_TBAE_BDA113_Compat.cfg
+@@ -0,0 +1,174 @@
++// =====================================================================================
++// Titans BDArmory Extension (TBAE) 0.1.4 -> KSP 1.12.5 / BDArmory Plus 1.13 compat
++// Pure ModuleManager patch; the original configs are left untouched (the one exception,
++// the Waterfall patch header, is described in CHANGES.md).
++// =====================================================================================
++
++// -------------------------------------------------------------------------------------
++// 1) BULLET defs: BDA 1.13 replaced subProjectileCount with projectileCount. Without it
++//    BDA logs "Old bullet def detected ... Please upgrade" for every round and falls back
++//    to subProjectileCount; copy the value across so behaviour is identical.
++//    Also add guidanceRange (all 39) and incendiary (4 PLSL bolts), which BDA warns about.
++// -------------------------------------------------------------------------------------
++// TBAE ships its own copy of BDA's default bullet "def"; BDA only ever uses the one in
++// BD_Bullets.cfg and logs "Bullet definition def from TBAE_Bullets already exists".
++// Match only TBAE's copy (old-style keys); BDA's own def has projectileCount instead.
++!BULLET[def]:HAS[#subProjectileCount[1],#fuzeType[None],~projectileCount[]]:NEEDS[BDArmory] {}
++
++@BULLET[PLSLBoltC|LPLSLBoltC|RPLSLBoltC|HRPLSLBoltC|20x102CiwsmmBullet|20mmSRround|23x126mmHEBullet|23x126mmAPHEBullet|30x173LRround|40x234HEBullet|40x234APIBullet|40x311LRround|55x432HEBullet|55x432APHEBullet|55x432APIBullet|ThermalLaserBolt|75mmATEBullet|76.2mmATEBullet|88mmATEBullet|118mmATEBullet|LBX10ac|LBX20acC|UAC10c|PPCprojectile|PPCprojectileC|plasmaprojectileC|Gauss|GaussC|SBGaussC|75mmRACBullet|105x679mmBullet|105x623mmBullet|110x752mmBullet|155mmATEBullet|155mmRGHVBullet|30mmRACBullet|57mmHVBullet|320mmMCR|5inShellHVAP]:HAS[#subProjectileCount[*],~projectileCount[]]:NEEDS[BDArmory]
++{
++	projectileCount = #$subProjectileCount$
++	!subProjectileCount = delete
++}
++@BULLET[PLSLBoltC|LPLSLBoltC|RPLSLBoltC|HRPLSLBoltC|20x102CiwsmmBullet|20mmSRround|23x126mmHEBullet|23x126mmAPHEBullet|30x173LRround|40x234HEBullet|40x234APIBullet|40x311LRround|55x432HEBullet|55x432APHEBullet|55x432APIBullet|ThermalLaserBolt|75mmATEBullet|76.2mmATEBullet|88mmATEBullet|118mmATEBullet|LBX10ac|LBX20acC|UAC10c|PPCprojectile|PPCprojectileC|plasmaprojectileC|Gauss|GaussC|SBGaussC|75mmRACBullet|105x679mmBullet|105x623mmBullet|110x752mmBullet|155mmATEBullet|155mmRGHVBullet|30mmRACBullet|57mmHVBullet|320mmMCR|5inShellHVAP]:NEEDS[BDArmory]
++{
++	&guidanceRange = -1
++	&incendiary = False
++}
++
++// -------------------------------------------------------------------------------------
++// 2) airDetonation -> BULLET fuzeType. BDA removed ModuleWeapon.airDetonation /
++//    airDetonationTiming; fuzing is per BULLET now. The 40mm Medium Rifle had
++//    airDetonation = false, i.e. plain impact-fuzed HE. Its round (40x311LRround, used by
++//    no other weapon) is HE with fuzeType None, which BDA 1.13 already treats as Impact;
++//    make that explicit and drop the dead keys.
++// -------------------------------------------------------------------------------------
++@BULLET[40x311LRround]:NEEDS[BDArmory]
++{
++	@fuzeType = Impact
++}
++@PART[bahaMRLR]:NEEDS[BDArmory]
++{
++	@MODULE[ModuleWeapon]
++	{
++		!airDetonation = delete
++		!airDetonationTiming = delete
++	}
++}
++
++// -------------------------------------------------------------------------------------
++// 3) Duplicate part names: TBAE redefines BDA's own bdRadome1 / bdRadome1inline (same
++//    part names, different stats). KSP registers only the first-loaded part per name, so
++//    craft silently load the other one. Give TBAE's versions their own names.
++// -------------------------------------------------------------------------------------
++@PART[bdRadome1]:HAS[#title[LRR?AESA-113V3*]]:NEEDS[BDArmory]
++{
++	@name = TBAE_bdRadome1
++}
++@PART[bdRadome1inline]:HAS[#title[LRR?AESA-113V1*]]:NEEDS[BDArmory]
++{
++	@name = TBAE_bdRadome1inline
++}
++
++// -------------------------------------------------------------------------------------
++// 4) Parts that could not load: their MODEL pointed into other mods (MalFunc Industries,
++//    Ace_Kombat) that are not installed, although TBAE ships the same .mu files itself.
++//    KSP: "PartCompiler: Cannot clone model ... as model does not exist" -> part missing.
++// -------------------------------------------------------------------------------------
++@PART[Aim-117A]
++{
++	@MODEL
++	{
++		@model = TBAE/Parts/Aim-117/Rim162
++	}
++}
++@PART[TBAESLDFplsl|TBAESLDFplslheavyrepeater|TBAESLDFplsllightrepeater|TBAESLDFplslrepeater]
++{
++	@MODEL
++	{
++		@model = TBAE/Parts/SLDF PLSL (C)/PLSL_TCA
++	}
++}
++// Their ammo resources were also defined by those other mods. Define them here unless
++// Ace Kombat is installed. Nothing in TBAE refills PLSLBolt, so the PLSL guns now spawn
++// loaded instead of empty.
++RESOURCE_DEFINITION:NEEDS[!Ace_Kombat]
++{
++	name = PLSLBolt
++	title = PLSL Bolt
++	abbreviation = PLSL
++	density = 0
++	flowMode = ALL_VESSEL
++	transfer = PUMP
++	isTweakable = true
++}
++RESOURCE_DEFINITION:NEEDS[!Ace_Kombat]
++{
++	name = LaserCharge
++	title = Laser Charge
++	abbreviation = LC
++	density = 0
++	flowMode = ALL_VESSEL
++	transfer = PUMP
++	isTweakable = true
++}
++@PART[TBAESLDFplsl|TBAESLDFplslheavyrepeater|TBAESLDFplsllightrepeater|TBAESLDFplslrepeater]:NEEDS[!Ace_Kombat]
++{
++	@RESOURCE[PLSLBolt]
++	{
++		@amount = #$maxAmount$
++	}
++}
++
++// -------------------------------------------------------------------------------------
++// 5) Missing / wrong-case asset paths (KSP asset URLs are case-sensitive).
++// -------------------------------------------------------------------------------------
++@PART[baha23x126mmAmmo]
++{
++	@MODEL
++	{
++		@texture = texture, TBAE/Parts/23x126mmAmmo/tex23mm	// was ...tex423mm (no such file)
++	}
++}
++@PART[76.2mm|Light20mm]:NEEDS[BDArmory]
++{
++	@MODULE[ModuleTurret]
++	{
++		@audioPath = TBAE/Sounds/Hydraulic/hydraulicLoop	// was .../hydraulicloop
++	}
++}
++@PART[harp155mmheavy]:NEEDS[BDArmory]
++{
++	@MODULE[ModuleTurret]
++	{
++		@audioPath = TBAE/Sounds/Hydraulic/hydraulicLoop	// was .../Hydraulics/... (no such folder)
++	}
++}
++// The 155mm used North Kerbin Weaponry's artillery explosion. NKD Reborn ships the same
++// effect under NKDR/; without NKDR use BDA's large explosion (BDA would fall back anyway).
++@PART[harp155mmheavy]:NEEDS[BDArmory,NKDR]
++{
++	@MODULE[ModuleWeapon]
++	{
++		@explModelPath = NKDR/effects/Explosion_Artillery
++	}
++}
++@PART[harp155mmheavy]:NEEDS[BDArmory,!NKDR]
++{
++	@MODULE[ModuleWeapon]
++	{
++		@explModelPath = BDArmory/Models/explosion/explosionLarge
++	}
++}
++@PART[bahaAIM-120ER|bahaLAA-M2]:NEEDS[BDArmory]
++{
++	@MODULE[MissileLauncher]
++	{
++		@audioClipPath = TBAE/Sounds/MissileEffects/rocketloop2	// BDArmory/Sounds/rocketloop2 does not exist; TBAE ships it
++	}
++}
++@PART[bahaSLDFSBgaussc|bahaSLDFgaussc|bahaSLDFgauss]:NEEDS[BDArmory]
++{
++	@MODULE[ModuleWeapon]
++	{
++		@overheatSoundPath = BDArmory/Parts/m230ChainGun/sounds/m230loopEnd
++	}
++}
++@PART[bahaZu23A]:NEEDS[BDArmory]
++{
++	@MODULE[ModuleWeapon]
++	{
++		@fireSoundPath = BDArmory/Parts/m230ChainGun/sounds/m230loop
++		@overheatSoundPath = BDArmory/Parts/m230ChainGun/sounds/m230loopEnd
++	}
++}

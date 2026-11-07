@@ -1,0 +1,1538 @@
+{
+ "format": 1,
+ "module": "MaritimePack",
+ "strategy": "rebuild",
+ "note": "Expected result after extracting the upstream archive, applying delete.txt and copying GameData/ on top.",
+ "file_count": 382,
+ "total_size": 254924692,
+ "files": {
+  "GameData/FengistAnim/FengistAnim.dll": [
+   12800,
+   "3E276576A9ACA66EA76C69EE843B5CBE6E50738083A47509803AA27A7B006796"
+  ],
+  "GameData/MPUtils/Plugins/1869_off.png": [
+   49653,
+   "F88C3BB1FCCF6526677F7587A52855461FD1FF69B95A00E37947F91BA2CB139D"
+  ],
+  "GameData/MPUtils/Plugins/1869_on.png": [
+   52328,
+   "6C1998012970DEB340979111C3EF57738443BBCBF0AC3F28329ECEA500CF3D0F"
+  ],
+  "GameData/MPUtils/Plugins/FSResizer.dll": [
+   41984,
+   "44738CD1A6B0C2CB048C767847917D10AC076F2479C02E909E4224B360526408"
+  ],
+  "GameData/MPUtils/Plugins/Kerbal Electric_off.png": [
+   233958,
+   "978EFED52C3E679C46BEF3DFF7D03406A505E2B257141ECF71FD7A3F279DBBA8"
+  ],
+  "GameData/MPUtils/Plugins/Kerbal Electric_on.png": [
+   235991,
+   "ADDB465EC4E0A66A082C7CB481628752C6BCABBCF47E46ECFF11143F78B46BB0"
+  ],
+  "GameData/MPUtils/Plugins/Lighter than Air_off.png": [
+   54514,
+   "D01337258E06C456B87DDDD5CA5E056D1EAF003A8B169078D71E3F7A90D93167"
+  ],
+  "GameData/MPUtils/Plugins/Lighter than Air_on.png": [
+   55917,
+   "78CD3B59E2EF0C08272584F95548538352BCAB64FEB93B66A58CAD1E61F3EA04"
+  ],
+  "GameData/MPUtils/Plugins/MPEngineSounds.dll": [
+   14336,
+   "A83C9E7AADD1995A01CFBE18C03215EA3694C26976129EA2C10A1A16E4CB23C7"
+  ],
+  "GameData/MPUtils/Plugins/MPUtils.dll": [
+   58368,
+   "1E06461E717A1DEE47A47EBF65CA7CD4A488D6B16CD6F5E48ED602155B28F30F"
+  ],
+  "GameData/MPUtils/Plugins/Maritime Pack_off.png": [
+   49938,
+   "9726BEF388F51C8CC563E1288504C398432ECE5C5C95EBFE7A412DBDE9290BEE"
+  ],
+  "GameData/MPUtils/Plugins/Maritime Pack_on.png": [
+   52508,
+   "126258CB2A2CB8A059A85562244EB78826CC71273A197A0B0247F76463E183A9"
+  ],
+  "GameData/MPUtils/Plugins/PluginData/CVFlightDeck/config.xml": [
+   127,
+   "848D02998AF2BAD44B22AA24685AA4228CA1047C3CBDB320DDCF7690FF5E1D34"
+  ],
+  "GameData/MPUtils/Plugins/PluginData/FSResizer/FSResizer.glob": [
+   70,
+   "1EAD3DAFD7D21017B64B7665D8313AEAA1F2D1345C613D0143711164E54C104A"
+  ],
+  "GameData/MPUtils/Plugins/PluginData/MPUtils/config.xml": [
+   209,
+   "28E55492324B0FFDEA0AF08BA9850D9BD28CF79CF58643E657B414786A924A46"
+  ],
+  "GameData/MPUtils/Plugins/fonts_off.png": [
+   47915,
+   "EFE5CBB1D8952F96FCF8C9368046E6406F7B7FD680477996D0457CEF3AE1A000"
+  ],
+  "GameData/MPUtils/Plugins/fonts_on.png": [
+   48419,
+   "E01EEB424B5F7E4EFC21CC94DADCBCEE1CB7B02ED7FAD4DDB9A15785DF86FC8C"
+  ],
+  "GameData/MPUtils/Resources.cfg": [
+   557,
+   "D1B422A87CD3462B0FE42DB5D266F4BC4132429BEE476381155180F7815EF8C1"
+  ],
+  "GameData/Maritime Pack/Accessories/Bathysphere/Bathysphere.dds": [
+   699192,
+   "639F20882B40876388F512A3E34291CC1159E89450FB2C6AD3590E214FA440E2"
+  ],
+  "GameData/Maritime Pack/Accessories/Bathysphere/model.mu": [
+   175043,
+   "2D354C4291215AB684421A197395EBB761FEDAB0930EB9AE66C2CAFE647AD0CC"
+  ],
+  "GameData/Maritime Pack/Accessories/Bathysphere/part.cfg": [
+   3952,
+   "EC0C64F7AFD8CE178C3504E5870FEA7A192ED7AA09CF38F3609500A4AD6F465B"
+  ],
+  "GameData/Maritime Pack/Accessories/Conning Tower/Conning Tower.dds": [
+   349680,
+   "1E47DAE41FD49BB09AE6D8BEA4C1D3CDE857CF8F7E6D0550A274A8F7922F84C9"
+  ],
+  "GameData/Maritime Pack/Accessories/Conning Tower/model.mu": [
+   89220,
+   "068029DE016D70DBD86A1ED5E777275153597941B1B4941E16C9BD92CB32FE82"
+  ],
+  "GameData/Maritime Pack/Accessories/Conning Tower/part.cfg": [
+   1320,
+   "A0618A4D5D1D871CCEE3B84FF22B630460BF175B25A88168569F09842DBCD732"
+  ],
+  "GameData/Maritime Pack/Accessories/Davit-1/Davit1.dds": [
+   699192,
+   "31ED361EA78638BE3CB19320A435863A1D73B07A5D460B792D8A7BCF141E3D2E"
+  ],
+  "GameData/Maritime Pack/Accessories/Davit-1/model.mu": [
+   24505,
+   "459E4A9D82DEAF1F6C7DA9A800FA87D0C10364697E0897CCAF149810E7805E49"
+  ],
+  "GameData/Maritime Pack/Accessories/Davit-1/part.cfg": [
+   1305,
+   "827DD3989A206D73A9623FF809B3FF5C7F6CD585E5C7936A4B06E6D8AFF2E762"
+  ],
+  "GameData/Maritime Pack/Accessories/Gangway/Gangway Extension_auv.dds": [
+   349680,
+   "07C8DFA2ACD8E8BAA4FC67522CC75265278FB9F01E8570B6F293E7856C447ED6"
+  ],
+  "GameData/Maritime Pack/Accessories/Gangway/Gangway Mount_auv.dds": [
+   349680,
+   "02699CCC1936584F347FF9F79452805136E8E46D37FCFFB8E503272F8674ED00"
+  ],
+  "GameData/Maritime Pack/Accessories/Gangway/Gangway Ramp_auv.dds": [
+   349680,
+   "18A9A87B66626CCE7E07AE14EA6C639C1DE5E21073FE893653FD0E09D20BDAB4"
+  ],
+  "GameData/Maritime Pack/Accessories/Gangway/model.mu": [
+   150492,
+   "8013EE590572A0775AE1A8A799FC8686FC5E6F0D5388D7D564DDBAE17A79B2A6"
+  ],
+  "GameData/Maritime Pack/Accessories/Gangway/part.cfg": [
+   1865,
+   "00BB9BB297D5B732B4FD1AD13FBBD09D89BAB794ECEADD91AC9A287774D01786"
+  ],
+  "GameData/Maritime Pack/Accessories/Navigation Light/Nav Light tex.dds": [
+   349680,
+   "15BBAA2C6CD41366C5EC7C86490C6E090AABE635FA2222B6831501706AB7C70A"
+  ],
+  "GameData/Maritime Pack/Accessories/Navigation Light/model.mu": [
+   49723,
+   "F66FDC0D3C2F821694FF7A3FA3380D00257BEEB0A98AC486763AAA9E633449EC"
+  ],
+  "GameData/Maritime Pack/Accessories/Navigation Light/part.cfg": [
+   1875,
+   "D6E6509853307F30E0A210CC817E9E240E5B6E970C51A24EA408D7B9196F8EDC"
+  ],
+  "GameData/Maritime Pack/Accessories/Outrigger 3.5m Section/Outrigger Extension_auv.dds": [
+   174904,
+   "1C6FA706527E721BF0EA702AD94E1B2AE52751208D267E8254FD61D2D7E52E06"
+  ],
+  "GameData/Maritime Pack/Accessories/Outrigger 3.5m Section/model.mu": [
+   12576,
+   "E623186493D98D177A64B47E4E57B64D087B892258BAF0CCCDD45A53A34EF279"
+  ],
+  "GameData/Maritime Pack/Accessories/Outrigger 3.5m Section/part.cfg": [
+   802,
+   "3779E3B6570208C07B09C315D87885869E1C554362FE08373E6EAC3A2F902CD8"
+  ],
+  "GameData/Maritime Pack/Accessories/Outrigger Bow/Outrigger Bow_auv 1.dds": [
+   174904,
+   "BAEA7B020FE2D244585AE4DF8508CC8C61EE727D187391540795F13F6A984C28"
+  ],
+  "GameData/Maritime Pack/Accessories/Outrigger Bow/Outrigger Bow_auv.dds": [
+   174904,
+   "569F5C464E9BD28F1216B9F2CC6C80EA56D5E0EA8A081298440D5F91EF5CE0D3"
+  ],
+  "GameData/Maritime Pack/Accessories/Outrigger Bow/model.mu": [
+   20457,
+   "2E34E51E853F599C5A9C7D5BEE97E46A57EE2A2BA616823BAFCCBAF663A69E41"
+  ],
+  "GameData/Maritime Pack/Accessories/Outrigger Bow/part.cfg": [
+   760,
+   "76E60FC3629111214B4E43BC8FD659270FFAE2D59AA989E3F891AF905FF1413D"
+  ],
+  "GameData/Maritime Pack/Accessories/Outrigger/Outrigger_auv.dds": [
+   174904,
+   "B066C8B4203900533FB0A99FFDC085E17B2FF32537CB0C10EA44E25ECF7EB955"
+  ],
+  "GameData/Maritime Pack/Accessories/Outrigger/model.mu": [
+   31597,
+   "3726028C86AAC8CEA0B98E881FF0DB6350C5AF100B324A33BB5F2BFDB0665F0B"
+  ],
+  "GameData/Maritime Pack/Accessories/Outrigger/part.cfg": [
+   924,
+   "52522C65A68193307ACE06A6F7A2E7DECBFD7E7D2D2E2E36882907414C1757AD"
+  ],
+  "GameData/Maritime Pack/Accessories/Spotlight/Spotlight.dds": [
+   349680,
+   "D8C5B369B31844142A1964002E9F6E7C2F61E8A9752F7844AC0C09FB97E2A7BC"
+  ],
+  "GameData/Maritime Pack/Accessories/Spotlight/Spotlight2.dds": [
+   349680,
+   "AA23E42C52590F6913F658CEAFBF9C565AB7E4AAB2537D70C31CC5F2B3469C57"
+  ],
+  "GameData/Maritime Pack/Accessories/Spotlight/model.mu": [
+   72374,
+   "D9E868A223B647F92D88BD379D43DDAC89A436917E08051893D5711B3B3A77E9"
+  ],
+  "GameData/Maritime Pack/Accessories/Spotlight/part.cfg": [
+   1834,
+   "8D744D286604D3C0EA822A6AB35B0B5FC2E00CFA548E610E81F779905DC73195"
+  ],
+  "GameData/Maritime Pack/Aero/Aft/Rear.dds": [
+   349680,
+   "47D75FEF014C8D9D3B16F02748ECCE1479BF0560ADF810FCC46634F50942ADD6"
+  ],
+  "GameData/Maritime Pack/Aero/Aft/model.mu": [
+   375469,
+   "0F4AFA191B3BFF67AC4D50AB4285ED141A1D06A9D168E64059F9AE3F665F8355"
+  ],
+  "GameData/Maritime Pack/Aero/Aft/part.cfg": [
+   1066,
+   "DD00D8E7F7F276547AC2A8720577D98C74CE44CFC8CA2599BCE0EF1AA0BF0C83"
+  ],
+  "GameData/Maritime Pack/Aero/Fore/Fore.dds": [
+   349680,
+   "9B4E41E7447043D3C983F0A48F18AB4C51D83C6EE34A62E04748555AA164F87F"
+  ],
+  "GameData/Maritime Pack/Aero/Fore/model.mu": [
+   168842,
+   "3CEBA4AE148BDDB71C91352E7483BB411D8940C6F74FA0FA038BC20ED7960490"
+  ],
+  "GameData/Maritime Pack/Aero/Fore/part.cfg": [
+   1153,
+   "CDAE040248D332089926EFF177AC39D9A2A57731D046739FB60B1946A13F0BFF"
+  ],
+  "GameData/Maritime Pack/Aero/Mid/Mid.dds": [
+   349680,
+   "B5B219C337E46E250517C887E3CECD43F805DF4EDD76333A99093A17F883E311"
+  ],
+  "GameData/Maritime Pack/Aero/Mid/model.mu": [
+   67355,
+   "944F08C2AB8FFAB25E7FFF47A8D0328E177B8226EBDC6D013BE383200532E53B"
+  ],
+  "GameData/Maritime Pack/Aero/Mid/part.cfg": [
+   1253,
+   "11EB1CF3248A1051A95B8996914EA186457EC0BB5F3B76CDFC77CA1120673BBF"
+  ],
+  "GameData/Maritime Pack/CVE Parts/CVE Bow/CVE Bow.dds": [
+   5592560,
+   "7AF963EA82AA01974AD8CFFF803AF153F85A4BBA60D3CA7F76C8157208AE536E"
+  ],
+  "GameData/Maritime Pack/CVE Parts/CVE Bow/model.mu": [
+   29086,
+   "DB6F2AAC6DCC30B80B6AE5584A155DAD73BCB3F61ECDDDEDA7506E778AD62B71"
+  ],
+  "GameData/Maritime Pack/CVE Parts/CVE Bow/part.cfg": [
+   1221,
+   "35F3A269397CB2F841C51AC995FD35F69EA41F37156E3C26842580DF55A5AB07"
+  ],
+  "GameData/Maritime Pack/CVE Parts/CVE Bridge/CVE Bridge Light.dds": [
+   174904,
+   "13BDF61F22503E34AAC44172C62F880B66B24CB08EE17A1A8DFE944F55D9C5E9"
+  ],
+  "GameData/Maritime Pack/CVE Parts/CVE Bridge/CVE Bridge.dds": [
+   2796344,
+   "7B4A11575D4A5EBE23CE0A75BC011000C3B64E52526CE744EC12EF607CA35995"
+  ],
+  "GameData/Maritime Pack/CVE Parts/CVE Bridge/model.mu": [
+   31707,
+   "26DC37AC93CCE95F765A431C5F37248D9A044E4B6AE1BAD72380DB106956EB60"
+  ],
+  "GameData/Maritime Pack/CVE Parts/CVE Bridge/part.cfg": [
+   1471,
+   "1E6CDA5B1ED973D4117E04EA78D74AE5AD9A6C9F618724922B8A66C9C9AE140D"
+  ],
+  "GameData/Maritime Pack/CVE Parts/CVE Deck/CVE Deck.dds": [
+   5592560,
+   "0448D987B8724FBF5AD54DB6F44EF1E70C508793C517EE414716B8906976C3C3"
+  ],
+  "GameData/Maritime Pack/CVE Parts/CVE Deck/model.mu": [
+   6259,
+   "1A13BB061FEF87B9390079E85DF8EEF9D4F158FD7D69EE4C6F375A58A9354A1C"
+  ],
+  "GameData/Maritime Pack/CVE Parts/CVE Deck/part.cfg": [
+   1319,
+   "27646D4CFFAB89AABF172E96086E60312866D1504452A7BCEE722E1D94EFC1DC"
+  ],
+  "GameData/Maritime Pack/CVE Parts/CVE Stern/CVE Stern.dds": [
+   5592560,
+   "3590D377FF692385C751EEAF4B6E911C0536FDFBECA8730FD7E5A31768F2EC97"
+  ],
+  "GameData/Maritime Pack/CVE Parts/CVE Stern/model.mu": [
+   18085,
+   "9181ED95DCCD2FD25576D8A82383BA9A9D743EC531573A890DEBE697F31351D2"
+  ],
+  "GameData/Maritime Pack/CVE Parts/CVE Stern/part.cfg": [
+   1196,
+   "26FD03C5E3491A258999BA28F6F903B18F22A1CD3E4C394624BC4A97BAB64710"
+  ],
+  "GameData/Maritime Pack/Catamaran/Bow Adapter/Catamaran Bow Adapter Normal.dds": [
+   1398256,
+   "DFDA556DE15161F866777F27012FC41FB919AB72697E277BF7D94F9B8DDE78C4"
+  ],
+  "GameData/Maritime Pack/Catamaran/Bow Adapter/model.mu": [
+   49763,
+   "DE502342D1B9D0CF79A207B331BE6F2AB1B343124A88D0A7C76F8B9EA79AC466"
+  ],
+  "GameData/Maritime Pack/Catamaran/Bow Adapter/part.cfg": [
+   1603,
+   "47ACCCBFC720C4698C98AE256A348A0410F91F4124AA591B2B8CA93370D7C988"
+  ],
+  "GameData/Maritime Pack/Catamaran/Hull Adapter/Catamaran Hull Adapter.dds": [
+   1398256,
+   "A055C677124FCB603A062AF7253A3008003917B3F3984E7AE12B146BA4A13668"
+  ],
+  "GameData/Maritime Pack/Catamaran/Hull Adapter/model.mu": [
+   10639,
+   "78827B2B5250B5100306714252AA6BAB3AD3B080E87C7E5D2B918A0B23C68D68"
+  ],
+  "GameData/Maritime Pack/Catamaran/Hull Adapter/part.cfg": [
+   1678,
+   "3EB37EE77D80324C1C1DBF7A71F11A48DF3BF2FB5518BDAA5AFA780C13CF888B"
+  ],
+  "GameData/Maritime Pack/Catamaran/Stern Adapter/Catamaran Stern.dds": [
+   699192,
+   "4D6F8D77D4A491A3C614397E6F2121E35608E22D8B8730D7446B07192A4F508A"
+  ],
+  "GameData/Maritime Pack/Catamaran/Stern Adapter/model.mu": [
+   48029,
+   "9820CBE2B6DC7F2A77B16A8FBE0A923FE49A092FE0EE35E03F9E2D91402A87FE"
+  ],
+  "GameData/Maritime Pack/Catamaran/Stern Adapter/part.cfg": [
+   1611,
+   "96C36E2AE461149D3F95978E1A5D29932135DF91528DD123CD511D2E76FBC642"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/@thumbs/FS.ClipperEngine1_icon.png": [
+   14468,
+   "817D8E1C5B738FB62DF3F1FBCE12762040DDCB83DE884A5CA13CC5485E1A5E38"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/@thumbs/FS.ClipperHullLF_icon.png": [
+   47026,
+   "8391AA28672962F42C7E883DA184BC600AE93A71DCC5F1E85805015FCF6D5070"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Bow/Clipper Bow Retexture 2.dds": [
+   5592560,
+   "1905F8C56CB99EA084730670681C263C7BF656750015373D3D76C1A600519EAD"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Bow/model.mu": [
+   224064,
+   "2CAAA9DE69DF5E7A219E9AA3F1394BFD7779022300510BF41C928077EB2F31B2"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Bow/part.cfg": [
+   1436,
+   "2CC508981AC99A1709F5BDE619D240F6303D16B81833A235D0ABB1F5996FB892"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Cradle 2/Ship Cradle2_auv.dds": [
+   174904,
+   "473F64A870C2EC919EF0BC86815BD906658EAE60BF27232C87C6A0E2006915F1"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Cradle 2/model.mu": [
+   28550,
+   "13F83F8EB3E964C11ABA10CACC377FBE4B5CCB4DCCC6F8F5A39DB5E121C73711"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Cradle 2/part.cfg": [
+   1812,
+   "4AC7B29901C5AA1CDA30360C190C4DAD6D6670854F8413282B141C706F580EA0"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Deck Adapter/Clipper Deck Adapter_auv.dds": [
+   43832,
+   "92C4EC1B3BDEC3EBDF6B3749784C9B6E7275F50649BEF2537D8EA50DB4B95850"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Deck Adapter/model.mu": [
+   5681,
+   "692EA571861B77D7B16D0060CAE1ABEBBDE5FE23383289EA2BC52F76F47C873F"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Deck Adapter/part.cfg": [
+   1427,
+   "81C7A57C097CAC42D8D05AC9E5D45F899C69957F6EA5C10F36E7D9372D564C84"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Focsle/Focsle Retexture.dds": [
+   5592560,
+   "878F6B94055AF3704FC228483D1A085382B83B22C781F998E39B3FD0982C011A"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Focsle/model.mu": [
+   331181,
+   "1D43C55EE0D24BEF5D2694E4F6F3B36D196A73DCCAEF5305B402B7DAD9079F26"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Focsle/part.cfg": [
+   1472,
+   "10EDD2C8E2F32CBA69ADCBCF0D2A95AA88625A73E24039917A7A9AAD480009E0"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Helo/Helo Stern.dds": [
+   699192,
+   "6C5771A8DCA6B032FAACF62332604D06C9B091CFF84A9950444DCA7001E9B990"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Helo/model.mu": [
+   161697,
+   "86333C65F92B844EF62FCD1E69B0FCA83B89AC72EF9C3371E2789D65F3D4C213"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Helo/part.cfg": [
+   1371,
+   "C7A71C2D8233B0D08FDDDBF6AC096885899C17EFA3B37BAE3157414AA4222D7D"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Hull LF/Clipper Hull_auv Retexture 2.dds": [
+   1398256,
+   "4B343DD79966FC560F6DBA3906FF8E1434979ECB357B433A4B37C5DCA818FF42"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Hull LF/model.mu": [
+   124750,
+   "A250A5F36D69C06B7A4113EA81E38D978CC1F5CAD119004CB070A02898C4C233"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Hull LF/part.cfg": [
+   2340,
+   "218F7C72094F26C499E7AA6EE6A32A9B98F8367E35FA5AC23FEAC58A630B94E7"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Hull/Clipper Hull_auv Retexture 2.dds": [
+   1398256,
+   "4B343DD79966FC560F6DBA3906FF8E1434979ECB357B433A4B37C5DCA818FF42"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Hull/model.mu": [
+   124750,
+   "A250A5F36D69C06B7A4113EA81E38D978CC1F5CAD119004CB070A02898C4C233"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Hull/part.cfg": [
+   1506,
+   "09569F8974C1F26E2F28DBA7DD976C4202DC044FDBAE81DF9B64679546EF7634"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper RoRo/Clipper RoRo Bow_auv.dds": [
+   2796344,
+   "5603D7B6B67C96BC77C8F12CEA1A21971FCD3702158243AB6095FFDEDE8EDC93"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper RoRo/Clipper RoRo Ramp_auv.dds": [
+   2796344,
+   "0EBCAADA987AE67FF94AAFBF7ED4E6AC916E6B328A7B20DC4DEE9DA25BEEA93A"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper RoRo/model.mu": [
+   194205,
+   "11422E5DDBA4BBE70FCC626F39A6D59900B16C72F16AB5C24CD6888B45A5C2AB"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper RoRo/part.cfg": [
+   1702,
+   "25E9AD255EC3327AD22CF694A373B3A8D412681A4BC1E5ADC5D14326C72DE74C"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Stern/Stern.dds": [
+   1398256,
+   "28E14BA619BE81D976105AECD6DD9A16126637AD5CB1EC26EDED6EAF2813E716"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Stern/model.mu": [
+   133759,
+   "272C9E65CAD07C42FBD2D365B01D054275FF4A0CFD77DEB4BEFBF55CAC9193BD"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Clipper Stern/part.cfg": [
+   1047,
+   "5CF7EFC65972A561DDD5A7E7B65D9DDFAB517DFBD6936D1972AC96C4E381B039"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Engine1/Mount.dds": [
+   174904,
+   "E85E92A12DA3B252A402B34E493E73E3A51AE0C59FEDA0B4880DEE5C1DC0A17D"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Engine1/Prop.dds": [
+   349680,
+   "7E73E57D4847980A141179B86A75D87972B46EDF9D46F5DEFE5320957C2C391A"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Engine1/Shroud.dds": [
+   349680,
+   "9FAD19157B63171CBC312D2E08217535A7F214A9115F47B936D338540FFE5120"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Engine1/model.mu": [
+   455515,
+   "17B1C9E93049B9FBC65F0552C6A95DBF562DEA90A970EDD1E380C8767AEF7936"
+  ],
+  "GameData/Maritime Pack/Clipper Parts/Engine1/part.cfg": [
+   11539,
+   "875FC521A94F618A291BC43D9689D5ED3C0E433FCD1E268E025F8C5139D01946"
+  ],
+  "GameData/Maritime Pack/Clipper Pods/Cargo Bridge/Cargo Bridge Lights.dds": [
+   174904,
+   "8BFC4AD84232E64B530DA984512D2308AABBB5FE9297E9BEBC7E89BF1A09653F"
+  ],
+  "GameData/Maritime Pack/Clipper Pods/Cargo Bridge/Cargo Bridge.dds": [
+   699192,
+   "CF1D095FD5415F07681282FF04FB032CD9FD8C8F146E0506865947C2FA3796E5"
+  ],
+  "GameData/Maritime Pack/Clipper Pods/Cargo Bridge/model.mu": [
+   76224,
+   "DF274CBC0D3137DAB426F16C4E476ED9428B1DDDB3EB7118AC1D405BA8C7B0EC"
+  ],
+  "GameData/Maritime Pack/Clipper Pods/Cargo Bridge/part.cfg": [
+   3312,
+   "0DE0FB2F0B77D823C009BF4F4E75DEAF808945FB6E65DD02F47EEB3349D5E4E8"
+  ],
+  "GameData/Maritime Pack/Clipper Pods/Yacht Bridge/Yacht Bridge_auv.dds": [
+   2796344,
+   "1E196402791909606E1EEF10D5111815289BD68A8D26713F1CAF77B87707C618"
+  ],
+  "GameData/Maritime Pack/Clipper Pods/Yacht Bridge/Yacht Windows.dds": [
+   699192,
+   "70E9AEF4916CBE3DBD0D4CBD21917129DF7E4022ADE9C37B5C3D2CDFCA3E30B4"
+  ],
+  "GameData/Maritime Pack/Clipper Pods/Yacht Bridge/model.mu": [
+   77175,
+   "AED95782BD7E12DDD341F23C44F37EB9EA4AD1963BD71B33C1D3C4EB17119DAD"
+  ],
+  "GameData/Maritime Pack/Clipper Pods/Yacht Bridge/part.cfg": [
+   3009,
+   "376C26E6C2340A6038F64667E9751CC24C72E56AC32317FF37A65E850717197E"
+  ],
+  "GameData/Maritime Pack/Essentials/Air Scoop/Air Scoop.dds": [
+   699192,
+   "A15A860144338AC762E5CAA2474D7D5D6320A36A5ECD0DB4F8985C60CD26198B"
+  ],
+  "GameData/Maritime Pack/Essentials/Air Scoop/model.mu": [
+   29663,
+   "7B29BAE9724A7D06527C89F05410B5D0B417C308BAD04C797661D1E9760ED207"
+  ],
+  "GameData/Maritime Pack/Essentials/Air Scoop/part.cfg": [
+   1735,
+   "970742D3BC5AA9852836417CFEDF6B080623360B5E40D40FB9170E8AB3288DFE"
+  ],
+  "GameData/Maritime Pack/Essentials/Bitts/Bitts.dds": [
+   349680,
+   "5F2DFB07C6CB1A0AB754367096E6DB9FB6CE7CC86C4FC0CB3013F24BB89AA8A0"
+  ],
+  "GameData/Maritime Pack/Essentials/Bitts/model.mu": [
+   87847,
+   "AC6BC0BB5E7B36B5E147A7397BC67B7B7E20B50227F74134ED62AAAD192B2DA9"
+  ],
+  "GameData/Maritime Pack/Essentials/Bitts/part.cfg": [
+   1409,
+   "4DD8F14FD5165CBFDFAC13D155CAF6D608DF3979E0E0E7B8AEAD7D8AA065016E"
+  ],
+  "GameData/Maritime Pack/Essentials/Bouyancy Blister/Bouyancy Blister.dds": [
+   87536,
+   "ED0D789503B5C7FABB47A82AF9F62B67D0F0BF19ABD4F589A61B77DAFCA4DD32"
+  ],
+  "GameData/Maritime Pack/Essentials/Bouyancy Blister/model.mu": [
+   25101,
+   "E0EC584AA3E7FCAE88F48ADDF654E2C43AE8F5821547BF7A41D0E2B92601C0BE"
+  ],
+  "GameData/Maritime Pack/Essentials/Bouyancy Blister/part.cfg": [
+   1031,
+   "3F8A1ADDBC4C948A3984BABF0721EC4E4C33C890C637335F90DFC1F116471D25"
+  ],
+  "GameData/Maritime Pack/Essentials/Clipper Rudder/Rudder Mount_auv.dds": [
+   43832,
+   "9217832807CF14B3EAFFE2EDA629C095D53D34A4FB28A9254097F8C7726B5E2B"
+  ],
+  "GameData/Maritime Pack/Essentials/Clipper Rudder/Rudder Post.dds": [
+   43832,
+   "9217832807CF14B3EAFFE2EDA629C095D53D34A4FB28A9254097F8C7726B5E2B"
+  ],
+  "GameData/Maritime Pack/Essentials/Clipper Rudder/model.mu": [
+   17182,
+   "B577D42F9574D556DD0DAADFE77EFEEAC5E688D72CEAA0343B6B455E54EC4711"
+  ],
+  "GameData/Maritime Pack/Essentials/Clipper Rudder/part.cfg": [
+   1275,
+   "82EAD86EEC92724EB4FFA346FF95D6C98F66ABA332852EEE995DE9CEF9AC0370"
+  ],
+  "GameData/Maritime Pack/Essentials/WaterCompressor/Compressor.dds": [
+   699192,
+   "43148F31955D3853EA65BB4F83FB6D71C327608B7C61CB49C31B54CF20EE3FB2"
+  ],
+  "GameData/Maritime Pack/Essentials/WaterCompressor/model.mu": [
+   30639,
+   "DDCE86F63BCE64F5591C9BD59B2778FB1AC0AAE40DA1CF713271542B6A4AFB80"
+  ],
+  "GameData/Maritime Pack/Essentials/WaterCompressor/part.cfg": [
+   2071,
+   "A133F41199BCFCB0090D71515AD13F56F7CC81B082E6C5D8F2B1606C60D61C71"
+  ],
+  "GameData/Maritime Pack/Essentials/WaterDecompressor/Decompressor.dds": [
+   699192,
+   "A30171ACF65627491BFDD4F8007294C4C6F00D3247359547F5E2CE905DEA64E7"
+  ],
+  "GameData/Maritime Pack/Essentials/WaterDecompressor/model.mu": [
+   65401,
+   "E5F5C3C99FEB051D1900E9C9776D04D9200676656290CC1B661AF001E9540D0E"
+  ],
+  "GameData/Maritime Pack/Essentials/WaterDecompressor/part.cfg": [
+   1919,
+   "0541976428ADF48FB791DBB368012E6FC33DF99E5F1FC9A49890F1CF60C76065"
+  ],
+  "GameData/Maritime Pack/Flags/CCR.dds": [
+   54832,
+   "6D5391C7F4F017B670ABD0987EA4A9947801E5728CD4A322D9E1D5348E83393F"
+  ],
+  "GameData/Maritime Pack/Flags/FSBlue.dds": [
+   54832,
+   "AE560E5A64B0E47C813455182D749DCF817C751AC5D7785AF453E1F82667E313"
+  ],
+  "GameData/Maritime Pack/Flags/FSScaled.truecolor": [
+   52237,
+   "7566BECE4C89E25275772B333BF52B59780179C3CAA2B144983E4370A1834DF0"
+  ],
+  "GameData/Maritime Pack/Flags/JebRoger.dds": [
+   54832,
+   "4A68C346281838EDE129B69A9F393C267698FD1790278010595CEB094B2112A4"
+  ],
+  "GameData/Maritime Pack/Hover/Battery/Battery.dds": [
+   2796344,
+   "1C1E49FF02C78DE79C4CF71EE19DC3D75F539DF2157C18F0DFAC01FD2C07A91C"
+  ],
+  "GameData/Maritime Pack/Hover/Battery/BatteryEmissive.dds": [
+   2796344,
+   "EE48958F52A4AE4679BA7F33D98BE2366A1B75C3DF90587C8F302C34C022CB75"
+  ],
+  "GameData/Maritime Pack/Hover/Battery/batteryModel.mu": [
+   303117,
+   "1C7FEA60F077804C03E20E2134DF31697ADA78960CE67284B80CAFA1FA14BAA7"
+  ],
+  "GameData/Maritime Pack/Hover/Battery/part.cfg": [
+   1411,
+   "39842D08702450687E7C0D3BDBC0E7A7739480E5209EAAA724E34E9B3A318DBD"
+  ],
+  "GameData/Maritime Pack/Hover/Cockpit/Cockpit 1.dds": [
+   1398256,
+   "5F9D0A445B43BEC9B2C8C4C6551A96917FF1F5389FF8F3222EC2E702EA319D52"
+  ],
+  "GameData/Maritime Pack/Hover/Cockpit/Cockpit.dds": [
+   699192,
+   "2132B8D20695EF643DA23DF27A2F32D454B3787ED1F72DBDC1223BFC18567FEB"
+  ],
+  "GameData/Maritime Pack/Hover/Cockpit/CockpitEmissive 1.dds": [
+   699192,
+   "B1507C4F8A4404914C7911E11263A15D5931359713F62DD66C32A12579031F7B"
+  ],
+  "GameData/Maritime Pack/Hover/Cockpit/CockpitEmissive.dds": [
+   699192,
+   "9E0706DE13A6F804C7DB25B2165C942FB776C6A88E9A2CA3220EE6C6A2E9B2C2"
+  ],
+  "GameData/Maritime Pack/Hover/Cockpit/Hovercockpit.mu": [
+   16331,
+   "687EFD2BCD952EBB0CCB920E058440317C753CBF68FE8710C648429E0D83DCA8"
+  ],
+  "GameData/Maritime Pack/Hover/Cockpit/drone.dds": [
+   1398256,
+   "71941FB6CD70D501E2AEC309FF72B005656E58D77FE4D178AA152010FAAD5800"
+  ],
+  "GameData/Maritime Pack/Hover/Cockpit/part.cfg": [
+   1453,
+   "BD90B2F1BAC8619B64BAE21551217899ACB47ED5B8288D9BA4C8EC2E27140FCA"
+  ],
+  "GameData/Maritime Pack/Hover/Crew/Crew.dds": [
+   2796344,
+   "D0DB35E98198F3D4BDC9D3CA8573154008CD09F4ADFD1D4BA61358707493233D"
+  ],
+  "GameData/Maritime Pack/Hover/Crew/CrewEmissive.dds": [
+   2796344,
+   "3E8528BDEBAB5D3D37D668B671254748A2DFD7CA069FF1DFEBD11E7F016F82ED"
+  ],
+  "GameData/Maritime Pack/Hover/Crew/crewModel.mu": [
+   32291,
+   "220A1E6AEBB4F48A1D7D5D6E93CA565EA88E6B2C77901F95831039454349CA62"
+  ],
+  "GameData/Maritime Pack/Hover/Crew/part.cfg": [
+   1135,
+   "28589C0505939365A6F76882820D45CC9A7E0CC035A2715E7843D5A5F6B5A6EF"
+  ],
+  "GameData/Maritime Pack/Hover/Cushion Round/Cushion round.dds": [
+   43832,
+   "23F070B712D58564F899283696B4F2671A6456B46C730E03B934685B830A3D81"
+  ],
+  "GameData/Maritime Pack/Hover/Cushion Round/Hover Deck.dds": [
+   699192,
+   "A08BBA7D96EED50DC6F627097507AC1942DECB34CBED55BE2A3EF13541EE0F21"
+  ],
+  "GameData/Maritime Pack/Hover/Cushion Round/auvBG.dds": [
+   2796344,
+   "EDA5B916437D049DFD881D991C056280FBB71C9D20FD1EDEADF9E2B64E0E50A3"
+  ],
+  "GameData/Maritime Pack/Hover/Cushion Round/modelRound.mu": [
+   148431,
+   "A1E153666090EC35B8C227DA384A6004F5DD3816BAFFC6463A504E0E51BC90FF"
+  ],
+  "GameData/Maritime Pack/Hover/Cushion Round/part.cfg": [
+   824,
+   "6D642D005C68B1390537E2FB19C5C284A2233CB0DCF4A49F883C2EC46D5EC170"
+  ],
+  "GameData/Maritime Pack/Hover/Cushion Rounded/Cube4_sep78_auv.dds": [
+   43832,
+   "23F070B712D58564F899283696B4F2671A6456B46C730E03B934685B830A3D81"
+  ],
+  "GameData/Maritime Pack/Hover/Cushion Rounded/CushionRounded.mu": [
+   313565,
+   "0CB6F0285D5E1ED75D67726B56BDD5DB8615CFDC1808D7B480D9174F25562583"
+  ],
+  "GameData/Maritime Pack/Hover/Cushion Rounded/Hover Deck 1.dds": [
+   2796344,
+   "287D5BA5FAD6A0C85658B5197383FF3B931E5E1BF2D6D369BC8FE3941D74ABDD"
+  ],
+  "GameData/Maritime Pack/Hover/Cushion Rounded/Hover Deck.dds": [
+   699192,
+   "A08BBA7D96EED50DC6F627097507AC1942DECB34CBED55BE2A3EF13541EE0F21"
+  ],
+  "GameData/Maritime Pack/Hover/Cushion Rounded/auvBG.dds": [
+   2796344,
+   "EDA5B916437D049DFD881D991C056280FBB71C9D20FD1EDEADF9E2B64E0E50A3"
+  ],
+  "GameData/Maritime Pack/Hover/Cushion Rounded/part.cfg": [
+   900,
+   "AEDC858313399C3DD2120676D470F3E5D9003555772979BE1353269636AAE247"
+  ],
+  "GameData/Maritime Pack/Hover/Cushion Square/Cushion_Square.mu": [
+   213084,
+   "0E5C703B996434A1DB3CDF51790C4105895613C6784844C5D240DA062B15DDA0"
+  ],
+  "GameData/Maritime Pack/Hover/Cushion Square/Hover Deck.dds": [
+   699192,
+   "A08BBA7D96EED50DC6F627097507AC1942DECB34CBED55BE2A3EF13541EE0F21"
+  ],
+  "GameData/Maritime Pack/Hover/Cushion Square/Hover SS.dds": [
+   174904,
+   "04D5BBC0A56F59530292E518950F410468F3310DFED50E49F09B0AD773DBCC4C"
+  ],
+  "GameData/Maritime Pack/Hover/Cushion Square/Hover Square Deck.dds": [
+   2796344,
+   "0D057FC038E9F1FE9907693C141F697000B1F5FB8AE21B01085D5CCCB8B1C02E"
+  ],
+  "GameData/Maritime Pack/Hover/Cushion Square/Hover Square Skirt.dds": [
+   174904,
+   "688CD2D0D66A486D9BD8A008B73A08579D496C9EEE30D46452641EE8E0404063"
+  ],
+  "GameData/Maritime Pack/Hover/Cushion Square/auvBG.dds": [
+   2796344,
+   "EDA5B916437D049DFD881D991C056280FBB71C9D20FD1EDEADF9E2B64E0E50A3"
+  ],
+  "GameData/Maritime Pack/Hover/Cushion Square/part.cfg": [
+   954,
+   "1523D0B1E9C7F7D3C731CB109A8335CB2E30BBF5971CE198108F7BE842A376EF"
+  ],
+  "GameData/Maritime Pack/Hover/Drone/drone.dds": [
+   699192,
+   "7A486BDBB0CC7C019266D95E0C80822A5F2912B0C81304B8182F0182B5993CE2"
+  ],
+  "GameData/Maritime Pack/Hover/Drone/droneModel.mu": [
+   13714,
+   "AF68FCD1E24B83B61DDABD978833FC57199C9DE5E4E22B0A88FEB63D89A5CA9F"
+  ],
+  "GameData/Maritime Pack/Hover/Drone/part.cfg": [
+   1455,
+   "8D10339DC5A674455620CEA24FC0C2A96026824397E217B7129171014A7856CF"
+  ],
+  "GameData/Maritime Pack/Hover/End Cap/Cube4_extract22_auv.dds": [
+   2796344,
+   "9BAE45E5A4FCB9CE9A6ED9C986D598B8A513CE4857B2467EDDAEA2668226F6FE"
+  ],
+  "GameData/Maritime Pack/Hover/End Cap/EndCap.dds": [
+   2796344,
+   "FBAE5DBB2929D2194AB0F6FF54FEE97E57DA0EB407051D6190CFDD9ABF2E57BF"
+  ],
+  "GameData/Maritime Pack/Hover/End Cap/model.mu": [
+   6565,
+   "6DC49E5013906152BCB42CAA0969A69A4A2AE063F1F913DD6A311D2F0BE47DF9"
+  ],
+  "GameData/Maritime Pack/Hover/End Cap/part.cfg": [
+   772,
+   "8F539EE1BDEA1E1F546979D8CBA6F17C9C5C2CBFCB050B8FDB6EE3BA271E1226"
+  ],
+  "GameData/Maritime Pack/Hover/Fan Engine/Fan.dds": [
+   699192,
+   "724AC1E0DF2C974C00615BBD588AB4224F46101D914A3FC3DD8A400942748F68"
+  ],
+  "GameData/Maritime Pack/Hover/Fan Engine/Post.dds": [
+   43832,
+   "AAFED7C0ABBC64DF6DDA6DEC601995348419F8448F1EAAAD5A59956A30889731"
+  ],
+  "GameData/Maritime Pack/Hover/Fan Engine/Shroud.dds": [
+   699192,
+   "953BC51179083F2C8AB954FA3193EE8B0A3F067B6C8A8F0B9E5B778B00EA0005"
+  ],
+  "GameData/Maritime Pack/Hover/Fan Engine/fanModel.mu": [
+   200259,
+   "EFECD9BA867BA7C9E0879BEE40F9E9EF936FE33F3232881D63C8B31341394ED2"
+  ],
+  "GameData/Maritime Pack/Hover/Fan Engine/part.cfg": [
+   5064,
+   "9EDD831A978D7496A0F3C042F8EF6D3D3AAE4FF7DC13731FDF741B42A29120F6"
+  ],
+  "GameData/Maritime Pack/Hover/Fuel Half/FuelCylinder.dds": [
+   699192,
+   "25E260495293648AE72BC9674FCFE101BC7636994D01741796D5FACAF9D5CC10"
+  ],
+  "GameData/Maritime Pack/Hover/Fuel Half/Module.dds": [
+   2796344,
+   "30E2E19C05A7B95F13C8E993E91E463B6B7A92C97DECEF84A35EE168DDDCF302"
+  ],
+  "GameData/Maritime Pack/Hover/Fuel Half/fuelbump.dds": [
+   1398256,
+   "F5DD3981F95F836F3D1DC91E2896822130447F66C4CE196A0695C440C299D575"
+  ],
+  "GameData/Maritime Pack/Hover/Fuel Half/modelFuel.mu": [
+   30079,
+   "34ABF27FC8B4A04AB46EB6794123D09E6B98F94239EA9EE18477B6F85B56203C"
+  ],
+  "GameData/Maritime Pack/Hover/Fuel Half/part.cfg": [
+   1169,
+   "50B151A3E128A1FCFAF70B752DD7A6B04DC6C0EDF1E9C9A1D397FB51C528D377"
+  ],
+  "GameData/Maritime Pack/Hover/Lift Double/Hover Engine Single Body.dds": [
+   2796344,
+   "2904F78BF646157F856F21F5874A5F5CB1AAD73F1C202E844A8435CB965C66C6"
+  ],
+  "GameData/Maritime Pack/Hover/Lift Double/Hover Engine Single Fan.dds": [
+   87536,
+   "4E356A3C587FBA73531B285DA311442135EE9F3833697029320E687190204224"
+  ],
+  "GameData/Maritime Pack/Hover/Lift Double/Hover Engine Single Shroud.dds": [
+   699192,
+   "4770F5B4FC5FEEC34C2946E52842CDDFB1B801E85BDE94B7F347AFA8241E9128"
+  ],
+  "GameData/Maritime Pack/Hover/Lift Double/liftDoubleModel.mu": [
+   360364,
+   "8A7E93E2A1ADE1C1182F9D695E08A997ECD718B0FD4CCC678EE9A2360BF008CC"
+  ],
+  "GameData/Maritime Pack/Hover/Lift Double/part.cfg": [
+   897,
+   "D89F3BF856DE43DEB4ED7671459983DD7E0D9C5A32C632731676DF892F2A550D"
+  ],
+  "GameData/Maritime Pack/Hover/Lift Single/Hover Engine Single Body.dds": [
+   2796344,
+   "2904F78BF646157F856F21F5874A5F5CB1AAD73F1C202E844A8435CB965C66C6"
+  ],
+  "GameData/Maritime Pack/Hover/Lift Single/Hover Engine Single Fan.dds": [
+   87536,
+   "4E356A3C587FBA73531B285DA311442135EE9F3833697029320E687190204224"
+  ],
+  "GameData/Maritime Pack/Hover/Lift Single/Hover Engine Single Shroud.dds": [
+   699192,
+   "4770F5B4FC5FEEC34C2946E52842CDDFB1B801E85BDE94B7F347AFA8241E9128"
+  ],
+  "GameData/Maritime Pack/Hover/Lift Single/liftSingleModel.mu": [
+   175942,
+   "CA4C0709280B2A7912BEE50047F9458AC91DE588B47D856E5EEA8DEFA63E3E0D"
+  ],
+  "GameData/Maritime Pack/Hover/Lift Single/part.cfg": [
+   848,
+   "4C95E7C1AA73FDD0B6CE61FAE4072672690F1FFEF5B33CEFF00C726327209653"
+  ],
+  "GameData/Maritime Pack/Hover/Rudder/Rudder.dds": [
+   699192,
+   "C2A8621C25E308C6A2B9842C40D4AC7962E254D3CCB64DFE8A3AA41C0CE4EE68"
+  ],
+  "GameData/Maritime Pack/Hover/Rudder/part.cfg": [
+   1580,
+   "D7F7CEC1DFF6580F0875E395F21891779F610D5A2484EF4762D35B0842AF5061"
+  ],
+  "GameData/Maritime Pack/Hover/Rudder/rudderModel.mu": [
+   14528,
+   "07228BF58AEE7342561977A7D62E704BDA6E84C7CFCA9CC85711EEB7C7AB9C0E"
+  ],
+  "GameData/Maritime Pack/License.txt": [
+   14345,
+   "BEA4EF9DE458BDCD6A1C89C776104A5FEEFEB28A362E6F88B42096CF77227A6B"
+  ],
+  "GameData/Maritime Pack/Paddlewheel Pods/Paddle Pilothouse/Paddle Pilot House Lights.dds": [
+   699192,
+   "BF67F8893C64777734AE55C6C3BB9C5106EF68D65CB482E610E61777330A434B"
+  ],
+  "GameData/Maritime Pack/Paddlewheel Pods/Paddle Pilothouse/Paddle Pilot House.dds": [
+   699192,
+   "17BCCCEF6ED7011B0467859DACACAA1560EC3D25262D822C96479064D29EAADA"
+  ],
+  "GameData/Maritime Pack/Paddlewheel Pods/Paddle Pilothouse/capsule.dds": [
+   21992,
+   "3F8A7E52BDCE9A726DB02C6349F98BE104D61B9FD327EAC5E5FD628FD05037DE"
+  ],
+  "GameData/Maritime Pack/Paddlewheel Pods/Paddle Pilothouse/model.mu": [
+   13291,
+   "A9F907D2CE28A4624398008846026B6B8345932947A9C7F524B9C02043DBA550"
+  ],
+  "GameData/Maritime Pack/Paddlewheel Pods/Paddle Pilothouse/part.cfg": [
+   3037,
+   "6EDD6ADF578E55D21A12257DBE582DF4342D1F245A683F309C82C57BACC25DAF"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Lower Deck Boiler/Paddle Lower Boiler Lights.dds": [
+   174904,
+   "2637BE837DB86EADF31B97EBE7FD39C7E6B0FA3D1AF599A8E6B0092AB01DB5AF"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Lower Deck Boiler/Paddle Lower Boiler.dds": [
+   1398256,
+   "1326F5534C686498B151E7A5B66359A25CDF1E131F0239DCC5AD144F8C8318DF"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Lower Deck Boiler/model.mu": [
+   16132,
+   "226157FE445EF2914A750D99ED27616DC9FC1625DDA4DCEC4AC683F05CF42373"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Lower Deck Boiler/part.cfg": [
+   1328,
+   "76D49D769801B59F1F13F3323CD3B77EA91FCADCA26459EEC69D040DC6C472DF"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Lower Deck Cargo/Paddle Lower Cargo.dds": [
+   349680,
+   "D36F9A856AA27710FFA45D2D307F8D4C1FF904E7053B520B93E968D5A848509E"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Lower Deck Cargo/model.mu": [
+   150813,
+   "60137590153575AD04FA5511579858D3AC4B1DE05F4621C4B8D04BE61C3C8F4B"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Lower Deck Cargo/part.cfg": [
+   911,
+   "72BB46AE0626EF43DC2769B9D5702230C3A7AA1EF583ACF43F60EB509BAFA35D"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Lower Deck Crew/Paddle Deck Lower Crew Lights.dds": [
+   2796344,
+   "A395556FD6E4AF2747ACA487DBE58ED45B7A54832388C3612D2746DB9AC49F46"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Lower Deck Crew/Paddle Deck Lower Crew.dds": [
+   1398256,
+   "655C673A34C78BC5BD82E408524A04743B8B287764C5C6CDDC958FD16E947516"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Lower Deck Crew/model.mu": [
+   138700,
+   "5A7C40AE4EA5026B4AFF1B533170EF535094E915186AA0FDA4EF348095E7A168"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Lower Deck Crew/part.cfg": [
+   1124,
+   "4E0AD8637B6FA8D7450B894F5F743A590B6ECE5FA965F565FF7FF29A443AE205"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Sidewheeler Left/Sidewheel Cover.dds": [
+   349680,
+   "402AEA31B79638676004152DD96451E0B1489E000AA3E605EAE1C5DBADCFCC50"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Sidewheeler Left/Sidewheel.dds": [
+   349680,
+   "A4D3FBAB5467B27A1FAD4A08069C628F6E8FD4C1E7EFE1EAE641A6C61FF3B1EE"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Sidewheeler Left/model.mu": [
+   590103,
+   "8A25763E50B1DD77DEE1BB134CA8CFF0E8B050F2AA22B4339647CBD5258D8A0E"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Sidewheeler Left/part.cfg": [
+   7035,
+   "906A0E650A0024D72DFD37DD491ECC26A701B8FF9281B753E9B881FB3E8454F9"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Sidewheeler Left/wheel.dds": [
+   1398256,
+   "77076B2B33427DE2153EA96C6EDE36AB481C8FEFE0A25D8C7A5BF9B19CDAF4EF"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Sidewheeler Right/Sidewheel Cover.dds": [
+   349680,
+   "402AEA31B79638676004152DD96451E0B1489E000AA3E605EAE1C5DBADCFCC50"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Sidewheeler Right/Sidewheel.dds": [
+   349680,
+   "A4D3FBAB5467B27A1FAD4A08069C628F6E8FD4C1E7EFE1EAE641A6C61FF3B1EE"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Sidewheeler Right/model.mu": [
+   590103,
+   "B318E19CB87F26B829B0640E10B168E9447143224FCE351F07648F98554A9FCE"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Sidewheeler Right/part.cfg": [
+   6999,
+   "E5890950FF48793FA2412BBE060F4C410346EF42B2DBE8AF2D58AACC8802238A"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Sidewheeler Right/wheel.dds": [
+   1398256,
+   "77076B2B33427DE2153EA96C6EDE36AB481C8FEFE0A25D8C7A5BF9B19CDAF4EF"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Stack/PaddlewheelStack.dds": [
+   349680,
+   "858F06C6D21487DE75973C0FA377590E0A35CFB04836E385EFCBF18F184CE9EA"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Stack/Stack 2_auv.dds": [
+   699192,
+   "111EAFB0AD406086B6050F7C7D4C237488C789AC004FCC06B6CBB68D4098345E"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Stack/model.mu": [
+   79782,
+   "5E97C1FA39F2D9CC85C90B7655198C0E8B703F60252C0CEAA11FC5B2B804595B"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Stack/part.cfg": [
+   4396,
+   "C36C0CD560C7F8D19D82837B0D4BAD9CC78818570A4899DBECF9E6E1C6D81ABD"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Stern/Paddle Stern.dds": [
+   1398256,
+   "867B0AA31EC0CBD194762DBBEE58EA0A0C75E337F7986B67C8154F4755C5938B"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Stern/model.mu": [
+   1043720,
+   "CC5FFAA29416447779E8B26DCF9BA250EBF27DEE25192A54C87EBCA7433EC29F"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Stern/part.cfg": [
+   5084,
+   "4A4F9BA83ADC5D21D1C2A78544BC46CE70173EC8C405C3AD25D271B43D65A4D2"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Stern/wheel.dds": [
+   1398256,
+   "77076B2B33427DE2153EA96C6EDE36AB481C8FEFE0A25D8C7A5BF9B19CDAF4EF"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Texas Round/Paddle Texas Round Lights.dds": [
+   699192,
+   "79D854F60B49C147F37AB68797E72F4FA7EA8D54D5247A456430B598F487E3BB"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Texas Round/Paddle Texas Round_auv.dds": [
+   699192,
+   "A75E1C1C75A7A8B97789C2EAC5486973B4E447E121B5CEB929AFADAFA99C5C66"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Texas Round/model.mu": [
+   19182,
+   "DF865F0E6D0017E0A31A7D261E9252BE303A2B2089ECE3E24AD3E9C178D4DF8C"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Texas Round/part.cfg": [
+   1594,
+   "11ECD607F33FAAFBAA6B35919241B9F83942DC9AA6CC07289B7D06DEA73A6BF2"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Texas Straight/Paddle Texas Straight Lights.dds": [
+   699192,
+   "8F5E87D62C358CBEE05228F1F6A6751CE5C8E381AFAC24B5D49F23922E4DCF0F"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Texas Straight/Paddle Texas Straight_auv.dds": [
+   1398256,
+   "BBF3DFD17DAFAE69E4F13326E22BEF468F9CB924FD7F7D322748D0688E31533E"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Texas Straight/model.mu": [
+   11325,
+   "B04F7EFCCCCB9F22C5F2146696D42C7DB1B251CB22F581F4673D39E5B8645F5F"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddle Texas Straight/part.cfg": [
+   1649,
+   "272D14B9EACBEAF94A1AC80DC135990A533E5BC9DC8A43794950DC39923560E5"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddlewheel Promenade/Paddle Promenade_auv.dds": [
+   349680,
+   "AE338D6BBA4D5FCA9F6C08888893AB512001A0C6265D0A26022DDC47251B78D9"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddlewheel Promenade/model.mu": [
+   145823,
+   "4F35D1849A3F80B3433BBDA59296F2004BFB61C2AE5EFAF9E23968C77CFDC860"
+  ],
+  "GameData/Maritime Pack/Paddlewheel/Paddlewheel Promenade/part.cfg": [
+   1117,
+   "5675AE4D02B36013073F2698E41530388477BECD978650D81933306FFEF67982"
+  ],
+  "GameData/Maritime Pack/Patches/zz_MP_KSP1125_Compat.cfg": [
+   1564,
+   "FAD124D0C2ECD7A654332988DC73D0B480C85E59D2A6FD693AEDB40134DEABC1"
+  ],
+  "GameData/Maritime Pack/Plugins/MPHover.dll": [
+   12800,
+   "0FE8D2188BEE4B453AAF0CAE90BAD00E8F4B3AC85F9C5E8BF6364A0EB381519F"
+  ],
+  "GameData/Maritime Pack/Science/GPS/GPS_auv.dds": [
+   349680,
+   "649F7AA79AF84559377F193048E403704CD7F4DA4F4D4102E622947818AE3232"
+  ],
+  "GameData/Maritime Pack/Science/GPS/model.mu": [
+   59963,
+   "08C20E6EB484EDFC0FBD72EBB5D7C3CAAFD0BE44B0665A05AB1ADD094963486D"
+  ],
+  "GameData/Maritime Pack/Science/GPS/part.cfg": [
+   1655,
+   "B41A13A959CB700189DC591C540C2E13474CC462A444FBDC00FD6FD1E7AA69DC"
+  ],
+  "GameData/Maritime Pack/Science/Radar/Radar_Antenna.dds": [
+   1398256,
+   "C79EAA59718BB671B67692D3C30AB90F6698B5BF69B4F0B08B40F9E4E355488B"
+  ],
+  "GameData/Maritime Pack/Science/Radar/model.mu": [
+   47438,
+   "5399E1B77812FE4EF95D824935DE343FE07D65004EBBD5FEF12C34D8742D353C"
+  ],
+  "GameData/Maritime Pack/Science/Radar/part.cfg": [
+   1872,
+   "5F8C7004D85194AD9E91F40EE20A7230D202D2E6245C47B056C16DD9A80EC1C3"
+  ],
+  "GameData/Maritime Pack/Sounds/ArchPower.wav": [
+   103542,
+   "9565C653FC8DCD82664B89B0ED3AD3CCA473868214ADE0A849672D03FB239140"
+  ],
+  "GameData/Maritime Pack/Sounds/ArchRunning.wav": [
+   437622,
+   "B8359CD321B851512ACA5C3574FF4E75F372272C67CF9F0E1B57DEC976A0294C"
+  ],
+  "GameData/Maritime Pack/Sounds/ArchStart.wav": [
+   912476,
+   "FEB3B295D3272479A6DE2ACCF70790854D6E99AEF091F76612F21232A6A99709"
+  ],
+  "GameData/Maritime Pack/Sounds/ArchStop.wav": [
+   645164,
+   "7AC2707D7B96BEB7A3D897159828BEC81B822E038F0C9A93A893939AF2250BE8"
+  ],
+  "GameData/Maritime Pack/Sounds/ArrestingGear.wav": [
+   1752438,
+   "A87D95D0F24BA91BF15203B3715946F444E5966124EC121583FA9729DFCB8C4C"
+  ],
+  "GameData/Maritime Pack/Sounds/CatLaunch.wav": [
+   778506,
+   "EBCD8AE318BB9A21E777DE8226E78C349D96BDC57494798B02EFE72516FD0BED"
+  ],
+  "GameData/Maritime Pack/Sounds/DieselConstant.wav": [
+   496242,
+   "9DE1AAC4719B25A9E9CC8513295E1422B75D1D2D95B35687E29DC7C0FAF81550"
+  ],
+  "GameData/Maritime Pack/Sounds/DieselRamp.wav": [
+   1498066,
+   "60904ADFC6FD7D3C5D94DEB75714E341441EA88B7567915286477DB4BDD19564"
+  ],
+  "GameData/Maritime Pack/Sounds/DieselStart.wav": [
+   2808154,
+   "C9B28529455F1D3934EB1CFC69644D26398CF443C916993DB680534C7D12D784"
+  ],
+  "GameData/Maritime Pack/Sounds/DieselStop.wav": [
+   1401826,
+   "F8AD386AA574DBFEAB4B71AE1EF92EB5E6A66424BE89E512B243D344F799E173"
+  ],
+  "GameData/Maritime Pack/Sounds/DynoConstant.wav": [
+   584894,
+   "B0B739DF4B6F39C6AD746059A93DD4C57443F0A324858FD66F9447DD62E761F6"
+  ],
+  "GameData/Maritime Pack/Sounds/DynoOff.wav": [
+   1288582,
+   "08249BFE1518C91F961E54E08540ACEE526E0048E1C4B73613C1570DA9AA0E06"
+  ],
+  "GameData/Maritime Pack/Sounds/DynoRamp.wav": [
+   1288582,
+   "4D5BCC5591E8FFE3AF0220C651ED5B6072F6A0A48B38FA9A92EE290D7A63300C"
+  ],
+  "GameData/Maritime Pack/Sounds/DynoStart.wav": [
+   872672,
+   "32DD89CA576AFC58FB1F28BB064F0B7EC6D7A2C6296FE333E25258BB3AC1B76A"
+  ],
+  "GameData/Maritime Pack/Sounds/ElecConstant.wav": [
+   259178,
+   "4A5E550B20983FC68C713FA8CA91E30182CD3DC340356F5E783837C067126924"
+  ],
+  "GameData/Maritime Pack/Sounds/ElecRamp.wav": [
+   3153670,
+   "A2117C3C2F8760BDA77D84DBD486CE07B3F7A6D7B272D60089A2C1C7842F13DF"
+  ],
+  "GameData/Maritime Pack/Sounds/ElecStart.wav": [
+   58118,
+   "C8B6F2A710414038520F1112F900BFE22F8611E8FBF58CECE60B48C3A232EA53"
+  ],
+  "GameData/Maritime Pack/Sounds/ElecStop.wav": [
+   1907144,
+   "CE4AF623B1E6D100BEC661EF5B430CA69EAF1DBF49C70D5426CECFEA0754BB08"
+  ],
+  "GameData/Maritime Pack/Sounds/FishPower.wav": [
+   981150,
+   "17F04369B20A0A85DBD5031B0A44A0CC231B8BB71C7386112D8B76D7A3A924C0"
+  ],
+  "GameData/Maritime Pack/Sounds/Helo1Off.wav": [
+   2413424,
+   "3F17653E8F3C4FDAC000F4D855DA7D304343AEE0E9A3072AB98846CD1A3645C8"
+  ],
+  "GameData/Maritime Pack/Sounds/Helo1Power.wav": [
+   543904,
+   "90288C956D1DFA0171445B1DDC7424950D68A85A6C6F30E4B5944666EBD47A7A"
+  ],
+  "GameData/Maritime Pack/Sounds/Helo1Running.wav": [
+   1164652,
+   "ED977EA603654156B158E0B0E51B713EDB5699657DBE4E4557EBFCFBBE321B47"
+  ],
+  "GameData/Maritime Pack/Sounds/Helo1Start.wav": [
+   852896,
+   "2139E93F8E1A0653C463061D403C60AC343E577D9705DC692729A253EF5AB7F8"
+  ],
+  "GameData/Maritime Pack/Sounds/PaddleConstant.wav": [
+   288578,
+   "D8EE219CE283B427C7A92D13E68DCF3F36908C80D981063D12961534407BC80F"
+  ],
+  "GameData/Maritime Pack/Sounds/PaddleRamp.wav": [
+   1081518,
+   "89C556A8D6D0C4AEA0595AC20CE0A6BA870CE32F27B1DB25588297A7DD35D918"
+  ],
+  "GameData/Maritime Pack/Sounds/PaddleStart.wav": [
+   527968,
+   "5782F12A228D4E6BF5525B6B8B6C9BC706D0BBFDC9D27646F0F2077DD2969343"
+  ],
+  "GameData/Maritime Pack/Sounds/PaddleStop.wav": [
+   528898,
+   "C0E417F807DCFBB0BCADFFF670F57077869D5534B72EF318818C6589003EE17A"
+  ],
+  "GameData/Maritime Pack/Sounds/PropOff.wav": [
+   1701742,
+   "0BCE67DA80B3C5AB366273F027D59C4C297067D8A6B7CFF9700B06782380F654"
+  ],
+  "GameData/Maritime Pack/Sounds/PropRun.wav": [
+   2533910,
+   "9E28B6090647C49B21E6B24D83170917413BEDF08503222F461927DFF3543422"
+  ],
+  "GameData/Maritime Pack/Sounds/PropStart.wav": [
+   1695238,
+   "F5A8D5D05DF5665D8DA42A76C57B927B9E19EEDF8B3BEC96442785C5FA2F1DB3"
+  ],
+  "GameData/Maritime Pack/Sounds/PulseJetEnd.wav": [
+   1257510,
+   "8185CB11E432EBB4208557F08EA8A376310E40AB715636D02615244775365635"
+  ],
+  "GameData/Maritime Pack/Sounds/PulseJetRun.wav": [
+   1667958,
+   "9F9CEA855A60331C765437811A6856578BECFCBA646D1B24046BB97AE137471C"
+  ],
+  "GameData/Maritime Pack/Sounds/PulseStart.wav": [
+   1214808,
+   "5ABECD9FF3DCB253944DD9E27D06B4576C9E4FDBC7BDBED56472A7B4E877D757"
+  ],
+  "GameData/Maritime Pack/Sounds/SteamConstant.wav": [
+   425016,
+   "92C22868AC734E8D0991EC9549940DB917CCCBF3E2A60CA67CF178CEB8509D5D"
+  ],
+  "GameData/Maritime Pack/Sounds/SteamConstant2.wav": [
+   672202,
+   "752F26759DA12A1ECB6785815407F3517528ADC20CB3016DCD39532B53B95873"
+  ],
+  "GameData/Maritime Pack/Sounds/SteamRamp.wav": [
+   494268,
+   "06D0E8BA15598F2B8C0C3F71E24FDE68BC954CBFA8B3B6A2950F564A8C248E78"
+  ],
+  "GameData/Maritime Pack/Sounds/SteamStart.wav": [
+   160688,
+   "C354A027BA70E2868FD4652CA29817A2F30C7D4256F8206CA75BDD0FE5BCAA26"
+  ],
+  "GameData/Maritime Pack/Sounds/SteamStart2.wav": [
+   1267528,
+   "D2595465C913335BB4D2C405256AF4BA94C1D25706A39E3ABB23F24F52F1AC9A"
+  ],
+  "GameData/Maritime Pack/Sounds/SteamStop.wav": [
+   633128,
+   "4131BFB88ED86101D04E54F6BF5B5D4497E8F5884571082ED3C03D1308740D40"
+  ],
+  "GameData/Maritime Pack/Sounds/SteamStop2.wav": [
+   1267528,
+   "CE09C7531811F8EC394D20626E11092209CAF6D85D9928870E72E5EDA7E6C231"
+  ],
+  "GameData/Maritime Pack/Spaces/Cargo Bridge/Cargo IVA_auv.dds": [
+   2796344,
+   "5A57BEB68810A2E8964AA4A9BE0358EFEFE993CA96283D3B08B72CE907F02561"
+  ],
+  "GameData/Maritime Pack/Spaces/Cargo Bridge/Chair.dds": [
+   174904,
+   "5E3FBAAC8E1631B01F1C34C68BE7AA74144C7D06F6978CD7EE309E207E6A5F1F"
+  ],
+  "GameData/Maritime Pack/Spaces/Cargo Bridge/Radar 1_auv.dds": [
+   174904,
+   "E5B7080DE04086D198D337F27A2AA9C412B53EFB450B2A2C0E0DCC11AE842907"
+  ],
+  "GameData/Maritime Pack/Spaces/Cargo Bridge/Radio1_auv.dds": [
+   174904,
+   "F206C743B926CBBE0F9700E300385D730AA14B3EF91D8A55005849AC417D1513"
+  ],
+  "GameData/Maritime Pack/Spaces/Cargo Bridge/Ships Wheel.dds": [
+   699192,
+   "CA150BEAEFE88E387CC2D1B84838E6B71E4F5F808CD153FF01172B4F01B0A08F"
+  ],
+  "GameData/Maritime Pack/Spaces/Cargo Bridge/Sonar1_auv.dds": [
+   174904,
+   "84C05C1B2F19A8BC1CB4D54A16CBA1C2328391070414319AB9B865E4B2D89CEC"
+  ],
+  "GameData/Maritime Pack/Spaces/Cargo Bridge/Voice Pipe_auv.dds": [
+   43832,
+   "22744AFFA9B0CDCCBDDF6986ACE7FA203C55CF812C5AFA03ED2779B7653D163C"
+  ],
+  "GameData/Maritime Pack/Spaces/Cargo Bridge/internal.cfg": [
+   7550,
+   "4715C45ECAC446C7829B3344C89A0283FFF385CFE2111562A63F41EBF3F3D9EF"
+  ],
+  "GameData/Maritime Pack/Spaces/Cargo Bridge/model.mu": [
+   2594282,
+   "856F3E2E20B18D915187140CED775B8ECC2BAF1F5FA185C3E88B2DC6703EA921"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Bow/Bow.dds": [
+   2796344,
+   "C32371DBC76701970383BA0D1F463EA9914BA3359C6E8FF8BB84B72F977D84ED"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Bow/Fwd Deck Cover.dds": [
+   1398256,
+   "4B8EFA3798C28A88CA7036F10ED10706370360C1B105BC7322CDD1A1A424EECB"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Bow/Windshield.dds": [
+   1398256,
+   "C5565B76051FB4A4655A86D5D54AC874FC23D784C7410575D2C9A3663885B7C0"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Bow/model.mu": [
+   262975,
+   "46B748E51066E6EA0E9667D6F620A2C85F656C091ADEA8680F06F5A825008C41"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Bow/part.cfg": [
+   1985,
+   "F3290354C32921D80047D56AD950A8AF20E3DCE2E32523F9A919570C959A2782"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Cargo Bay/Cargo Bay.dds": [
+   5592560,
+   "8D822AAF6E0D76F5CC6570B5C773BBCB4EE3E4B9B6BD88D754875C0B0A74A2EC"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Cargo Bay/Door1_auv.dds": [
+   349680,
+   "F02EEF6359A072F2BE4373814E829D79B4E7D4E7834A4C168B8F4ED66B9F632F"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Cargo Bay/Door2_auv.dds": [
+   349680,
+   "E31417D47F7B5F8FCE79F6752D6DCEBF09FF2EB1DAF3BBF40388BC726BE14688"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Cargo Bay/model.mu": [
+   86242,
+   "82642BD4C46EEA7A8B19EAD9B2728D281BEAA850895CE9318B346B963415CE48"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Cargo Bay/part.cfg": [
+   2726,
+   "DD64F63679DE3EE70D34A4DE2822888204DD4C3E29E515B58DE4F25579F01913"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Compressor/Ballast.dds": [
+   5592560,
+   "76CD04C567B6FA552016D7E68334D565A88307ADC5D57D9ED6B099F367F36D6C"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Compressor/model.mu": [
+   45197,
+   "3596D20409033FDAD10B8AB981F94A671E577BE7DB0EB283DF13F74F9E1D368B"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Compressor/part.cfg": [
+   3249,
+   "BD0FE7C12D372CC1B7330B3DD253140C213E32D44B779629571398F47AC4509C"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Computer/Computer_auv.dds": [
+   5592560,
+   "572F89CE93615E37B42A64C0CB1509CB2CF31A07319EAB54DA02B2BBB07556A3"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Computer/model.mu": [
+   50186,
+   "66046D3EEF6CE7D60641085D7E18D54FB6E48A2EC8B6B15394D3C47697A4D70F"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Computer/part.cfg": [
+   1684,
+   "03621431E2A0A8222C94B672CA7A32A2B79B85806C3895ABCE576DD96AAF6B67"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Conning/Air Inake_auv 1.dds": [
+   22000,
+   "CC0DD2D3D28365FFB4D6021E25E06DBF3B534374E495F1A66F5452C38F8CB64E"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Conning/Antenna2_auv.dds": [
+   22000,
+   "11EBEA78EE942732B20CFD12D1FCA12B1B9EDE39DDACC2A3010C1D2F6F088A5B"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Conning/Antenna_auv.dds": [
+   22000,
+   "A922370F2BDCD41EE5C5F97F1FDCE62DF800F5A6950780512DD52C8B6D6E1C8B"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Conning/BCover Center_auv 1.dds": [
+   174904,
+   "E4FC997BE324F2E32B029295512EA18FC19F2D3A465C60713975F100F16FC8F3"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Conning/BridgeLights.dds": [
+   699192,
+   "705EE16ED045B1684540C7A4DCC2EBD2BD5246B98796021AD317165EC9CD9961"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Conning/Bridge_auv.dds": [
+   5592560,
+   "1A02AA1BBDC1E9615B209DB79A089F92DD8D3DE2F4BD9B6F1F32F93B1C8FE4A5"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Conning/Cover_auv.dds": [
+   43832,
+   "D00B002419B050745D8CFD7DAFE36232A73B51532F7624386FA0162159717083"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Conning/Gate_auv.dds": [
+   174904,
+   "E4FC997BE324F2E32B029295512EA18FC19F2D3A465C60713975F100F16FC8F3"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Conning/Lens1_auv.dds": [
+   22000,
+   "86812888DAFFEC70FD38E3F654258A4290D53FA95C6E7ED7785F62C35FB12383"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Conning/Lights1_auv 1.dds": [
+   22000,
+   "310CA5D95D6FB212F11C9EB09C6E793CCE616C4A7867D997E11E9CB310E0FF2B"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Conning/Windshield_auv.dds": [
+   22000,
+   "D940EC55975A8A69ADF20DADAAE53C346E768468FFFFE4F7CEEC5289DAF1917B"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Conning/model.mu": [
+   334937,
+   "0A67FA107AF0B8DF65F45FA1166624EA8394AE98380F65F5C6BF8657436EC51C"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Conning/part.cfg": [
+   5471,
+   "29D80B802200CDE056A123CA81D36231880E30B41F2FC74ABE5C6BB610CC5D00"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Crew/Combined.dds": [
+   174904,
+   "B8DE44BF1B49BA43D5635A736BADDA1A7CA07DC80A3A38B575A2A3A6A45E6024"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Crew/Hull Lights.dds": [
+   174904,
+   "01E68C01AE14C808143E97528C333AFBEF57FEC93942762BB081D97EF4FF557E"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Crew/Hull.dds": [
+   699192,
+   "DC6AD168E8B15248C568C173840F9B1F294F33C2FB13322343B5F7E6EE2E0938"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Crew/model.mu": [
+   142618,
+   "729A43C1C3B33209AD0C8B21F2AE9A5D8938B438F753FC433CAF5546013B6E34"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Crew/part.cfg": [
+   2344,
+   "A94720B317A9B387E2FA72A80C925433182217D33D6C789CD585CEC4A4301E4B"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Dive Planes/Planes Mount_auv.dds": [
+   699192,
+   "A052D846A838DD78D6C33398DC0F2806F4B0F703A0DAF5AA27D55F3F1F227BCE"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Dive Planes/Planes.dds": [
+   699192,
+   "FF9687257F4D04EB0FC48070795CB43AF644D39C240C3ABE982E78D01B6CC49E"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Dive Planes/model.mu": [
+   55940,
+   "A88A5687B95B973D497FF159F28DDF60FABA6012920A133CBCA4FB0D32ACF2DD"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Dive Planes/part.cfg": [
+   1896,
+   "A0748844601F1EAAD4F868A820AAF0F78E9B4CBAFD3E9C3EB88B8F1CCC0A6D48"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Engine Pod/Engine Pod_auv.dds": [
+   2796344,
+   "AF8121FBA50C9CB4B08B5307C66B34924660655F094ABDE99573B8431C5625C9"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Engine Pod/model.mu": [
+   43754,
+   "8AB04285E5D87D7FB813A64313E46F86A6F85A9904B4400674F7429046214A20"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Engine Pod/model125.mu": [
+   43757,
+   "2B1E543E01233C20DB42812C2A5A6D9B6E26D1E440A42F70CEB7D12D2C63282A"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Engine Pod/part.cfg": [
+   1358,
+   "4EEDC38192E1DE864DC22D22EEF81C932B1181933BCC9BB3DAD411DE25A046F1"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Engine Pod/part125.cfg": [
+   1471,
+   "88CE3FA3E5DCE6179F733F08D15C5F5EC5BB1A681FE9BD57380180AF024000D7"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Floodlight/Floodlight.dds": [
+   174904,
+   "A60A4AA2ABC8FF86AB44540ED0CAB3D7F9AC757B804EE63283AD9BEC73E272E9"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Floodlight/Lens.dds": [
+   22000,
+   "17BF9F46727FD33F215D1A6F5A8303085F88B03D39D9EF8D31076E1C3D60B2E5"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Floodlight/model.mu": [
+   64022,
+   "5C844B7BB139CC121986076800E0B77FF5C8A4A7F8B8249A164AD104F098B5A8"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Floodlight/part.cfg": [
+   1797,
+   "43A3306E7E7F018B904D203A19B018CA8AF6EDAD24AB665EBB2F3D2FE6969CBE"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Generator/Cover1.dds": [
+   349680,
+   "C7BF5EADC88AAEDE9C483FD3B0007A7DE9BED235C2F6BB70C64B25CB96F8DCAA"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Generator/Generator.dds": [
+   5592560,
+   "7F0526B9BC3414B9596FCEB718B720081444EAE4AB960851603F570237D06DBE"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Generator/model.mu": [
+   124986,
+   "C3AC79547AC6FA5609198484D1C8EDB9ADA2C2BD23790266F9B596EDDFFAC12B"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Generator/part.cfg": [
+   4952,
+   "24E914B685319A1E73F60164A32110B179AD535BAAE8C248260481A3E3229679"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Helo/Helo Deck_auv.dds": [
+   5592560,
+   "754BD79E888B9EEDC1F0AD03413B3F17473FB15848083EB09A931CEB6BC50ECE"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Helo/model.mu": [
+   82660,
+   "DC88EF0380F042EBB817E3B19AF92CCA7936B83C4A445B0F7BF62F2045F4409D"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Helo/part.cfg": [
+   1494,
+   "2BC8F206C45454ABFF7953D24C33F35F8C7DD9E934F283FA03B98B01B21A9809"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Hull/Hull 10m.dds": [
+   5592560,
+   "AB718D7083026AABF3EC0B8AF8329B9A1B95C0A680C8F3BB506E824DA9509136"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Hull/model.mu": [
+   24585,
+   "3652BF7E731551061018B3B2E115006C0DFD2A7F2CF5AB6369BF4FE3554AE5FD"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Hull/model5.mu": [
+   24586,
+   "940DE8738055FF647A353CA423CD6069D4D9C3250B427A50A38075313B5C0D36"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Hull/part.cfg": [
+   1528,
+   "D5F88A549C8DE33BD38CE162C1DE14E2AD80AA594B37480C9CF3F9B12D2F5557"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Hull/part5.cfg": [
+   1653,
+   "8A8E6FDDDB8159C9CC8C11CF2C9AC7F51C04176CEDCA418199E9FCF844C928B9"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Stern Elec Engine/Body_auv.dds": [
+   1398256,
+   "FA3F9708F41FC6F62EBD017C7BFD021E1237B008F85DC60CD6B2CB42C310C931"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Stern Elec Engine/Fan1_auv.dds": [
+   349680,
+   "03588C2C8528675AB61A622BBBE14ACB1E95ECBDAA8C350422910835C46348AB"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Stern Elec Engine/model125.mu": [
+   143018,
+   "991058B8811CC8BC10C878339AB86841EDC8815831A5DCE37B232B4DAA4FBAFE"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Stern Elec Engine/part.cfg": [
+   5351,
+   "61E8B31E04E05AB86BB7E141F79C97AA68798861CF1EDDB923BBF6E812284A24"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Stern Elec Engine/part125.cfg": [
+   5505,
+   "818678A866F6464CBC2A8090D704CE17519DF63C657CF466BC95FF73B37864DA"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Stern/FlagPole_auv.dds": [
+   174904,
+   "A4E12DAEB9AC6E702BF3F6D534F453D894C4716A55C522C2C70BDE40C684513B"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Stern/Flag_auv.dds": [
+   43832,
+   "AAFED7C0ABBC64DF6DDA6DEC601995348419F8448F1EAAAD5A59956A30889731"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Stern/Stern.dds": [
+   5592560,
+   "196D62F55DA47DA42FA81571608B0606BBD17C6948C9BC35D2B292471B2260D9"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Stern/kerbal1.dds": [
+   21992,
+   "DB6FBAA532F0CF661589CAF6D440EA81FF92D6C5953BC49EEAD5B49C27481A6E"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Stern/model.mu": [
+   190205,
+   "05499B7B6B89A449EB1D539709A3ACE1A3693DAA0F33FECC9A208A1C3894F888"
+  ],
+  "GameData/Maritime Pack/Submarine/Sub Stern/part.cfg": [
+   2566,
+   "E9E46350C7F1A8848D79B6AF05C8B31AE96F1F89762CD9C9C4199F7573FDF20C"
+  ]
+ }
+}

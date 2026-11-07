@@ -1,0 +1,61 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    AntiSubmarineWeapon (NAS anti-submarine plugin) for KSP 1.12.x + BDArmory Plus 1.13.
+    Build:   dotnet build -c Release  (or MSBuild 17+)
+    Override paths if KSP/BDArmory live elsewhere:
+      dotnet build -c Release -p:KSPDir="C:\KSP" -p:BDArmoryDll="C:\KSP\GameData\BDArmory\Plugins\BDArmory.dll"
+  -->
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <OutputType>Library</OutputType>
+    <RootNamespace>AntiSubmarineWeapon</RootNamespace>
+    <AssemblyName>AntiSubmarineWeapon</AssemblyName>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <DebugType>portable</DebugType>
+    <Deterministic>true</Deterministic>
+    <ImportDirectoryBuildProps>false</ImportDirectoryBuildProps>
+    <ImportDirectoryBuildTargets>false</ImportDirectoryBuildTargets>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <KSPDir Condition=" '$(KSPDir)' == '' ">D:\Epic Games\KerbalSpaceProgram\English</KSPDir>
+    <KSPManaged Condition=" '$(KSPManaged)' == '' ">$(KSPDir)\KSP_x64_Data\Managed</KSPManaged>
+    <BDArmoryDll Condition=" '$(BDArmoryDll)' == '' ">$(KSPDir)\GameData\BDArmory\Plugins\BDArmory.dll</BDArmoryDll>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="AswData.cs" />
+    <Compile Include="DepthChargeLibs.cs" />
+    <Compile Include="DepthContorllerApplicationLauncher.cs" />
+    <Compile Include="FlagWave.cs" />
+    <Compile Include="ModGlobal.cs" />
+    <Compile Include="ModUiManager.cs" />
+    <Compile Include="ModuleAntiSubmarineWeapon.cs" />
+    <Compile Include="ModuleDepthChargeProjector.cs" />
+    <Compile Include="ModuleRotor.cs" />
+    <Compile Include="NASCategory.cs" />
+    <Compile Include="NASCategoryModule.cs" />
+    <Compile Include="PartLoaderExtensions.cs" />
+    <Compile Include="PidSystem.cs" />
+    <Compile Include="SonarSystem.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" Condition="!Exists('$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8')" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp"><HintPath>$(KSPManaged)\Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Assembly-CSharp-firstpass"><HintPath>$(KSPManaged)\Assembly-CSharp-firstpass.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine"><HintPath>$(KSPManaged)\UnityEngine.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.CoreModule"><HintPath>$(KSPManaged)\UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.PhysicsModule"><HintPath>$(KSPManaged)\UnityEngine.PhysicsModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.IMGUIModule"><HintPath>$(KSPManaged)\UnityEngine.IMGUIModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.AnimationModule"><HintPath>$(KSPManaged)\UnityEngine.AnimationModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UI"><HintPath>$(KSPManaged)\UnityEngine.UI.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="BDArmory"><HintPath>$(BDArmoryDll)</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>

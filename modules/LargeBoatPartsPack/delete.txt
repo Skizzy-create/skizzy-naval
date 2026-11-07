@@ -1,0 +1,5 @@
+# Files removed from the upstream archive before the overlay is applied.
+# One path per line, relative to the zip root of the release asset.
+GameData/SM_Industries/Plugin/SMIndustries 131 real.zip
+GameData/SM_Industries/Plugin/SMIndustries pre removal spinners.zip
+GameData/SM_Industries/Plugin/SMIndustries.dll

@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "module": "AircraftCarrierAccessories",
+ "strategy": "overlay",
+ "note": "Overlay: only these files are shipped; users install the original separately.",
+ "file_count": 1,
+ "total_size": 2282,
+ "files": {
+  "GameData/KFC/Patches/zz_KSP1125_BDA113_Compat.cfg": [
+   2282,
+   "8D32D1E8677B73C0968F16F89436FE2A15335D8780605BECDACC216D02B5BE0E"
+  ]
+ }
+}

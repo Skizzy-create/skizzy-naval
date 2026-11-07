@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "module": "TitansBDArmoryExtension",
+ "strategy": "overlay",
+ "note": "Overlay: only these files are shipped; users install the original separately.",
+ "file_count": 1,
+ "total_size": 7071,
+ "files": {
+  "GameData/TBAE/Patches/zz_TBAE_BDA113_Compat.cfg": [
+   7071,
+   "79D98C4A64C0B4229658F06AABC9D6DA01FA6C7D74D0AFA7D4A7F0257466503B"
+  ]
+ }
+}

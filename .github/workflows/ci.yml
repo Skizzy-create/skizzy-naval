@@ -1,0 +1,36 @@
+# Fast checks on every push and pull request (no downloads).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONUTF8: "1"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Offline checks (registry, manifests, sizes, forbidden libraries)
+        run: python scripts/skizzy.py check
+
+      - name: Draft .ckan files validate against CKAN.schema
+        run: |
+          python scripts/skizzy.py ckan --version 0.0.0 --draft --out build/ckan-draft
+          python scripts/skizzy.py validate build/ckan-draft

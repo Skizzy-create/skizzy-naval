@@ -1,0 +1,7 @@
+﻿https://github.com/Summerfirefly/ASW
+
+Released under CC BY-SA 4.0 license.
+
+AntiSubmarineWeapon.dll 0.6.6.0: ported to KSP 1.12.x / BDArmory Plus 1.13 (.NET Framework 4.8).
+Based on Summerfirefly/ASW commit c640ea3 plus FlagWave (reconstructed from the 0.6.5.2 DLL that shipped with NAS 0.7.0).
+Source and project file: see src/AntiSubmarineWeapon in this patch set. Same CC BY-SA 4.0 license.

@@ -1,0 +1,2 @@
+# Upstream files our patch edits but an overlay can't replace (see README.md).
+GameData/TBAE/Parts/J-627/j627ares_wf.cfg

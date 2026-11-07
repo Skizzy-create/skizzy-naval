@@ -1,0 +1,1453 @@
+Maritime Pack: KSP 1.12.5 NullReferenceException fixes, upstream patch set
+==========================================================================
+
+This file holds the changes for FOUR upstream code bases. Each section starts with a
+"#### SECTION" banner naming the repository and the directory to apply it from
+(all hunks use a/ b/ prefixes, so apply with -p1). Text outside diff hunks is commentary
+and is ignored by `git apply` / GNU `patch`. To apply one section, copy it into its own
+file first, using an editor or tool that keeps CR characters. The C# sources upstream use CRLF
+line endings and the hunks keep them, so on Windows apply with `patch -p1 --binary < sectionN.diff`
+or `git apply -p1 sectionN.diff`. Verified: with `patch -p1 --binary` every section applies
+cleanly to its baseline and the result is byte-identical to src/. `git apply` produces the same
+content, but with core.autocrlf=true it writes the LF-only files (section 4, the new .cfg) as CRLF.
+
+Baselines used:
+  1  Fengist/Maritime-Pack  GitHub zip snapshot 2822417 (GameData as shipped)
+  2  Fengist/MPUtils        commit 40615d6 (2022-04-09); byte-identical to the shipped source,
+                            and the shipped MPUtils.dll exposes the same API surface
+  3  Fengist/MPHover        commit 6736813 (2018-07-30); MPHover.cs byte-identical to the baseline
+  4  MPEngineSounds.dll and FengistAnim.dll as SHIPPED in the pack, decompiled with ILSpy.
+     The public repos Fengist/MPEngineSounds (18733d8) and Fengist/Fengist-s-Animator
+     (371e72d) are older than the shipped DLLs, so these hunks are against the decompiled
+     source (in src/ of this release). Port them to the real sources by hand.
+
+Build changes are not included as diffs. src/Directory.Build.props and the SDK-style
+*.csproj files in this release build all four DLLs with `dotnet build -c Release` against
+KSP 1.12.5 (net472, KSP/Unity references Private=false).
+
+#### SECTION 1: Fengist/Maritime-Pack (repository root, -p1)
+#
+# Binary changes (cannot be shown as text). The rebuilt DLLs are in GameData/ of this release:
+#   BINARY REPLACE  GameData/MPUtils/Plugins/MPUtils.dll           sha256 1e06461e717a1dee47a47ebf65ca7cd4a488d6b16cd6f5e48ed602155b28f30f  (from section 2)
+#   BINARY REPLACE  GameData/MPUtils/Plugins/MPEngineSounds.dll    sha256 a83c9e7aadd1995a01cfbe18c03215ea3694c26976129ea2c10a1a16e4cb23c7  (from section 4)
+#   BINARY REPLACE  GameData/Maritime Pack/Plugins/MPHover.dll     sha256 0fe8d2188bee4b453aaf0cae90bad00e8f4b3ac85f9c5e8bf6364a0eb381519f  (from section 3)
+#   BINARY REPLACE  GameData/FengistAnim/FengistAnim.dll           sha256 3e276576a9aca66ea76c69ee843b5cbe6e50738083a47509803aa27a7b006796  (from section 4)
+#   UNCHANGED       GameData/MPUtils/Plugins/FSResizer.dll         sha256 44738cd1a6b0c2cb048c767847917d10ac076f2479c02e909e4224b360526408
+#
+# Text changes: new ModuleManager patch (cfg fixes), and removal of a stray developer log file.
+
+diff -ruN a/GameData/MPUtils/Plugins/PluginData/MPLog.dat b/GameData/MPUtils/Plugins/PluginData/MPLog.dat
+--- a/GameData/MPUtils/Plugins/PluginData/MPLog.dat	2026-11-07 22:36:14.996969800 +0530
++++ b/GameData/MPUtils/Plugins/PluginData/MPLog.dat	1970-01-01 05:30:00.000000000 +0530
+@@ -1 +0,0 @@
+-4/9/2022 9:17:44 PM: [Maritime Pack] MPUtils v0.1.8134.38312 Anchors Aweigh!
+diff -ruN "a/GameData/Maritime Pack/Patches/zz_MP_KSP1125_Compat.cfg" "b/GameData/Maritime Pack/Patches/zz_MP_KSP1125_Compat.cfg"
+--- "a/GameData/Maritime Pack/Patches/zz_MP_KSP1125_Compat.cfg"	1970-01-01 05:30:00.000000000 +0530
++++ "b/GameData/Maritime Pack/Patches/zz_MP_KSP1125_Compat.cfg"	2026-11-07 22:36:15.037565600 +0530
+@@ -0,0 +1,32 @@
++// Maritime Pack - KSP 1.12.5 compatibility fixes (cfg side).
++// Requires ModuleManager (not bundled). Every patch only acts when MPUtils.dll is installed.
++// See CHANGES.md next to the GameData folder of this patched release for details.
++
++// 1) Typo in the flameout sound of both electric submarine stern engines: "EleclStop" does not exist,
++//    so the flameout sound was silently never created. The intended clip is Maritime Pack/Sounds/ElecStop.
++@PART[FS_SubmarineElecEngine1|FS_SubmarineElecEngine125]:NEEDS[MPUtils]:AFTER[MPUtils]
++{
++	@MODULE[MPengineSounds]
++	{
++		@flameout = Maritime Pack/Sounds/ElecStop
++	}
++}
++
++// 2) MPSub reads its depth limit from the KSPField "MaxDepth" (default 400 m, adjustable 400-2000 m in the
++//    editor). The Bathysphere and Sub Conning part cfgs spell it "maxDepth = 700", so the value was ignored
++//    and every sub started at 400 m. Copy it to the correct key and drop the misspelled one.
++@PART[*]:HAS[@MODULE[MPSub]:HAS[#maxDepth,~MaxDepth]]:NEEDS[MPUtils]:AFTER[MPUtils]
++{
++	@MODULE[MPSub]:HAS[#maxDepth,~MaxDepth]
++	{
++		MaxDepth = #$maxDepth$
++		!maxDepth = delete
++	}
++}
++
++// 3) MPUtils/Resources.cfg re-defines "Water" (flowMode STAGE_PRIORITY_FLOW) which Community Resource Pack
++//    already defines (flowMode ALL_VESSEL). KSP keeps the first definition and logs an error for the duplicate.
++//    When CRP is installed, remove the duplicate so only CRP's definition exists. Nothing changes without CRP.
++!RESOURCE_DEFINITION[Water]:HAS[#flowMode[STAGE_PRIORITY_FLOW]]:NEEDS[MPUtils&CommunityResourcePack]:AFTER[MPUtils]
++{
++}
+
+#### SECTION 2: Fengist/MPUtils @ 40615d6 (repository root, -p1)
+
+diff -ruN a/MPUtils/FCWSolarSteam.cs b/MPUtils/FCWSolarSteam.cs
+--- a/MPUtils/FCWSolarSteam.cs	2026-11-07 22:36:11.096612500 +0530
++++ b/MPUtils/FCWSolarSteam.cs	2026-11-07 22:36:11.344871900 +0530
+@@ -13,12 +13,13 @@
+ 
+         public override void OnStart(StartState state)
+         {
+-            MPLog.Writelog("[Maritime Pack] (SolarSteam) FCWSolarSteam Found on " + this.vessel.name);
++            if (this.vessel != null) // vessel is null in the editor
++                MPLog.Writelog("[Maritime Pack] (SolarSteam) FCWSolarSteam Found on " + this.vessel.name);
+         }
+ 
+         public void FixedUpdate()
+         {
+-            if (!HighLogic.LoadedSceneIsFlight)
++            if (!HighLogic.LoadedSceneIsFlight || this.vessel == null)
+             {
+                 return;
+             }
+@@ -49,11 +50,14 @@
+                             float thisflow = (M as ModuleDeployableSolarPanel).flowRate;
+                             if (thisflow > 0)
+                             {
+-                                Part sPart = MPFunctions.GetResourcePart(FlightGlobals.ActiveVessel, "CompressedWater");
++                                // use this vessel (was the active vessel, which may not carry the resources at all)
++                                Part sPart = MPFunctions.GetResourcePart(this.vessel, "CompressedWater");
+                                 int CWID = MPFunctions.GetResourceID(sPart, "CompressedWater");
++                                if (sPart == null || CWID == -1) return;
+                                 double CWFlow = sPart.RequestResource(CWID, thisflow * CWRate, ResourceFlowMode.ALL_VESSEL);
+-                                sPart = MPFunctions.GetResourcePart(FlightGlobals.ActiveVessel, "ElectricCharge");
++                                sPart = MPFunctions.GetResourcePart(this.vessel, "ElectricCharge");
+                                 int EcID = MPFunctions.GetResourceID(sPart, "ElectricCharge");
++                                if (sPart == null || EcID == -1) return;
+                                 sPart.RequestResource(EcID, CWFlow * elRate, ResourceFlowMode.ALL_VESSEL);
+                             }
+                         }
+diff -ruN a/MPUtils/MPAnim.cs b/MPUtils/MPAnim.cs
+--- a/MPUtils/MPAnim.cs	2026-11-07 22:36:11.107714100 +0530
++++ b/MPUtils/MPAnim.cs	2026-11-07 22:36:11.474569700 +0530
+@@ -15,16 +15,20 @@
+ 
+     public class ModuleLayeredAnimator : ModuleAnimateGeneric
+     {
+-        [KSPField]
+-        public int layer = 1;
+-
++        // KSP 1.12's ModuleAnimateGeneric already declares [KSPField] int layer (and applies it itself).
++        // Re-declaring it here hid the base field (two "layer" KSPFields), and this OnStart never
++        // called base.OnStart, so the animation module was left uninitialised (anim could be null).
+         public ModuleLayeredAnimator()
+         {
+         }
+ 
+         public override void OnStart(StartState state)
+         {
+-            this.anim[this.animationName].layer = layer;
++            base.OnStart(state);
++            if (this.anim != null && !string.IsNullOrEmpty(this.animationName) && this.anim[this.animationName] != null)
++            {
++                this.anim[this.animationName].layer = layer;
++            }
+         }
+     }
+ 
+@@ -74,9 +78,11 @@
+ 
+         private double logdelay = 0.0f;
+         public Animation aniEngine = null; //the animation
+-        private ModuleEngines myEngine = new ModuleEngines();  //the first or default engine found in the part
++        // was "= new ModuleEngines()" / "= new ModuleResourceIntake()": creating MonoBehaviours with new
++        // logs a Unity warning for every part instance and yields Unity-"null" objects anyway.
++        private ModuleEngines myEngine = null;  //the first or default engine found in the part
+         private Transform mytransform;
+-        private ModuleResourceIntake myIntake = new ModuleResourceIntake();
++        private ModuleResourceIntake myIntake = null;
+         private float lastThrottle = 0;  //tracks the last throttle position. Always 0 or 1 for non sync'd engines
+         private Quaternion startRotation = new Quaternion(0, 0, 0, 0);
+         private float lastdirection = 1.0f;
+@@ -141,8 +147,18 @@
+                 if (partType == "Engine")
+                 {
+                     myEngine = part.Modules.OfType<ModuleEngines>().FirstOrDefault();
+-                    mytransform = part.FindModelTransform(myEngine.thrustVectorTransformName);
+-                    startRotation = mytransform.localRotation;
++                    if (myEngine == null)
++                    {
++                        MPLog.Writelog("[Maritime Pack] (aniEngine) partType = Engine but no engine module on " + part.name);
++                    }
++                    else
++                    {
++                        mytransform = part.FindModelTransform(myEngine.thrustVectorTransformName);
++                    }
++                    if (mytransform != null)
++                    {
++                        startRotation = mytransform.localRotation;
++                    }
+                     if (useRotorDiscSwap == true)
+                     {
+                         MPLog.Writelog("[Maritime Pack] (aniEngine) Disc swapping active.");
+@@ -210,7 +226,7 @@
+         private float CheckDirection()
+         {
+             float newdirection = 1.0f;
+-            if (detectReverseThrust == true)
++            if (detectReverseThrust == true && mytransform != null)
+             {
+                 if (startRotation.x != mytransform.localRotation.x)
+                 {
+@@ -249,7 +265,12 @@
+         public void FixedUpdate()
+         {
+             if (!HighLogic.LoadedSceneIsFlight ) { return; }
+-            if (myEngine == null && myIntake == null && partType != "Throttle" && partType != "Stirling" && partType != "Battery" || animationName == "null" || !vessel.isActiveVessel)
++            if (vessel == null || myEngine == null && myIntake == null && partType != "Throttle" && partType != "Stirling" && partType != "Battery" || animationName == "null" || !vessel.isActiveVessel)
++            {
++                return;
++            }
++            // missing modules/animation used to throw every physics frame
++            if ((partType == "Engine" && myEngine == null) || (partType == "Intake" && myIntake == null) || aniEngine == null)
+             {
+                 return;
+             }
+@@ -275,7 +296,7 @@
+                 {
+                     double rTotal = MPFunctions.GetResourceTotal(FlightGlobals.ActiveVessel, "ElectricCharge");
+                     double rMax = MPFunctions.GetResourceMax(FlightGlobals.ActiveVessel, "ElectricCharge");
+-                    thisenergy = rTotal / rMax;
++                    thisenergy = rMax > 0 ? rTotal / rMax : 0; // avoid NaN on vessels without EC storage
+                  }
+                 else
+                 {
+@@ -289,7 +310,7 @@
+                         if (syncThrust)
+                         {
+                             float direction = CheckDirection();
+-                            thisenergy = myEngine.normalizedThrustOutput;
++                            thisenergy = myEngine != null ? myEngine.normalizedThrustOutput : 0;
+                             Play_Anim(animationName, (float)thisenergy * direction, 0.0f);
+                             return;
+                         }
+@@ -341,7 +362,7 @@
+                     if (syncThrust)
+                     {
+                         float direction = CheckDirection();
+-                        thisenergy = myEngine.normalizedThrustOutput;
++                        thisenergy = myEngine != null ? myEngine.normalizedThrustOutput : 0;
+                         if (loopAnim == true)
+                         {
+                             Play_Anim(animationName, (float)thisenergy, 0.0f);
+diff -ruN a/MPUtils/MPBuoyancy.cs b/MPUtils/MPBuoyancy.cs
+--- a/MPUtils/MPBuoyancy.cs	2026-11-07 22:36:11.109818100 +0530
++++ b/MPUtils/MPBuoyancy.cs	2026-11-07 22:36:11.609267300 +0530
+@@ -51,11 +51,12 @@
+             base.OnStart(state);
+             //defaultMinDrag = part.minimum_drag;
+             //defaultMaxDrag = part.maximum_drag;
+-            if (forcePointName != string.Empty)
++            // forcePointName is null (not string.Empty) when the cfg does not set it.
++            if (!string.IsNullOrEmpty(forcePointName))
+             {
+                 forcePoint = part.FindModelTransform(forcePointName);
+             }
+-            if (forcePointName == string.Empty || forcePoint == null)
++            if (string.IsNullOrEmpty(forcePointName) || forcePoint == null)
+             {
+                 forcePoint = part.transform;
+             }
+@@ -64,7 +65,7 @@
+                 //Events["increaseBuoyancyEvent"].guiActive = true;
+                 //Events["decreaseBuoyancyEvent"].guiActive = true;
+                 Fields["buoyancyForce"].guiActive = true;
+-                if (forcePointName != string.Empty)
++                if (!string.IsNullOrEmpty(forcePointName))
+                 {
+                     //Events["increaseBuoyancyEvent"].guiName = "increase buoy " + forcePointName;
+                     //Events["decreaseBuoyancyEvent"].guiName = "decrease buoy " + forcePointName;
+@@ -77,7 +78,17 @@
+         {
+             if (!HighLogic.LoadedSceneIsFlight)
+                 return;
+-            if (vessel.mainBody.ocean && part.GetComponent<Rigidbody>() != null)
++            // KSP runs Unity FixedUpdate on modules before Part.Start has called OnStart, and during
++            // vessel splits / part destruction (common in BDArmory fights) vessel or the rigidbody
++            // can be missing for a frame. Every one of these used to throw a NullReferenceException.
++            if (vessel == null || vessel.mainBody == null || part == null || part.packed)
++                return;
++            Rigidbody rb = part.rb != null ? part.rb : part.GetComponent<Rigidbody>();
++            if (rb == null)
++                return;
++            if (forcePoint == null)
++                forcePoint = part.transform;
++            if (vessel.mainBody.ocean)
+             {
+                 if (part.partBuoyancy != null)
+                 {
+@@ -93,37 +104,39 @@
+ 
+                     if (floatMultiplier > 0f)
+                     {
+-                        Vector3d up = (this.vessel.GetComponent<Rigidbody>().position - this.vessel.mainBody.position).normalized;
++                        // was: vessel.GetComponent<Rigidbody>() (the root part's rigidbody), which is null while the
++                        // root part is being destroyed or replaced. The local "up" at the force point is equivalent.
++                        Vector3d up = ((Vector3d)forcePoint.position - vessel.mainBody.position).normalized;
+                         Vector3d uplift = up * buoyancyForce * floatMultiplier;
+ 
+-                        //float relativeDirection = Vector3.Dot(vessel.GetComponent<Rigidbody>().velocity.normalized, up);                        
++                        //float relativeDirection = Vector3.Dot(vessel.GetComponent<Rigidbody>().velocity.normalized, up);
+ 
+                         if (vessel.verticalSpeed < maxVerticalSpeed) // || relativeDirection < 0f) // if you are going down, apply force regardless, of going up, limit up speed
+                         {
+-                            this.part.GetComponent<Rigidbody>().AddForceAtPosition(uplift, forcePoint.position);
++                            rb.AddForceAtPosition(uplift, forcePoint.position);
+                         }
+                     }
+ 
+                     // set water drag
+ 
+-                    part.GetComponent<Rigidbody>().drag = dragInWater;
++                    rb.drag = dragInWater;
+ 
+                     // splashed status
+ 
+                     splashed = true;
+                     part.WaterContact = true;
+-                    part.vessel.Splashed = true;
++                    vessel.Splashed = true;
+ 
+                     // part destruction
+ 
+-                    if (base.GetComponent<Rigidbody>().velocity.magnitude > waterImpactTolerance)
++                    if (rb.velocity.magnitude > waterImpactTolerance)
+                     {
+-                        GameEvents.onCrashSplashdown.Fire(new EventReport(FlightEvents.SPLASHDOWN_CRASH, this.part, this.part.partInfo.title, "ocean", 0, "FSbuoyancy: Hit the water too hard"));
++                        GameEvents.onCrashSplashdown.Fire(new EventReport(FlightEvents.SPLASHDOWN_CRASH, this.part, this.part.partInfo != null ? this.part.partInfo.title : this.part.name, "ocean", 0, "FSbuoyancy: Hit the water too hard"));
+                         this.part.Die();
+                         return;
+                     }
+ 
+-                    //FX                
++                    //FX
+ 
+                     if (splashFXEnabled)
+                     {
+@@ -131,11 +144,11 @@
+                         if (splashTimer <= 0f)
+                         {
+                             splashTimer = splashCooldown;
+-                            if (base.GetComponent<Rigidbody>().velocity.magnitude > 6f && partAltitude > -buoyancyRange) // don't splash if you are deep in the water or going slow
++                            if (rb.velocity.magnitude > 6f && partAltitude > -buoyancyRange) // don't splash if you are deep in the water or going slow
+                             {
+                                 if (Vector3.Distance(base.transform.position, FlightGlobals.camera_position) < 500f)
+                                 {
+-                                    FXMonger.Splash(base.transform.position, base.GetComponent<Rigidbody>().velocity.magnitude / 50f);
++                                    FXMonger.Splash(base.transform.position, rb.velocity.magnitude / 50f);
+                                 }
+                             }
+                         }
+@@ -149,10 +162,10 @@
+                         splashed = false;
+ 
+                         // set air drag
+-                        part.GetComponent<Rigidbody>().drag = 0f;
++                        rb.drag = 0f;
+ 
+                         part.WaterContact = false;
+-                        part.vessel.checkSplashed();
++                        vessel.checkSplashed();
+                     }
+                 }
+             }
+diff -ruN a/MPUtils/MPEngine.cs b/MPUtils/MPEngine.cs
+--- a/MPUtils/MPEngine.cs	2026-11-07 22:36:11.093092400 +0530
++++ b/MPUtils/MPEngine.cs	2026-11-07 22:36:11.752728000 +0530
+@@ -26,18 +26,18 @@
+             {
+                 return;
+             }
+-            MPLog.Writelog("[Maritime Pack] (MPEngine) MPEngine Found" + this.vessel.name);
++            MPLog.Writelog("[Maritime Pack] (MPEngine) MPEngine Found" + (this.vessel != null ? this.vessel.vesselName : "?"));
+         }
+ 
+         public void FixedUpdate()
+         {
+-            if (!HighLogic.LoadedSceneIsFlight)
++            if (!HighLogic.LoadedSceneIsFlight || this.vessel == null)
+             {
+                 return;
+             }
+             if (shutdownUnder == true) //shut down a submerged engine
+             {
+-                if (this.part.WaterContact && MPFunctions.findAltitude(this.part.transform) <= -1)
++                if (this.part.WaterContact && MPFunctions.findAltitude(this.part.transform, this.vessel.mainBody) <= -1) // own body, not the active vessel's
+                 {
+                     for (int i = this.part.Modules.Count - 1; i >= 0; --i)
+                     {
+diff -ruN a/MPUtils/MPFuelSwitch.cs b/MPUtils/MPFuelSwitch.cs
+--- a/MPUtils/MPFuelSwitch.cs	2026-11-07 22:36:11.098611700 +0530
++++ b/MPUtils/MPFuelSwitch.cs	2026-11-07 22:36:11.887623900 +0530
+@@ -207,7 +207,7 @@
+ 
+             //Debug.Log("refreshing UI");
+ 
+-            if (tweakableUI == null)
++            if (tweakableUI == null && UIPartActionController.Instance != null) // no controller while a craft is being loaded
+             {
+                 tweakableUI = UIPartActionController.Instance.GetItem(part);
+             }
+@@ -240,6 +240,7 @@
+             currentPart.Resources.dict = new DictionaryValueList<int, PartResource>();
+             PartResource[] partResources = currentPart.GetComponents<PartResource>();        
+ 
++            if (tankList == null) initializeData();
+             for (int tankCount = 0; tankCount < tankList.Count; tankCount++)
+             {
+                 if (selectedTankSetup == tankCount)
+diff -ruN a/MPUtils/MPFunctions.cs b/MPUtils/MPFunctions.cs
+--- a/MPUtils/MPFunctions.cs	2026-11-07 22:36:11.084372200 +0530
++++ b/MPUtils/MPFunctions.cs	2026-11-07 22:36:12.027879900 +0530
+@@ -99,20 +99,43 @@
+         private const string MPPath = "GameData/MPUtils/Plugins/PluginData/";
+         private const string MPDebugLog = "MPLog.dat";
+ 
++        // Logging must never throw into game code: a missing PluginData folder, a read-only
++        // install or a locked file used to surface as exceptions inside OnStart/FixedUpdate.
++        private static bool fileLogFailed = false;
++
+         public static void NewLog()
+         {
+-            string path = KSPUtil.ApplicationRootPath + MPPath;
+-            string filepath = System.IO.Path.Combine(path, MPDebugLog);
+-            System.IO.File.Delete(filepath);
++            try
++            {
++                string path = KSPUtil.ApplicationRootPath + MPPath;
++                System.IO.Directory.CreateDirectory(path);
++                string filepath = System.IO.Path.Combine(path, MPDebugLog);
++                if (System.IO.File.Exists(filepath))
++                {
++                    System.IO.File.Delete(filepath);
++                }
++            }
++            catch (Exception ex)
++            {
++                Debug.LogWarning("[Maritime Pack] Unable to reset MPLog.dat: " + ex.Message);
++            }
+         }
+ 
+         public static void Writelog(string thisline)
+         {
+-            string path = KSPUtil.ApplicationRootPath + MPPath;
+-            string filepath = System.IO.Path.Combine(path, MPDebugLog);
+-            if (MPConfig.MPWLog)
++            if (MPConfig.MPWLog && !fileLogFailed)
+             {
+-                System.IO.File.AppendAllText(filepath, DateTime.Now.ToString() + ": " + thisline + Environment.NewLine);
++                try
++                {
++                    string path = KSPUtil.ApplicationRootPath + MPPath;
++                    string filepath = System.IO.Path.Combine(path, MPDebugLog);
++                    System.IO.File.AppendAllText(filepath, DateTime.Now.ToString() + ": " + thisline + Environment.NewLine);
++                }
++                catch (Exception ex)
++                {
++                    fileLogFailed = true; // stop retrying (and spamming) for the rest of the session
++                    Debug.LogWarning("[Maritime Pack] File logging disabled: " + ex.Message);
++                }
+             }
+             if (MPConfig.KSPWLog)
+             {
+@@ -127,19 +150,27 @@
+         public static bool KSPWLog;
+         public static float MPMaxDepth;
+         public static bool MPDepthWarn;
+-        public static bool MPLoadIcons;
++        public static bool MPLoadIcons = true;
+ 
+         public static void Getconfig()
+         {
+             Debug.Log("[Maritime Pack] : cfg file loading...");
+-            PluginConfiguration cfg = PluginConfiguration.CreateForType<MPConfig>();
+-            cfg.load();
+-            MPWLog = cfg.GetValue<bool>("MPWLog", false);
+-            KSPWLog = cfg.GetValue<bool>("KSPWLog", false);
+-            MPDepthWarn = cfg.GetValue<bool>("MPDepthWarn", false);
+-            MPMaxDepth = cfg.GetValue<float>("MPMaxDepth", 990.00f);
+-            MPLoadIcons = cfg.GetValue<bool>("MPLoadIcons", true);
+-            Debug.Log("[Maritime Pack] : cfg file loaded.");
++            try
++            {
++                PluginConfiguration cfg = PluginConfiguration.CreateForType<MPConfig>();
++                cfg.load();
++                MPWLog = cfg.GetValue<bool>("MPWLog", false);
++                KSPWLog = cfg.GetValue<bool>("KSPWLog", false);
++                MPDepthWarn = cfg.GetValue<bool>("MPDepthWarn", false);
++                MPMaxDepth = cfg.GetValue<float>("MPMaxDepth", 990.00f);
++                MPLoadIcons = cfg.GetValue<bool>("MPLoadIcons", true);
++                Debug.Log("[Maritime Pack] : cfg file loaded.");
++            }
++            catch (Exception ex)
++            {
++                // keep the defaults (no file logging, icons on) instead of aborting MPStartup
++                Debug.LogWarning("[Maritime Pack] : cfg file could not be read, using defaults: " + ex.Message);
++            }
+         }
+     }
+ 
+@@ -295,6 +326,8 @@
+ 
+         public static Part GetResourcePart(Vessel v, string resourceName)
+         {
++            if (v == null || v.parts == null || string.IsNullOrEmpty(resourceName))
++                return null;
+             foreach (Part mypart in v.parts)
+             {
+                 if (mypart.Resources.Contains(resourceName))
+@@ -345,8 +378,9 @@
+ 
+         public static double GetResourceTotal(Vessel v, string resourceName)
+         {
+-            PartResourceDefinition resource = PartResourceLibrary.Instance.GetDefinition(resourceName);
+             double amount = 0;
++            if (v == null || v.parts == null || string.IsNullOrEmpty(resourceName))
++                return amount;
+             foreach (Part mypart in v.parts)
+             {
+                 if (mypart.Resources.Contains(resourceName))
+@@ -359,13 +393,15 @@
+ 
+         public static double GetResourceMax(Vessel v, string resourceName)
+         {
+-            PartResourceDefinition resource = PartResourceLibrary.Instance.GetDefinition(resourceName);
+             double amount = 0;
++            if (v == null || v.parts == null || string.IsNullOrEmpty(resourceName))
++                return amount;
+             foreach (Part mypart in v.parts)
+             {
+-                if (mypart.Resources.Contains(resourceName))
++                PartResource res = GetPartResource(mypart, resourceName);
++                if (res != null)
+                 {
+-                    amount += mypart.Resources.Get(resource.id).maxAmount;
++                    amount += res.maxAmount;
+                 }
+             }
+             return amount;
+@@ -373,34 +409,53 @@
+ 
+         public static double GetPitch(Vessel thisVessel)
+         {
++            if (thisVessel == null) return 0;
+             var pitch = Vector3d.Angle(FlightGlobals.upAxis, thisVessel.transform.up);
+             return pitch;
+         }
+ 
++        // Returns the resource id, or -1 when the resource is not defined (e.g. a config names a
++        // resource from a mod that is not installed). Previously this threw a NullReferenceException.
+         public static int GetResourceID(this Part part, string resourceName)
+         {
++            if (string.IsNullOrEmpty(resourceName) || PartResourceLibrary.Instance == null) return -1;
+             PartResourceDefinition resource = PartResourceLibrary.Instance.GetDefinition(resourceName);
+-            return resource.id;
++            return resource != null ? resource.id : -1;
++        }
++
++        // Null-safe lookup of a part's PartResource by name.
++        public static PartResource GetPartResource(Part part, string resourceName)
++        {
++            if (part == null || part.Resources == null || string.IsNullOrEmpty(resourceName)) return null;
++            int id = GetResourceID(part, resourceName);
++            if (id == -1) return null;
++            return part.Resources.Get(id);
+         }
+ 
+         public static double GetResourceAmount(this Part part, string resourceName)
+         {
+-            PartResourceDefinition resource = PartResourceLibrary.Instance.GetDefinition(resourceName);
+-            return part.Resources.Get(resource.id).amount;
++            PartResource res = GetPartResource(part, resourceName);
++            return res != null ? res.amount : 0;
+         }
+ 
+         public static double GetResourceSpace(this Part part, string resourceName)
+         {
+-            PartResourceDefinition resource = PartResourceLibrary.Instance.GetDefinition(resourceName);
+-            double amt = part.Resources.Get(resource.id).amount;
+-            double max = part.Resources.Get(resource.id).maxAmount;
+-            return max - amt;
++            PartResource res = GetPartResource(part, resourceName);
++            return res != null ? res.maxAmount - res.amount : 0;
+         }
+ 
+         public static double findAltitude(Transform aLocation)
+         {
+             if (FlightGlobals.ActiveVessel == null) return 0;
+-            return Vector3.Distance(aLocation.position, FlightGlobals.ActiveVessel.mainBody.position) - (FlightGlobals.ActiveVessel.mainBody.Radius);
++            return findAltitude(aLocation, FlightGlobals.ActiveVessel.mainBody);
++        }
++
++        // Altitude of a transform above sea level of the given body (use the part's own vessel body,
++        // not the active vessel's: they differ when the module runs on a non-active vessel).
++        public static double findAltitude(Transform aLocation, CelestialBody body)
++        {
++            if (aLocation == null || body == null) return 0;
++            return Vector3.Distance(aLocation.position, body.position) - body.Radius;
+         }
+ 
+         public static double DegreeBearing(Vessel v,
+@@ -418,7 +473,8 @@
+ 
+         public static string GetBody()
+         {
+-            var body = FlightGlobals.ActiveVessel.orbitDriver.referenceBody.GetName();
++            Vessel av = FlightGlobals.ActiveVessel;
++            var body = (av != null && av.orbitDriver != null && av.orbitDriver.referenceBody != null) ? av.orbitDriver.referenceBody.GetName() : null;
+             if (body == null)
+             {
+                 body = "None";
+@@ -560,6 +616,10 @@
+ 
+         public static string DepthBelowKeel(Vessel v)
+         {
++            if (v == null)
++            {
++                return "n/a";
++            }
+             if (Math.Abs(v.terrainAltitude) > 1000)
+             {
+                 return "> 1000 m";
+diff -ruN a/MPUtils/MPIconify.cs b/MPUtils/MPIconify.cs
+--- a/MPUtils/MPIconify.cs	2026-11-07 22:36:11.095320200 +0530
++++ b/MPUtils/MPIconify.cs	2026-11-07 22:36:12.166346800 +0530
+@@ -110,7 +110,10 @@
+ 
+             print(categoryTitle + "  Filter Count: " + parts.Count);
+             if (parts.Count > 0)
++            {
++                GameEvents.onGUIEditorToolbarReady.Remove(SubCategories); // never register twice
+                 GameEvents.onGUIEditorToolbarReady.Add(SubCategories);
++            }
+         }
+ 
+         private bool EditorItemsFilter(AvailablePart avPart)
+@@ -120,9 +123,24 @@
+ 
+         private void SubCategories()
+         {
+-            var icon = GenIcon(categoryTitle);
+-            var filter = PartCategorizer.Instance.filters.Find(f => f.button.categorydisplayName == "#autoLOC_453547");//change for 1.3.1
+-            PartCategorizer.AddCustomSubcategoryFilter(filter, categoryTitle, categoryTitle, icon, EditorItemsFilter);            
++            // This handler stays subscribed after the (once-only) addon object is destroyed, so it must
++            // not rely on Unity state, and it must survive a missing category instead of throwing.
++            try
++            {
++                if (PartCategorizer.Instance == null || PartCategorizer.Instance.filters == null) return;
++                var filter = PartCategorizer.Instance.filters.Find(f => f != null && f.button != null && f.button.categorydisplayName == "#autoLOC_453547");//change for 1.3.1
++                if (filter == null)
++                {
++                    Debug.LogWarning("[Maritime Pack] 'Filter by Function' category not found; skipping " + categoryTitle + " subcategory");
++                    return;
++                }
++                var icon = GenIcon(categoryTitle);
++                PartCategorizer.AddCustomSubcategoryFilter(filter, categoryTitle, categoryTitle, icon, EditorItemsFilter);
++            }
++            catch (System.Exception ex)
++            {
++                Debug.LogError("[Maritime Pack] Failed to add editor subcategory " + categoryTitle + ": " + ex);
++            }
+         }
+ 
+         private Icon GenIcon(string iconName)
+@@ -131,17 +149,29 @@
+             var normIconFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), iconName + "_off.png"); // icon to be present in same folder as dll
+             var selIconFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), iconName + "_on.png");// icon to be present in same folder as dll
+ 
+-            WWW www = new WWW(normIconFile);
+-            www.LoadImageIntoTexture(normIcon);
+-            normIcon.Apply();
+-            www = new WWW(normIconFile);
+-            www.LoadImageIntoTexture(selIcon);
+-            selIcon.Apply();
+-            www.Dispose();
++            // was: new WWW(<plain file path>) (no file:// scheme, so nothing loaded) and the "on" icon was
++            // read from the "_off" file. Read the PNGs directly instead.
++            LoadPng(normIcon, normIconFile);
++            LoadPng(selIcon, File.Exists(selIconFile) ? selIconFile : normIconFile);
+ 
+             var icon = new Icon(iconName + "Icon", normIcon, selIcon);
+             return icon;
+         }
++
++        private static void LoadPng(Texture2D tex, string file)
++        {
++            try
++            {
++                if (File.Exists(file))
++                {
++                    ImageConversion.LoadImage(tex, File.ReadAllBytes(file));
++                }
++            }
++            catch (System.Exception ex)
++            {
++                Debug.LogWarning("[Maritime Pack] Could not load icon " + file + ": " + ex.Message);
++            }
++        }
+     }
+ 
+ }
+\ No newline at end of file
+diff -ruN a/MPUtils/MPResDecay.cs b/MPUtils/MPResDecay.cs
+--- a/MPUtils/MPResDecay.cs	2026-11-07 22:36:11.087390700 +0530
++++ b/MPUtils/MPResDecay.cs	2026-11-07 22:36:12.300406700 +0530
+@@ -26,14 +26,19 @@
+ 
+         public void FixedUpdate()
+         {
++            // was: ran in the editor too, where FlightGlobals.ActiveVessel is null -> NullReferenceException
++            if (!HighLogic.LoadedSceneIsFlight || this.vessel == null)
++            {
++                return;
++            }
+             varPeriod -= Time.deltaTime;
+             if (varPeriod < 0)
+             {
+                 varPeriod = decayPeriod;
+-                resPart = MPFunctions.GetResourcePart(FlightGlobals.ActiveVessel, resourceName);
++                resPart = MPFunctions.GetResourcePart(this.vessel, resourceName);
+                 resID = MPFunctions.GetResourceID(resPart, resourceName);
+-                resAmt = MPFunctions.GetResourceTotal(FlightGlobals.ActiveVessel, resourceName);
+-                if (resPart != null && resAmt > 0)
++                resAmt = MPFunctions.GetResourceTotal(this.vessel, resourceName);
++                if (resPart != null && resAmt > 0 && resID != -1)
+                 {
+                     try
+                     {
+diff -ruN a/MPUtils/MPStirling.cs b/MPUtils/MPStirling.cs
+--- a/MPUtils/MPStirling.cs	2026-11-07 22:36:11.101611800 +0530
++++ b/MPUtils/MPStirling.cs	2026-11-07 22:36:12.434216200 +0530
+@@ -31,17 +31,18 @@
+ 
+         public void FixedUpdate()
+         {
+-            if (!HighLogic.LoadedSceneIsFlight)
++            if (!HighLogic.LoadedSceneIsFlight || this.vessel == null || string.IsNullOrEmpty(resourceName))
+             {
+                 return;
+             }
+             double kw = Math.Abs(this.part.thermalRadiationFlux);
+-            Part rPart = MPFunctions.GetResourcePart(FlightGlobals.ActiveVessel, resourceName);
+-            if (rPart != null)
+-            { 
+-                int id = MPFunctions.GetResourceID(rPart, resourceName);
+-                double rTotal = MPFunctions.GetResourceTotal(FlightGlobals.ActiveVessel, resourceName);
+-                double rMax = MPFunctions.GetResourceMax(FlightGlobals.ActiveVessel, resourceName);
++            // use this part's vessel, not the active vessel
++            Part rPart = MPFunctions.GetResourcePart(this.vessel, resourceName);
++            int id = MPFunctions.GetResourceID(rPart, resourceName);
++            if (rPart != null && id != -1)
++            {
++                double rTotal = MPFunctions.GetResourceTotal(this.vessel, resourceName);
++                double rMax = MPFunctions.GetResourceMax(this.vessel, resourceName);
+                 transAmt = resourceAmt * kw;
+                     if (actRad == true) // look for active radiator
+                     {
+diff -ruN a/MPUtils/MPSub.cs b/MPUtils/MPSub.cs
+--- a/MPUtils/MPSub.cs	2026-11-07 22:36:11.100611400 +0530
++++ b/MPUtils/MPSub.cs	2026-11-07 22:36:12.565345200 +0530
+@@ -110,7 +110,7 @@
+ 
+             MPLog.Writelog("[Maritime Pack] MPSub Found");
+ 
+-            if (HighLogic.LoadedSceneIsFlight)
++            if (HighLogic.LoadedSceneIsFlight && this.vessel != null)
+             {
+                 // set the default pressure to all parts
+                 if (currentPressure <= 0.0f)
+@@ -138,11 +138,13 @@
+ 
+         public bool ConsumeResource (string thisresource, double amount)
+         {
+-            Part rPart = MPFunctions.GetResourcePart(FlightGlobals.ActiveVessel, thisresource);
+-            double rTotal = MPFunctions.GetResourceTotal(FlightGlobals.ActiveVessel, pressureResource1);
+-            if (rPart != null && rTotal >= amount)
++            // was: drew from FlightGlobals.ActiveVessel (wrong vessel when this sub is not active) and
++            // always checked the total of pressureResource1 instead of the requested resource
++            Part rPart = MPFunctions.GetResourcePart(this.vessel, thisresource);
++            double rTotal = MPFunctions.GetResourceTotal(this.vessel, thisresource);
++            int id = MPFunctions.GetResourceID(rPart, thisresource);
++            if (rPart != null && rTotal >= amount && id != -1)
+             {
+-                int id = MPFunctions.GetResourceID(rPart, thisresource);
+                 double rFlow = rPart.RequestResource(id, amount, ResourceFlowMode.ALL_VESSEL);
+                 if (rFlow > 0)
+                 {
+@@ -154,7 +156,7 @@
+ 
+         public void FixedUpdate()
+         {
+-            if (!HighLogic.LoadedSceneIsFlight)
++            if (!HighLogic.LoadedSceneIsFlight || this.vessel == null || this.vessel.parts == null)
+             {
+                 return;
+             }
+@@ -255,7 +257,7 @@
+             //}
+ 
+             //Close Intakes if we're diving
+-            if (manageIntakes && vessel.isActiveVessel && this.vessel.mainBody.ocean)
++            if (manageIntakes && vessel.isActiveVessel && this.vessel.mainBody != null && this.vessel.mainBody.ocean)
+             {
+                 if (this.vessel.altitude <= -1.0)
+                 {
+diff -ruN a/MPUtils/MPSubComputer.cs b/MPUtils/MPSubComputer.cs
+--- a/MPUtils/MPSubComputer.cs	2026-11-07 22:36:11.105714200 +0530
++++ b/MPUtils/MPSubComputer.cs	2026-11-07 22:36:12.701070300 +0530
+@@ -26,26 +26,60 @@
+ 
+         public void Start()
+         {
+-            if (HighLogic.LoadedSceneIsFlight)
++            if (HighLogic.LoadedSceneIsFlight && this.vessel != null)
+             {
+-                foreach (Part mypart in this.vessel.parts)
+-                {
+-                    if (mypart.Resources.Contains("CompressedWater"))
+-                    {
+-                        if (rescount == 0)
+-                        { Part1 = mypart; }
+-                        if (rescount == 1)
+-                        { Part2 = mypart; }
+-                        rescount++;
+-                    }
+-                }
+-                MPLog.Writelog("[Maritime Pack] Compressed Water Found: " + rescount);
++                FindTanks();
+                 id = MPFunctions.GetResourceID(Part1, "CompressedWater");
+                 batid = MPFunctions.GetResourceID(Part1, "ElectricCharge");
+                 vesselvolume = MPFunctions.GetVolume(this.vessel);
+             }
+         }
+ 
++        // Locate the (first) two CompressedWater ballast tanks on this vessel.
++        private void FindTanks()
++        {
++            Part1 = null;
++            Part2 = null;
++            rescount = 0;
++            if (this.vessel == null || this.vessel.parts == null) return;
++            foreach (Part mypart in this.vessel.parts)
++            {
++                if (mypart != null && mypart.Resources.Contains("CompressedWater"))
++                {
++                    if (rescount == 0)
++                    { Part1 = mypart; }
++                    if (rescount == 1)
++                    { Part2 = mypart; }
++                    rescount++;
++                }
++            }
++            MPLog.Writelog("[Maritime Pack] Compressed Water Found: " + rescount);
++        }
++
++        // AutoKeel/AutoBuoy/Blow Ballast need two ballast tanks that are still part of this vessel.
++        // Tanks can be destroyed, decoupled or undocked at any time; re-scan before giving up.
++        private bool TanksValid()
++        {
++            if (TanksOk()) return true;
++            FindTanks();
++            return TanksOk();
++        }
++
++        private bool TanksOk()
++        {
++            return Part1 != null && Part2 != null && Part1 != Part2 && Part1.vessel == this.vessel && Part2.vessel == this.vessel;
++        }
++
++        private void StopAutoModes(string reason)
++        {
++            Events["BuoyDeactivate"].active = false;
++            Events["BuoyActivate"].active = true;
++            Events["KeelActivate"].active = true;
++            Events["KeelDeactivate"].active = false;
++            ScreenMessages.PostScreenMessage("[Dive Computer] " + reason, 5f, ScreenMessageStyle.UPPER_CENTER);
++            MPLog.Writelog("[Maritime Pack] Sub Computer: " + reason);
++        }
++
+ 
+         [KSPEvent(guiActive = true, guiName = "Activate AutoKeel")]
+         public void KeelActivate()
+@@ -79,7 +113,15 @@
+         [KSPEvent(guiActive = true, guiName = "Blow Ballast")]
+         public void BlowBallast()
+         {
++            if (!HighLogic.LoadedSceneIsFlight) return;
++            if (!TanksValid())
++            {
++                // was: NullReferenceException when the vessel did not have exactly two ballast tanks
++                ScreenMessages.PostScreenMessage("[Dive Computer] Blow Ballast needs two CompressedWater ballast tanks.", 5f, ScreenMessageStyle.UPPER_CENTER);
++                return;
++            }
+             int id = MPFunctions.GetResourceID(Part1, "CompressedWater");
++            if (id == -1) return;
+             Part1.TransferResource(id, -MPFunctions.GetResourceAmount(Part1, "CompressedWater"));
+             Part2.TransferResource(id, -MPFunctions.GetResourceAmount(Part2, "CompressedWater"));
+         }
+@@ -103,7 +145,13 @@
+ 
+         public override void OnUpdate()
+         {
+-            if (!HighLogic.LoadedSceneIsFlight && rescount != 2) return;
++            // was: "!HighLogic.LoadedSceneIsFlight && rescount != 2", which never returned in flight, so
++            // AutoKeel/AutoBuoy dereferenced Part1/Part2 every frame on vessels without two ballast tanks.
++            if (!HighLogic.LoadedSceneIsFlight || this.vessel == null) return;
++            if ((Events["BuoyDeactivate"].active || Events["KeelDeactivate"].active) && !TanksValid())
++            {
++                StopAutoModes("AutoKeel/AutoBuoy need two CompressedWater ballast tanks on this vessel.");
++            }
+             {
+                 //Computer Power Drain
+                 if (Events["BuoyDeactivate"].active || Events["KeelDeactivate"].active || Events["InfoDeactivate"].active)
+@@ -123,9 +171,10 @@
+                     if (batterycheck < 0)
+                     {
+                         double rFlow = 0.0f;
+-                        Part rPart = MPFunctions.GetResourcePart(FlightGlobals.ActiveVessel, "ElectricCharge");
+-                        double rTotal = MPFunctions.GetResourceTotal(FlightGlobals.ActiveVessel, "ElectricCharge");
+-                        if (rPart != null && rTotal >= rConsume)
++                        // use this vessel, not whichever vessel happens to be active
++                        Part rPart = MPFunctions.GetResourcePart(this.vessel, "ElectricCharge");
++                        double rTotal = MPFunctions.GetResourceTotal(this.vessel, "ElectricCharge");
++                        if (rPart != null && rTotal >= rConsume && batid != -1)
+                         {
+                             rFlow = rPart.RequestResource(batid,rConsume,ResourceFlowMode.ALL_VESSEL);
+                             goodcheck = true;
+@@ -170,7 +219,7 @@
+                             {
+                                 Part2.TransferResource(id, transferamount);
+                             }
+-                            else if (p1amount > 0)
++                            else if (p2amount > 0)
+                             {
+                                 Part2.TransferResource(id, -p2amount);
+                             }
+@@ -192,7 +241,7 @@
+                             {
+                                 Part2.TransferResource(id, transferamount);
+                             }
+-                            else if (p1amount > 0)
++                            else if (p2amount > 0)
+                             {
+                                 Part2.TransferResource(id, p2amount);
+                             }
+@@ -244,8 +293,8 @@
+                             if (transferamount < 0.01f)
+                             { transferamount = 0.01f; }
+                             MPLog.Writelog("[Maritime Pack] Pitch: " + pitch);
+-                            alt1 = MPFunctions.findAltitude(Part1.transform);
+-                            alt2 = MPFunctions.findAltitude(Part2.transform);
++                            alt1 = MPFunctions.findAltitude(Part1.transform, this.vessel.mainBody); // own body, not the active vessel's
++                            alt2 = MPFunctions.findAltitude(Part2.transform, this.vessel.mainBody);
+                             MPLog.Writelog("[Maritime Pack] Autokeel Running: Alt1:" + alt1 + " Alt2:" + alt2 + " Amt: " + transferamount);
+                             if (Math.Abs(alt1 - alt2) < 1.0f)
+                             {
+diff -ruN a/MPUtils/MPSubGui.cs b/MPUtils/MPSubGui.cs
+--- a/MPUtils/MPSubGui.cs	2026-11-07 22:36:11.103687300 +0530
++++ b/MPUtils/MPSubGui.cs	2026-11-07 22:36:12.846930300 +0530
+@@ -11,17 +11,27 @@
+     public class MPSubGUI : MonoBehaviour
+     {
+         public Rect windowRect = new Rect(20, 45, 300, 60);
++        // was window id 0, which collides with any other mod that also uses id 0
++        private readonly int windowId = "MPUtils.MPSubGUI".GetHashCode();
++
++        void OnDestroy()
++        {
++            // the flag is static: do not reopen the window on the next flight scene by itself
++            MPSubComputer.guiActive = false;
++        }
++
+         void OnGUI()
+         {
+-            if (MPSubComputer.guiActive)
++            if (MPSubComputer.guiActive && FlightGlobals.ActiveVessel != null)
+             {
+-                windowRect = GUI.Window(0, windowRect, DoMyWindow, "Kommodore Vic-10 Dive Computer");
++                windowRect = GUI.Window(windowId, windowRect, DoMyWindow, "Kommodore Vic-10 Dive Computer");
+             }
+         }
+         void DoMyWindow(int windowID)
+         {
+-            GUI.Label(new Rect(10, 20, 280, 20), "Depth below keel: "+MPFunctions.DepthBelowKeel(FlightGlobals.ActiveVessel));
+-            GUI.Label(new Rect(10, 35, 280, 20), "Dive angle: "+MPFunctions.GetPitch(FlightGlobals.ActiveVessel));
++            Vessel v = FlightGlobals.ActiveVessel; // null for a frame while switching vessels
++            GUI.Label(new Rect(10, 20, 280, 20), "Depth below keel: "+MPFunctions.DepthBelowKeel(v));
++            GUI.Label(new Rect(10, 35, 280, 20), "Dive angle: "+(v != null ? MPFunctions.GetPitch(v).ToString() : "n/a"));
+             GUI.DragWindow();
+         }
+     }   
+diff -ruN a/MPUtils/Properties/AssemblyInfo.cs b/MPUtils/Properties/AssemblyInfo.cs
+--- a/MPUtils/Properties/AssemblyInfo.cs	2026-11-07 22:36:11.091092100 +0530
++++ b/MPUtils/Properties/AssemblyInfo.cs	2026-11-07 22:36:13.126041500 +0530
+@@ -32,3 +32,4 @@
+ // by using the '*' as shown below:
+ [assembly: AssemblyVersion("0.1.*")]
+ //[assembly: AssemblyVersion("1.0.0.0")]
++[assembly: AssemblyInformationalVersion("0.1-ksp1.12.5-nrefix.1")]
+
+#### SECTION 3: Fengist/MPHover @ 6736813 (repository root, -p1)
+
+diff -ruN a/MPHover/MPHover.cs b/MPHover/MPHover.cs
+--- a/MPHover/MPHover.cs	2026-11-07 22:36:13.230667900 +0530
++++ b/MPHover/MPHover.cs	2026-11-07 22:36:13.456233400 +0530
+@@ -52,7 +52,8 @@
+         {
+             Debug.Log("[FS Hover] Init");
+ 
+-            if (HighLogic.LoadedSceneIsFlight)
++            // vessel can be null when the part is initialised outside a fully loaded vessel
++            if (HighLogic.LoadedSceneIsFlight && this.vessel != null && this.vessel.parts != null)
+             {
+                 var partHeightQuery = new PartHeightQuery(float.MaxValue);
+                 int count = this.vessel.parts.Count;
+@@ -110,6 +111,9 @@
+             float Height = 10, GD = 10, SD = 10;
+             RaycastHit HoverRay;
+ 
++            if (FlightGlobals.currentMainBody == null)
++                return Height;
++
+             Vector3 geeDir = FlightGlobals.getGeeForceAtPosition(LiftPos).normalized;
+ 
+             if (Physics.Raycast(LiftPos, geeDir, out HoverRay, maxHoverDist + 10, layermask))
+@@ -145,9 +149,34 @@
+         {
+         }
+ 
++        private bool vesselListDirty = true;
++
+         public void Awake()
+         {
+-            lastVesselCount = 0;            
++            lastVesselCount = 0;
++        }
++
++        public void Start()
++        {
++            // FlightGlobals.Vessels.Count does not change when a vessel comes into physics range or is
++            // docked/undocked/split, so also rebuild the list on these events.
++            GameEvents.onVesselLoaded.Add(OnVesselListChanged);
++            GameEvents.onVesselCreate.Add(OnVesselListChanged);
++            GameEvents.onVesselWasModified.Add(OnVesselListChanged);
++            GameEvents.onVesselDestroy.Add(OnVesselListChanged);
++        }
++
++        public void OnDestroy()
++        {
++            GameEvents.onVesselLoaded.Remove(OnVesselListChanged);
++            GameEvents.onVesselCreate.Remove(OnVesselListChanged);
++            GameEvents.onVesselWasModified.Remove(OnVesselListChanged);
++            GameEvents.onVesselDestroy.Remove(OnVesselListChanged);
++        }
++
++        private void OnVesselListChanged(Vessel v)
++        {
++            vesselListDirty = true;
+         }
+ 
+         public void alterHEVesselList()
+@@ -156,27 +185,37 @@
+ 
+             foreach (Vessel aVessel in FlightGlobals.Vessels)
+             {
++                if (aVessel == null || !aVessel.loaded || aVessel.Parts == null)
++                    continue;
+ 
++                bool found = false;
+                 foreach (Part aPart in aVessel.Parts)
+                 {
+-
++                    if (aPart == null)
++                        continue;
+                     foreach (PartModule aModule in aPart.Modules)
+                     {
+                         if (aModule is MPHoverEngine)
+                         {
++                            // was: added once per hover engine, so a craft with two engines was listed twice
+                             allVesselsWithHE.Add(aVessel);
++                            found = true;
++                            break;
+                         }
+                     }
++                    if (found)
++                        break;
+                 }
+             }
+             lastVesselCount = FlightGlobals.Vessels.Count;
++            vesselListDirty = false;
+         }
+ 
+         public void FixedUpdate()
+         {
+-            if (HighLogic.LoadedSceneIsFlight)
++            if (HighLogic.LoadedSceneIsFlight && FlightGlobals.ready && FlightGlobals.Vessels != null)
+             {
+-                if (FlightGlobals.Vessels.Count != lastVesselCount)
++                if (vesselListDirty || FlightGlobals.Vessels.Count != lastVesselCount)
+                 {
+                     alterHEVesselList();
+                 }
+@@ -188,20 +227,24 @@
+         {
+             int totalThrust = 0;
+ 
+-            foreach (Vessel aVessel in FlightGlobals.Vessels)
++            // was: every part module of every vessel in the game, every physics frame. The list built by
++            // alterHEVesselList (previously unused) only holds loaded vessels with a hover engine.
++            for (int v = 0; v < allVesselsWithHE.Count; v++)
+             {
++                Vessel aVessel = allVesselsWithHE[v];
++                if (aVessel == null || !aVessel.loaded || aVessel.packed || aVessel.Parts == null)
++                    continue;
+                 totalThrust = 0;
+                 foreach (Part aPart in aVessel.Parts)
+                 {
++                    if (aPart == null)
++                        continue;
+                     foreach (PartModule aModule in aPart.Modules)
+                     {
+-                        if (aModule is MPHoverEngine)
++                        MPHoverEngine thisHoverEngine = aModule as MPHoverEngine;
++                        if (thisHoverEngine != null && thisHoverEngine.liftEngineActive)
+                         {
+-                            MPHoverEngine thisHoverEngine = aModule.GetComponent<MPHoverEngine>();
+-                            if (thisHoverEngine.liftEngineActive)
+-                            {
+-                                totalThrust += thisHoverEngine.liftThrust;
+-                            }
++                            totalThrust += thisHoverEngine.liftThrust;
+                         }
+                     }
+                 }
+@@ -217,7 +260,12 @@
+ 
+             Rigidbody rb;
+ 
+-            Vector3 thisWayUp = (FlightGlobals.ActiveVessel.rootPart.transform.position - FlightGlobals.ActiveVessel.mainBody.position).normalized;
++            // was: FlightGlobals.ActiveVessel.rootPart / mainBody - NullReferenceException whenever there is no
++            // active vessel for a frame (vessel switch, active vessel destroyed), and the wrong "up" for any
++            // hovercraft that is not the active vessel.
++            if (affectVessel == null || affectVessel.mainBody == null || affectVessel.Parts == null)
++                return;
++            Vector3 thisWayUp = (affectVessel.transform.position - affectVessel.mainBody.position).normalized;
+ 
+             transformList.Clear();
+             rbList.Clear();
+@@ -225,15 +273,22 @@
+ 
+             foreach (Part aPart in affectVessel.Parts)
+             {
++                if (aPart == null)
++                    continue;
+                 foreach (PartModule aModule in aPart.Modules)
+                 {
+-                    if (aModule is MPHoverSkirt)
++                    MPHoverSkirt thisHoverSkirt = aModule as MPHoverSkirt;
++                    if (thisHoverSkirt != null)
+                     {
+-                        MPHoverSkirt thisHoverSkirt = aModule.GetComponent<MPHoverSkirt>();
++                        // prefer the part's live rigidbody over the one cached in OnStart
++                        Rigidbody skirtRb = aPart.rb;
+                         for (int i = 0; i < thisHoverSkirt.transformList.Count; i++)
+                         {
++                            Rigidbody r = skirtRb != null ? skirtRb : thisHoverSkirt.rbList[i];
++                            if (thisHoverSkirt.transformList[i] == null || r == null)
++                                continue;
+                             transformList.Add(thisHoverSkirt.transformList[i]);
+-                            rbList.Add(thisHoverSkirt.rbList[i]);
++                            rbList.Add(r);
+                             heightList.Add(thisHoverSkirt.heightList[i]);
+                         }
+                     }
+@@ -242,6 +297,9 @@
+ 
+             //Debug.Log(affectVessel.name);
+ 
++            if (transformList.Count == 0)
++                return; // no usable skirts: nothing to push on (and avoids dividing by zero below)
++
+             float thrustToAdd = 0f;
+             float totalHeight = 0f;
+             for (int i = 0; i < transformList.Count; i++)
+@@ -303,11 +361,14 @@
+                 float totalHeight = 0;
+                 for (int i = 0; i < transformList.Count; i++)
+                 {
++                    if (transformList[i] == null)
++                        continue;
+                     var hoverheight = FSHoverDoLift.CalculateHoverHeight(transformList[i].position);
+                     totalHeight += hoverheight;
+                     heightList[i] = hoverheight;
+                 }
+-                aveAlt = totalHeight / transformList.Count;
++                if (transformList.Count > 0)
++                    aveAlt = totalHeight / transformList.Count; // was NaN (persisted to the save) without lift transforms
+             }
+         }
+ 
+diff -ruN a/MPHover/Properties/AssemblyInfo.cs b/MPHover/Properties/AssemblyInfo.cs
+--- a/MPHover/Properties/AssemblyInfo.cs	2026-11-07 22:36:13.228177300 +0530
++++ b/MPHover/Properties/AssemblyInfo.cs	2026-11-07 22:36:13.620029100 +0530
+@@ -33,4 +33,5 @@
+ // by using the '*' as shown below:
+ // [assembly: AssemblyVersion("1.0.*")]
+ [assembly: AssemblyVersion("1.0.0.0")]
+-[assembly: AssemblyFileVersion("1.0.0.0")]
++[assembly: AssemblyFileVersion("1.0.1.0")]
++[assembly: AssemblyInformationalVersion("1.0-ksp1.12.5-nrefix.1")]
+
+#### SECTION 4: decompiled shipped MPEngineSounds.dll + FengistAnim.dll (apply inside src/ of this release, -p1)
+#    NOT directly applicable to the stale Fengist/MPEngineSounds or Fengist/Fengist-s-Animator repos.
+
+diff -ruN a/MPEngineSounds/MPengineSounds.cs b/MPEngineSounds/MPengineSounds.cs
+--- a/MPEngineSounds/MPengineSounds.cs	2026-11-07 22:36:13.716260700 +0530
++++ b/MPEngineSounds/MPengineSounds.cs	2026-11-07 22:36:13.924386700 +0530
+@@ -123,7 +123,8 @@
+ 
+ 	public bool createGroup(FXGroup group, string name, bool loop)
+ 	{
+-		if (name != string.Empty)
++		// unset sound fields are null, not string.Empty; a null group would throw below
++		if (group != null && !string.IsNullOrEmpty(name))
+ 		{
+ 			if (!GameDatabase.Instance.ExistsAudioClip(name))
+ 			{
+@@ -203,6 +204,32 @@
+ 	public override void OnStart(StartState state)
+ 	{
+ 		((PartModule)this).OnStart(state);
++		// FXGroup fields are normally created by Unity serialization when the part is instantiated;
++		// make sure they exist so createGroup can never be handed a null group.
++		if (engageGroup == null)
++		{
++			engageGroup = new FXGroup("engage");
++		}
++		if (runningGroup == null)
++		{
++			runningGroup = new FXGroup("running");
++		}
++		if (powerGroup == null)
++		{
++			powerGroup = new FXGroup("power");
++		}
++		if (disengageGroup == null)
++		{
++			disengageGroup = new FXGroup("disengage");
++		}
++		if (flameoutGroup == null)
++		{
++			flameoutGroup = new FXGroup("flameout");
++		}
++		if (warningGroup == null)
++		{
++			warningGroup = new FXGroup("warning");
++		}
+ 		engageAssigned = createGroup(engageGroup, engage, loop: false);
+ 		runningAssigned = createGroup(runningGroup, running, loop: true);
+ 		powerAssigned = createGroup(powerGroup, power, loop: true);
+@@ -234,7 +261,7 @@
+ 	public void FixedUpdate()
+ 	{
+ 		((PartModule)this).OnFixedUpdate();
+-		if (!HighLogic.LoadedSceneIsFlight || engine == null)
++		if (!HighLogic.LoadedSceneIsFlight || engine == null || (UnityEngine.Object)(object)((PartModule)this).part == (UnityEngine.Object)null)
+ 		{
+ 			return;
+ 		}
+@@ -295,7 +322,7 @@
+ 				}
+ 				else if (engine.getIgnitionState && !engine.getFlameoutState && !engageGroup.audio.isPlaying)
+ 				{
+-					float num = engine.finalThrust / maxThrust * thrustAddedToPitch + powerPitchBase;
++					float num = ThrustFraction() * thrustAddedToPitch + powerPitchBase;
+ 					smoothedPowerPitch = Mathf.Lerp(smoothedPowerPitch, num, 0.1f);
+ 					if (!powerGroup.audio.isPlaying)
+ 					{
+@@ -314,7 +341,7 @@
+ 						{
+ 							currentPowerDelay -= Time.deltaTime;
+ 						}
+-						float num2 = engine.finalThrust / maxThrust * thrustAddedToPitch + powerPitchBase;
++						float num2 = ThrustFraction() * thrustAddedToPitch + powerPitchBase;
+ 						smoothedPowerPitch = Mathf.Lerp(smoothedPowerPitch, num2, 0.1f);
+ 						if (currentPowerDelay <= 0f)
+ 						{
+@@ -326,7 +353,7 @@
+ 									currentPowerFadeIn = 1f;
+ 								}
+ 							}
+-							if (engine.finalThrust / maxThrust > powerLowerThreshold || powerLowerThreshold <= 0f)
++							if (ThrustFraction() > powerLowerThreshold || powerLowerThreshold <= 0f)
+ 							{
+ 								powerGroup.audio.volume = GameSettings.SHIP_VOLUME * currentPowerFadeIn * powerVolume;
+ 							}
+@@ -416,6 +443,16 @@
+ 		}
+ 	}
+ 
++	// finalThrust / maxThrust, but 0 instead of NaN when maxThrust is 0 (NaN pitch makes Unity log errors)
++	private float ThrustFraction()
++	{
++		if (engine == null || !(maxThrust > 0f))
++		{
++			return 0f;
++		}
++		return engine.finalThrust / maxThrust;
++	}
++
+ 	public void OnGUI()
+ 	{
+ 		if (showVolumeDebug)
+diff -ruN a/MPEngineSounds/MPengineWrapper.cs b/MPEngineSounds/MPengineWrapper.cs
+--- a/MPEngineSounds/MPengineWrapper.cs	2026-11-07 22:36:13.719273500 +0530
++++ b/MPEngineSounds/MPengineWrapper.cs	2026-11-07 22:36:14.051797100 +0530
+@@ -209,7 +209,7 @@
+ 		}
+ 	}
+ 
+-	public float finalThrustNormalized => finalThrust / maxThrust;
++	public float finalThrustNormalized => (maxThrust > 0f) ? (finalThrust / maxThrust) : 0f;
+ 
+ 	public bool throttleLocked
+ 	{
+@@ -245,7 +245,9 @@
+ 			return;
+ 		}
+ 		engineFX = ((IEnumerable)part.Modules).OfType<ModuleEnginesFX>().FirstOrDefault();
+-		type = EngineType.ModuleEngineFX;
++		// was: type = ModuleEngineFX unconditionally. On a part without any engine module every property
++		// getter then dereferenced a null engineFX (NullReferenceException in OnStart and every FixedUpdate).
++		type = (((Object)(object)engineFX != (Object)null) ? EngineType.ModuleEngineFX : EngineType.NONE);
+ 	}
+ 
+ 	public MPengineWrapper(Part part, string name)
+diff -ruN a/MPEngineSounds/Properties/AssemblyInfo.cs b/MPEngineSounds/Properties/AssemblyInfo.cs
+--- a/MPEngineSounds/Properties/AssemblyInfo.cs	2026-11-07 22:36:13.714748400 +0530
++++ b/MPEngineSounds/Properties/AssemblyInfo.cs	2026-11-07 22:36:14.193352900 +0530
+@@ -13,5 +13,6 @@
+ [assembly: AssemblyTrademark("")]
+ [assembly: ComVisible(false)]
+ [assembly: Guid("4683ea01-ee72-4089-93af-e9df9da7b8c5")]
+-[assembly: AssemblyFileVersion("1.0.0.0")]
++[assembly: AssemblyFileVersion("1.0.1.0")]
++[assembly: AssemblyInformationalVersion("1.0-ksp1.12.5-nrefix.1")]
+ [assembly: AssemblyVersion("1.0.0.0")]
+diff -ruN a/FengistAnim/FAnimEngine.cs b/FengistAnim/FAnimEngine.cs
+--- a/FengistAnim/FAnimEngine.cs	2026-11-07 22:36:14.303896000 +0530
++++ b/FengistAnim/FAnimEngine.cs	2026-11-07 22:36:14.510204800 +0530
+@@ -74,11 +74,13 @@
+ 
+ 	public Animation aniEngine = null;
+ 
+-	private ModuleEngines myEngine = new ModuleEngines();
++	// was "= new ModuleEngines()": constructing a MonoBehaviour with new logs a Unity warning for every
++	// part instance (prefab compile, editor, flight) and only produces a Unity-"null" object.
++	private ModuleEngines myEngine = null;
+ 
+ 	private Transform mytransform;
+ 
+-	private ModuleResourceIntake myIntake = new ModuleResourceIntake();
++	private ModuleResourceIntake myIntake = null;
+ 
+ 	private float lastThrottle = 0f;
+ 
+@@ -144,8 +146,20 @@
+ 		if (partType == "Engine")
+ 		{
+ 			myEngine = ((IEnumerable)((PartModule)this).part.Modules).OfType<ModuleEngines>().FirstOrDefault();
+-			mytransform = ((PartModule)this).part.FindModelTransform(myEngine.thrustVectorTransformName);
+-			thrustRotation = mytransform.localRotation;
++			// guard: a part declaring partType = Engine without an engine module (or with a renamed thrust
++			// transform) threw a NullReferenceException here in OnStartFinished, in the editor and in flight
++			if ((Object)(object)myEngine != (Object)null)
++			{
++				mytransform = ((PartModule)this).part.FindModelTransform(myEngine.thrustVectorTransformName);
++			}
++			else
++			{
++				Debug.Log((object)("[Maritime Pack] (aniEngine) partType = Engine but no engine module on " + ((Object)((PartModule)this).part).name));
++			}
++			if ((Object)(object)mytransform != (Object)null)
++			{
++				thrustRotation = mytransform.localRotation;
++			}
+ 			if (useRotorDiscSwap)
+ 			{
+ 				Debug.Log((object)"[Maritime Pack] (aniEngine) Disc swapping active.");
+@@ -214,6 +228,10 @@
+ 	private float CheckDirection()
+ 	{
+ 		float num = 1f;
++		if ((Object)(object)mytransform == (Object)null)
++		{
++			return lastdirection;
++		}
+ 		Quaternion localRotation = mytransform.localRotation;
+ 		if (!(thrustRotation == localRotation))
+ 		{
+@@ -250,7 +268,13 @@
+ 
+ 	public void FixedUpdate()
+ 	{
+-		if (!HighLogic.LoadedSceneIsFlight || !loadComplete || ((Object)(object)myEngine == (Object)null && (Object)(object)myIntake == (Object)null && partType != "Throttle" && partType != "Stirling" && partType != "Battery") || animationName == "null" || !((PartModule)this).vessel.isActiveVessel || !((PartModule)this).vessel.isActiveVessel)
++		if (!HighLogic.LoadedSceneIsFlight || !loadComplete || (Object)(object)((PartModule)this).vessel == (Object)null || ((Object)(object)myEngine == (Object)null && (Object)(object)myIntake == (Object)null && partType != "Throttle" && partType != "Stirling" && partType != "Battery") || animationName == "null" || !((PartModule)this).vessel.isActiveVessel)
++		{
++			return;
++		}
++		// was: NullReferenceException every physics frame when the engine/intake module or the animation
++		// named in the cfg is missing
++		if ((partType == "Engine" && (Object)(object)myEngine == (Object)null) || (partType == "Intake" && (Object)(object)myIntake == (Object)null) || (Object)(object)aniEngine == (Object)null)
+ 		{
+ 			return;
+ 		}
+@@ -278,13 +302,13 @@
+ 		}
+ 		if (!(partType == "Battery"))
+ 		{
+-			num = ((!syncThrottle) ? ((double)myEngine.normalizedThrustOutput) : ((double)FlightInputHandler.state.mainThrottle));
++			num = ((!syncThrottle) ? (((Object)(object)myEngine != (Object)null) ? ((double)myEngine.normalizedThrustOutput) : 0.0) : ((double)FlightInputHandler.state.mainThrottle));
+ 		}
+ 		else
+ 		{
+ 			double resourceTotal = FengistAnimFunctions.GetResourceTotal(FlightGlobals.ActiveVessel, "ElectricCharge");
+ 			double resourceMax = FengistAnimFunctions.GetResourceMax(FlightGlobals.ActiveVessel, "ElectricCharge");
+-			num = resourceTotal / resourceMax;
++			num = ((resourceMax > 0.0) ? (resourceTotal / resourceMax) : 0.0); // NaN on vessels without EC storage
+ 		}
+ 		float num2 = 1f;
+ 		if (detectReverseThrust)
+diff -ruN a/FengistAnim/ModuleLayeredAnimator.cs b/FengistAnim/ModuleLayeredAnimator.cs
+--- a/FengistAnim/ModuleLayeredAnimator.cs	2026-11-07 22:36:14.298121300 +0530
++++ b/FengistAnim/ModuleLayeredAnimator.cs	2026-11-07 22:36:14.779431700 +0530
+@@ -2,11 +2,15 @@
+ 
+ public class ModuleLayeredAnimator : ModuleAnimateGeneric
+ {
+-	[KSPField]
+-	public int layer = 1;
+-
++	// KSP 1.12's ModuleAnimateGeneric already declares [KSPField] int layer and applies it in OnStart.
++	// Re-declaring it hid the base field, and skipping base.OnStart left the module uninitialised
++	// (anim could still be null here -> NullReferenceException, and Toggle never worked).
+ 	public override void OnStart(StartState state)
+ 	{
+-		base.anim[base.animationName].layer = layer;
++		base.OnStart(state);
++		if ((UnityEngine.Object)(object)base.anim != (UnityEngine.Object)null && !string.IsNullOrEmpty(base.animationName) && base.anim[base.animationName] != null)
++		{
++			base.anim[base.animationName].layer = base.layer;
++		}
+ 	}
+ }
+diff -ruN a/FengistAnim/Properties/AssemblyInfo.cs b/FengistAnim/Properties/AssemblyInfo.cs
+--- a/FengistAnim/Properties/AssemblyInfo.cs	2026-11-07 22:36:14.299684400 +0530
++++ b/FengistAnim/Properties/AssemblyInfo.cs	2026-11-07 22:36:14.900044800 +0530
+@@ -13,5 +13,6 @@
+ [assembly: AssemblyTrademark("")]
+ [assembly: ComVisible(false)]
+ [assembly: Guid("457e3312-5434-4df7-be81-ffe883d0d8e6")]
+-[assembly: AssemblyFileVersion("1.0.0.0")]
++[assembly: AssemblyFileVersion("1.0.1.0")]
++[assembly: AssemblyInformationalVersion("1.0-ksp1.12.5-nrefix.1")]
+ [assembly: AssemblyVersion("1.0.0.0")]

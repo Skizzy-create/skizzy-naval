@@ -1,0 +1,12 @@
+# build outputs (scripts/skizzy.py package)
+/dist/
+/build/
+/.cache/
+__pycache__/
+*.pyc
+# plugin build outputs
+modules/*/src/**/bin/
+modules/*/src/**/obj/
+modules/*/src/**/.vs/
+*.user
+*.suo

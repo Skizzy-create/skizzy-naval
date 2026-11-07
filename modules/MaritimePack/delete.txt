@@ -1,0 +1,3 @@
+# Files removed from the upstream archive before the overlay is applied.
+# One path per line, relative to the zip root of the release asset.
+GameData/MPUtils/Plugins/PluginData/MPLog.dat
