@@ -351,7 +351,7 @@ identifier = "BDArmory-Skizzy"
 strategy = "rebuild"
 enabled = true         # set to false to stop releasing it (see modules/BDArmory-Skizzy/README.md)
 pack = "none"          # alternative to BDArmoryForRunwayProject via the @bdarmory any_of
-version_template = "v1.13.1.0-skizzy.{version}"
+version_template = "2:v1.13.1.0-skizzy.{version}"
 name = "BDArmory Plus (Skizzy fork build)"
 abstract = "BDArmory Plus 1.13.1 with the Skizzy-create/BDArmory multitarget-1.13.1 plugin (multi-target, parallel salvo, depth-charge fixes). Drop-in replacement for BDArmoryForRunwayProject."
 description = """
@@ -359,7 +359,7 @@ The upstream BDArmory Plus 1.13.1.0 release zip with two files swapped:
 GameData/BDArmory/Plugins/BDArmory.dll (built from Skizzy-create/BDArmory branch
 multitarget-1.13.1, commit 01d0c9676585731e6fe9df85ee2be0ab802a20bf) and
 GameData/BDArmory/Localization/UI/en-us.cfg (the fork's new UI strings). Same install layout
-and dependencies as BDArmoryForRunwayProject 1.13.1.0. Provides and conflicts with BDArmory,
+and dependencies as BDArmoryForRunwayProject 1.13.1.0. Provides and conflicts with BDArmory and BDArmoryForRunwayProject,
 so only one BDArmory can be installed. BDArmory by BahamutoD, Papa_Joe, jrodrigv,
 DocNappers and contributors, CC BY-SA 2.0.
 """
@@ -367,8 +367,8 @@ author = ["BahamutoD", "Papa_Joe", "jrodrigv", "ouloul", "Scott Manley", "JR", "
           "Cl0by", "josue", "aubranium", "benbenwilde", "TheKurgan", "Skizzy-create"]
 license = "CC-BY-SA-2.0"
 tags = ["plugin", "parts", "sound", "combat"]
-provides = ["BDArmory"]
-conflicts = ["BDArmory"]
+provides = ["BDArmory", "BDArmoryForRunwayProject"]
+conflicts = ["BDArmory", "BDArmoryForRunwayProject"]
 depends = ["ModuleManager", "PhysicsRangeExtender"]
 install = [
   { find = "BDArmory", install_to = "GameData" },
