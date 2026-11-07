@@ -11,6 +11,8 @@
   - Folders regrouped under `GameData/IronSeasKANES/`.
   - 11 part configs edited. Each starts with a modification notice.
   - Added `BulletDefs/`, `Patches/`, `LICENSE.txt` and `README.txt`.
+  - Added `Plugins/SkizzyRig.dll` (0.1.1): turret transforms for the six guns. Our own code,
+    MIT licence (`Plugins/SkizzyRig-LICENSE.txt`); source in `src/SkizzyRig/`.
   - Details are in `CHANGES.md`. Every changed line is in `diffs/`, and the scripts that made
     the changes are in `tools/`.
 - **Uses content from:** NAS (Acea, Summerfirefly; CC BY-SA 4.0) and BDArmory Plus (BahamutoD,

@@ -5,7 +5,7 @@
 * Antenna / periscope / snorkel: own descriptions, tags and a plain-text manufacturer (no NAS localisation needed).
 * Sail dive computer + Sail/Hull maxPressure: Balao depths (test ~120 m, crush ~224 m) in KSP pressure terms.
 * Hull: start surfaced with the main ballast blown (IntakeLqd amount 0).
-Attach nodes are NOT touched.
+Attach nodes are NOT touched. The comment line under the NEEDS note (turret rig) comes from stage 3.
 """
 import os
 
@@ -235,8 +235,6 @@ class Cfg:
 
 NOTICE = ('// Modified in 2026-11 by the unofficial KSP 1.12.5 / BDArmory 1.13 update of Iron Seas KANES (see CHANGES.md). '
           'Original by SkunkWorksCommand, GPLv2.')
-MODEL_WARNING = ('// WARNING: this model.mu has no Rotate/Pitch/fireTransform transforms (static mesh), so BDArmory cannot '
-                 'aim or fire it until the model gets them. See CHANGES.md.')
 OLD_NEEDS_PREFIX = '// Needs NAS'
 FUZE_PREFIX = '// BDArmory 1.13'
 
@@ -395,7 +393,6 @@ def run(root, log):
         turret = lambda: c.find('MODULE', 'ModuleTurret')
         weapon = lambda: c.find('MODULE', 'ModuleWeapon')
         c.replace_comment(OLD_NEEDS_PREFIX, g['needs'])
-        c.ensure_line_after(OLD_NEEDS_PREFIX, MODEL_WARNING)
         c.set(part, 'description', g['description'])
         c.set(part, 'tags', g['tags'])
         for k, v in g['turret']:

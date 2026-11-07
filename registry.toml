@@ -432,23 +432,24 @@ identifier = "SkizzyNaval-IronSeasKANES"
 strategy = "bundle"          # GPLv2: the complete patched mod (26 MB) is committed, with its sources
 enabled = true
 pack = "depends"
-extra_docs = ["diffs", "tools"]   # also packed into the zip's SkizzyNaval-docs/ (GPL source)
+extra_docs = ["diffs", "tools", "src"]   # also packed into the zip's SkizzyNaval-docs/ (GPL source; src = SkizzyRig plugin, MIT)
 name = "Iron Seas KANES Balao class fleet boat (SkizzyNaval update)"
-abstract = "SkunkWorksCommand's WWII Balao-class submarine updated for KSP 1.12.5, BDArmory Plus 1.13 and NAS: realistic deck guns, crush depth and dependency fallbacks."
+abstract = "SkunkWorksCommand's WWII Balao-class submarine updated for KSP 1.12.5, BDArmory Plus 1.13 and NAS: working, realistic deck guns, crush depth and dependency fallbacks."
 description = """
 Iron Seas KANES FIGHTING SHIPS 1 (1.0.0.1) regrouped under GameData/IronSeasKANES. The six
 deck guns get BDArmory 1.13 keys and real 20 mm Oerlikon, .50 M2, 40 mm Bofors and 4"/50
-ballistics (new 4"/50 HC shell), and only load with NAS and BDArmory. The hull and sail
-collapse at about 224 m, the boat spawns surfaced, and ModuleManager fallbacks remove
-WildBlueTools, KerbalActuators, BonVoyage and Firespitter modules when those mods are
-missing (Kerbal Powers Naval ballast is used if present). Remove an old
-GameData/BalaoClassFleetBoat and GameData/4BladeFastScrew first. Known upstream issue: the
-six gun models have no turret or fire transforms, so the guns cannot aim or fire until the
-models are fixed. Original by SkunkWorksCommand, GPLv2.
+ballistics (new 4"/50 HC shell), and only load with NAS and BDArmory. The gun models have no
+turret or fire transforms, so the included SkizzyRig plugin (MIT) adds invisible yaw, pitch
+and muzzle transforms at load time: the guns aim and fire from their muzzles, but the gun
+meshes do not turn. The hull and sail collapse at about 224 m, the boat spawns surfaced, and
+ModuleManager fallbacks remove WildBlueTools, KerbalActuators, BonVoyage and Firespitter
+modules when those mods are missing (Kerbal Powers Naval ballast is used if present). Remove
+an old GameData/BalaoClassFleetBoat and GameData/4BladeFastScrew first. Original by
+SkunkWorksCommand, GPLv2.
 """
 author = ["SkunkWorksCommand", "Skizzy-create"]
-license = "GPL-2.0"
-tags = ["parts", "combat"]
+license = ["GPL-2.0", "MIT"]       # MIT: the SkizzyRig plugin (src/SkizzyRig)
+tags = ["parts", "plugin", "combat"]
 depends = ["ModuleManager"]
 recommends = ["SkizzyNaval-NAS", "@bdarmory", "WildBlueTools", "CommunityResourcePack", "FirespitterCore"]
 suggests = ["SubTrim", "KerbalPowersNaval", "BonVoyage", "Buffalo", "SkizzyNaval-HullBreach"]

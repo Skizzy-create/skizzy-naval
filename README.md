@@ -48,7 +48,7 @@ The rules:
 | `SkizzyNaval-MaritimePack` | Maritime Pack, Fengist | CC BY-NC 4.0 | full pack, rebuild from GitHub | NC allows adapted copies; not on CKAN |
 | `SkizzyNaval-AdvancedWeaponsPack` | Advanced Weapons Pack | MIT | full pack, rebuild | CKAN's package needs NorthKerbinDynamics (KSP 1.3.1) and can't install on 1.12.5 |
 | `SkizzyNaval-MNWS` | [MNWS] Modern Naval Weapon System 2.4, Johnny005611 | CC BY-SA 4.0 | full pack, rebuild | CKAN's package targets KSP 1.4.4 and BDArmory Continued. Replaces it |
-| `SkizzyNaval-IronSeasKANES` | Iron Seas KANES Fighting Ships 1, SkunkWorksCommand | GPL-2.0 | full pack, committed (bundle) with diff and patch scripts | GPLv2 allows modified copies; not on CKAN. Licence text added |
+| `SkizzyNaval-IronSeasKANES` | Iron Seas KANES Fighting Ships 1, SkunkWorksCommand | GPL-2.0 (plugin: MIT) | full pack, committed (bundle) with diff, patch scripts and plugin source | GPLv2 allows modified copies; not on CKAN. Licence text added. Our SkizzyRig plugin (MIT) gives the guns turret transforms |
 | `SkizzyNaval-AircraftCarrierAccessories` | Aircraft Carrier Accessories | MIT (patch: MIT) | overlay, depends on `AircraftCarrierAccessories` | One added patch, and the original is on CKAN |
 | `SkizzyNaval-FishyWeapons` | Fishy Weapons, Fishy Mod Core | CC BY-SA 4.0 / restricted | overlay, depends on `FishyAntiMissileSpam` | Fishy Mod Core forbids redistribution; both are on CKAN |
 | `SkizzyNaval-TitansBDArmoryExtension` | TBAE | unclear (SpaceDock says MIT, but the models are BDArmory's) | overlay, original installed **by hand** | Licence unclear and not on CKAN. Suggested by the pack only |
@@ -104,7 +104,8 @@ pinned hash. `RELEASING.md` covers the release flow, adding a module and the tok
 
 - No in-game testing was done for these builds. Each module's `CHANGES.md` has a test
   checklist.
-- **Iron Seas** guns can't aim or fire: the original models lack turret transforms.
+- **Iron Seas** guns aim and fire through invisible turret transforms (SkizzyRig), but the gun
+  meshes don't turn: each original gun model is one merged mesh.
 - **TBAE** needs the original installed by hand. One upstream file needs a manual fix; see
   `modules/TitansBDArmoryExtension/not-shipped.txt`.
 - **Maritime Pack** includes `FSResizer.dll` (Allis Tauri), as the original does. It is

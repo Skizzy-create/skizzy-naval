@@ -3,6 +3,7 @@ usage: python -I patch_ironseas.py <patched GameData/IronSeasKANES dir>
 Edits files in place, preserving BOM and line endings per file. Idempotent: running it again changes nothing.
 Stage 1: BDA 1.13 compatibility (NEEDS, removed air-detonation keys, Sail cleanup).
 Stage 2 (patch_ironseas_stage2.py): gun rebalance, sensor descriptions, crush depth, surfaced hull trim.
+Stage 3 (patch_ironseas_stage3.py): turret rig (ModuleRigTurret from SkizzyRig.dll, new transform names on the guns).
 """
 import os, re, sys
 
@@ -120,6 +121,10 @@ patch_sail(os.path.join(base, 'Sail', 'part.cfg'))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import patch_ironseas_stage2
 patch_ironseas_stage2.run(ROOT, log)
+
+# Stage 3: turret rig for the six guns (SkizzyRig).
+import patch_ironseas_stage3
+patch_ironseas_stage3.run(ROOT, log)
 
 for p, ch in log:
     print(p)

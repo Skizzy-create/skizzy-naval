@@ -1,12 +1,12 @@
 diff --git a/BalaoClassFleetBoat/20mmFF/part.cfg b/BalaoClassFleetBoat/20mmFF/part.cfg
-index b953ff7..1c0c7f5 100644
+index b953ff7..0b4d897 100644
 --- a/BalaoClassFleetBoat/20mmFF/part.cfg
 +++ b/BalaoClassFleetBoat/20mmFF/part.cfg
 @@ -1,4 +1,7 @@
 -PART
 +// Modified in 2026-11 by the unofficial KSP 1.12.5 / BDArmory 1.13 update of Iron Seas KANES (see CHANGES.md). Original by SkunkWorksCommand, GPLv2.
 +// Needs NAS (bullet 20mmAPLong, NASCategoryModule, localisation) and BDArmory (20x102Ammo, sounds); MM drops this part if either is missing.
-+// WARNING: this model.mu has no Rotate/Pitch/fireTransform transforms (static mesh), so BDArmory cannot aim or fire it until the model gets them. See CHANGES.md.
++// Turret rig: this model.mu is one static mesh without Rotate/Pitch/fireTransform. ModuleRigTurret (IronSeasKANES/Plugins/SkizzyRig.dll) adds invisible SkizzyRig* yaw, pitch and fire transforms at load time, so BDArmory aims the gun and fires from its muzzle, but the mesh itself does not turn. See CHANGES.md.
 +PART:NEEDS[NAS,BDArmory]
  {
  // Kerbal Space Program - Part Config
@@ -20,7 +20,7 @@ index b953ff7..1c0c7f5 100644
  // attachment rules: stack, srfAttach, allowStack, allowSrfAttach, allowCollision
  attachRules = 1,1,0,0,0
  
-@@ -41,7 +44,7 @@ maxTemp = 3400
+@@ -41,18 +44,35 @@ maxTemp = 3400
  breakingForce = 5000
  breakingTorque = 5000
  buoyancy = -1
@@ -28,10 +28,31 @@ index b953ff7..1c0c7f5 100644
 +tags = nas bdarmory balao submarine sub gun turret navy naval 20mm oerlikon anti aircraft aa us usn
  stagingIcon = SOLID_BOOSTER
  
++MODULE:NEEDS[SkizzyRig]
++{
++	name = ModuleRigTurret
++	// SkizzyRig.dll (MIT, source in src/SkizzyRig) builds the turret transforms this model lacks.
++	// The model is one merged mesh, so no mesh node is moved: the transforms are invisible and the gun mesh stays still.
++	// Part frame, metres; up on the boat is -Z. Measured from the mesh vertices (see CHANGES.md).
++	baseName = SkizzyRigBase
++	yawName = SkizzyRigYaw
++	pitchName = SkizzyRigPitch
++	fireName = SkizzyRigFire
++	upAxis = 0, 0, -1
++	pivot = 0, 0, -0.666	// yaw axis through the pedestal centre, at the top of the fixed column
++	trunnion = 0, 0.006, -0.8316	// top face of the cradle fork arms (the model has no trunnion pin)
++	boreDirection = 0, 0.9749, -0.2226	// barrel as modelled: 12.86 deg up, toward +Y
++	muzzles = 0, 0.8442, -1.175	// flash hider tip, on the bore axis
++}
  MODULE
-@@ -51,8 +54,8 @@ MODULE
- 	yawTransformName = Rotate
- 	pitchTransformName = Pitch
+ {
+ 	name = ModuleTurret
+ 	
+-	yawTransformName = Rotate
+-	pitchTransformName = Pitch
++	yawTransformName = SkizzyRigYaw
++	pitchTransformName = SkizzyRigPitch
++	baseTransformName = SkizzyRigBase
  	
 -	pitchSpeedDPS = 15
 -	yawSpeedDPS = 28.75
@@ -40,16 +61,19 @@ index b953ff7..1c0c7f5 100644
  	
  	minPitch = -15
  	maxPitch = 85
-@@ -70,7 +73,7 @@ MODULE
+@@ -70,9 +90,9 @@ MODULE
  {
  	name = ModuleWeapon
  	
 -	//shortName = Mk 12 5"/38 DP
 +	shortName = 20mm Oerlikon
  	
- 	fireTransformName = fireTransform
+-	fireTransformName = fireTransform
++	fireTransformName = SkizzyRigFire
  	
-@@ -82,19 +85,19 @@ MODULE
+ 	oneShotWorldParticles = true
+ 	
+@@ -82,19 +102,19 @@ MODULE
  	//fireAnimName = m1
  	spinDownAnimation = false
  	
@@ -81,7 +105,7 @@ index b953ff7..1c0c7f5 100644
  	recoilReduction = 0.85
  	
  	//cannonShellPower = 8
-@@ -105,19 +108,20 @@ MODULE
+@@ -105,19 +125,20 @@ MODULE
  	onlyFireInRange = false
  	bulletDrop = true
  	
@@ -109,7 +133,7 @@ index b953ff7..1c0c7f5 100644
  	autoProxyTrackRange = 300
  	
  	engageAir = true
-@@ -125,10 +129,10 @@ MODULE
+@@ -125,10 +146,10 @@ MODULE
  	engageGround = true
  	engageSLW = false
  	
@@ -122,7 +146,7 @@ index b953ff7..1c0c7f5 100644
  	reloadCompletePath = NAS/Sounds/reload_complete
  	explModelPath = BDArmory/Models/explosion/explosion
  	explSoundPath = BDArmory/Sounds/explode1
-@@ -141,9 +145,9 @@ MODULE
+@@ -141,9 +162,9 @@ MODULE
  }
  RESOURCE
  {
@@ -136,14 +160,14 @@ index b953ff7..1c0c7f5 100644
  MODULE
  {
 diff --git a/BalaoClassFleetBoat/20mmRF/part.cfg b/BalaoClassFleetBoat/20mmRF/part.cfg
-index c88aa0e..b82a96d 100644
+index c88aa0e..aa4fa8e 100644
 --- a/BalaoClassFleetBoat/20mmRF/part.cfg
 +++ b/BalaoClassFleetBoat/20mmRF/part.cfg
 @@ -1,4 +1,7 @@
 -PART
 +// Modified in 2026-11 by the unofficial KSP 1.12.5 / BDArmory 1.13 update of Iron Seas KANES (see CHANGES.md). Original by SkunkWorksCommand, GPLv2.
 +// Needs NAS (bullet 20mmAPLong, NASCategoryModule, localisation) and BDArmory (20x102Ammo, sounds); MM drops this part if either is missing.
-+// WARNING: this model.mu has no Rotate/Pitch/fireTransform transforms (static mesh), so BDArmory cannot aim or fire it until the model gets them. See CHANGES.md.
++// Turret rig: this model.mu is one static mesh without Rotate/Pitch/fireTransform. ModuleRigTurret (IronSeasKANES/Plugins/SkizzyRig.dll) adds invisible SkizzyRig* yaw, pitch and fire transforms at load time, so BDArmory aims the gun and fires from its muzzle, but the mesh itself does not turn. See CHANGES.md.
 +PART:NEEDS[NAS,BDArmory]
  {
  // Kerbal Space Program - Part Config
@@ -157,7 +181,7 @@ index c88aa0e..b82a96d 100644
  // attachment rules: stack, srfAttach, allowStack, allowSrfAttach, allowCollision
  attachRules = 1,1,0,0,0
  
-@@ -41,7 +44,7 @@ maxTemp = 3400
+@@ -41,18 +44,35 @@ maxTemp = 3400
  breakingForce = 5000
  breakingTorque = 5000
  buoyancy = -1
@@ -165,10 +189,31 @@ index c88aa0e..b82a96d 100644
 +tags = nas bdarmory balao submarine sub gun turret navy naval 20mm oerlikon anti aircraft aa us usn
  stagingIcon = SOLID_BOOSTER
  
++MODULE:NEEDS[SkizzyRig]
++{
++	name = ModuleRigTurret
++	// SkizzyRig.dll (MIT, source in src/SkizzyRig) builds the turret transforms this model lacks.
++	// The model is one merged mesh, so no mesh node is moved: the transforms are invisible and the gun mesh stays still.
++	// Part frame, metres; up on the boat is -Z. Measured from the mesh vertices (see CHANGES.md).
++	baseName = SkizzyRigBase
++	yawName = SkizzyRigYaw
++	pitchName = SkizzyRigPitch
++	fireName = SkizzyRigFire
++	upAxis = 0, 0, -1
++	pivot = 0, 0, -0.666	// yaw axis through the pedestal centre, at the top of the fixed column
++	trunnion = 0, -0.006, -0.8316	// top face of the cradle fork arms (the model has no trunnion pin)
++	boreDirection = 0, -0.9749, -0.2226	// barrel as modelled: 12.86 deg up, toward -Y
++	muzzles = 0, -0.8442, -1.175	// flash hider tip, on the bore axis
++}
  MODULE
-@@ -51,8 +54,8 @@ MODULE
- 	yawTransformName = Rotate
- 	pitchTransformName = Pitch
+ {
+ 	name = ModuleTurret
+ 	
+-	yawTransformName = Rotate
+-	pitchTransformName = Pitch
++	yawTransformName = SkizzyRigYaw
++	pitchTransformName = SkizzyRigPitch
++	baseTransformName = SkizzyRigBase
  	
 -	pitchSpeedDPS = 15
 -	yawSpeedDPS = 28.75
@@ -177,16 +222,19 @@ index c88aa0e..b82a96d 100644
  	
  	minPitch = -15
  	maxPitch = 85
-@@ -70,7 +73,7 @@ MODULE
+@@ -70,9 +90,9 @@ MODULE
  {
  	name = ModuleWeapon
  	
 -	//shortName = Mk 12 5"/38 DP
 +	shortName = 20mm Oerlikon
  	
- 	fireTransformName = fireTransform
+-	fireTransformName = fireTransform
++	fireTransformName = SkizzyRigFire
  	
-@@ -82,19 +85,19 @@ MODULE
+ 	oneShotWorldParticles = true
+ 	
+@@ -82,19 +102,19 @@ MODULE
  	//fireAnimName = m1
  	spinDownAnimation = false
  	
@@ -218,7 +266,7 @@ index c88aa0e..b82a96d 100644
  	recoilReduction = 0.85
  	
  	//cannonShellPower = 8
-@@ -105,19 +108,20 @@ MODULE
+@@ -105,19 +125,20 @@ MODULE
  	onlyFireInRange = false
  	bulletDrop = true
  	
@@ -246,7 +294,7 @@ index c88aa0e..b82a96d 100644
  	autoProxyTrackRange = 300
  	
  	engageAir = true
-@@ -125,10 +129,10 @@ MODULE
+@@ -125,10 +146,10 @@ MODULE
  	engageGround = true
  	engageSLW = false
  	
@@ -259,7 +307,7 @@ index c88aa0e..b82a96d 100644
  	reloadCompletePath = NAS/Sounds/reload_complete
  	explModelPath = BDArmory/Models/explosion/explosion
  	explSoundPath = BDArmory/Sounds/explode1
-@@ -141,9 +145,9 @@ MODULE
+@@ -141,9 +162,9 @@ MODULE
  }
  RESOURCE
  {
@@ -273,14 +321,14 @@ index c88aa0e..b82a96d 100644
  MODULE
  {
 diff --git a/BalaoClassFleetBoat/4inchFF/part.cfg b/BalaoClassFleetBoat/4inchFF/part.cfg
-index fe6a48a..fba2de5 100644
+index fe6a48a..33a6050 100644
 --- a/BalaoClassFleetBoat/4inchFF/part.cfg
 +++ b/BalaoClassFleetBoat/4inchFF/part.cfg
 @@ -1,4 +1,7 @@
 -PART
 +// Modified in 2026-11 by the unofficial KSP 1.12.5 / BDArmory 1.13 update of Iron Seas KANES (see CHANGES.md). Original by SkunkWorksCommand, GPLv2.
 +// Needs NAS (sounds, NASCategoryModule, localisation) and BDArmory (100mmShells); the bullet IronSeas4in50HC is defined in IronSeasKANES/BulletDefs. MM drops this part if either is missing.
-+// WARNING: this model.mu has no Rotate/Pitch/fireTransform transforms (static mesh), so BDArmory cannot aim or fire it until the model gets them. See CHANGES.md.
++// Turret rig: this model.mu is one static mesh without Rotate/Pitch/fireTransform. ModuleRigTurret (IronSeasKANES/Plugins/SkizzyRig.dll) adds invisible SkizzyRig* yaw, pitch and fire transforms at load time, so BDArmory aims the gun and fires from its muzzle, but the mesh itself does not turn. See CHANGES.md.
 +PART:NEEDS[NAS,BDArmory]
  {
  // Kerbal Space Program - Part Config
@@ -294,7 +342,7 @@ index fe6a48a..fba2de5 100644
  // attachment rules: stack, srfAttach, allowStack, allowSrfAttach, allowCollision
  attachRules = 1,1,0,0,0
  
-@@ -41,7 +44,7 @@ maxTemp = 3400
+@@ -41,21 +44,38 @@ maxTemp = 3400
  breakingForce = 5000
  breakingTorque = 5000
  buoyancy = -1
@@ -302,10 +350,31 @@ index fe6a48a..fba2de5 100644
 +tags = nas bdarmory balao submarine sub gun turret navy naval deck gun 4 inch 4in 102mm surface us usn
  stagingIcon = SOLID_BOOSTER
  
++MODULE:NEEDS[SkizzyRig]
++{
++	name = ModuleRigTurret
++	// SkizzyRig.dll (MIT, source in src/SkizzyRig) builds the turret transforms this model lacks.
++	// The model is one merged mesh, so no mesh node is moved: the transforms are invisible and the gun mesh stays still.
++	// Part frame, metres; up on the boat is -Z. Measured from the mesh vertices (see CHANGES.md).
++	baseName = SkizzyRigBase
++	yawName = SkizzyRigYaw
++	pitchName = SkizzyRigPitch
++	fireName = SkizzyRigFire
++	upAxis = 0, 0, -1
++	pivot = 0, 0, -0.179	// yaw axis through the pedestal centre, at the top of the fixed pedestal
++	trunnion = 0, -0.0006, -0.7652	// centre of the trunnion pins
++	boreDirection = 0, 1, -0.0057	// barrel as modelled: 0.33 deg up, toward +Y
++	muzzles = 0, 2.4298, -0.7643	// muzzle face, on the bore axis
++}
  MODULE
-@@ -51,11 +54,11 @@ MODULE
- 	yawTransformName = Rotate
- 	pitchTransformName = Pitch
+ {
+ 	name = ModuleTurret
+ 	
+-	yawTransformName = Rotate
+-	pitchTransformName = Pitch
++	yawTransformName = SkizzyRigYaw
++	pitchTransformName = SkizzyRigPitch
++	baseTransformName = SkizzyRigBase
  	
 -	pitchSpeedDPS = 15
 -	yawSpeedDPS = 28.75
@@ -318,16 +387,19 @@ index fe6a48a..fba2de5 100644
  	yawRange = 328.5
  	
  	smoothRotation = true
-@@ -70,7 +73,7 @@ MODULE
+@@ -70,9 +90,9 @@ MODULE
  {
  	name = ModuleWeapon
  	
 -	//shortName = Mk 12 5"/38 DP
 +	shortName = 4in/50 Mk 9
  	
- 	fireTransformName = fireTransform
+-	fireTransformName = fireTransform
++	fireTransformName = SkizzyRigFire
  	
-@@ -82,18 +85,14 @@ MODULE
+ 	oneShotWorldParticles = true
+ 	
+@@ -82,18 +102,14 @@ MODULE
  	//fireAnimName = m1
  	spinDownAnimation = false
  	
@@ -354,7 +426,7 @@ index fe6a48a..fba2de5 100644
  	requestResourceAmount = 1
  	recoilReduction = 0.85
  	
-@@ -105,7 +104,7 @@ MODULE
+@@ -105,7 +121,7 @@ MODULE
  	onlyFireInRange = false
  	bulletDrop = true
  	
@@ -363,7 +435,7 @@ index fe6a48a..fba2de5 100644
  	
  	projectileColor = 255, 250, 0, 255
  	
-@@ -120,7 +119,7 @@ MODULE
+@@ -120,7 +136,7 @@ MODULE
  	heatLoss = 740
  	autoProxyTrackRange = 300
  	
@@ -372,7 +444,7 @@ index fe6a48a..fba2de5 100644
  	engageMissile = false
  	engageGround = true
  	engageSLW = false
-@@ -141,9 +140,9 @@ MODULE
+@@ -141,9 +157,9 @@ MODULE
  }
  RESOURCE
  {
@@ -386,14 +458,14 @@ index fe6a48a..fba2de5 100644
  MODULE
  {
 diff --git a/BalaoClassFleetBoat/4inchRF/part.cfg b/BalaoClassFleetBoat/4inchRF/part.cfg
-index 157e318..87e4e31 100644
+index 157e318..80fd188 100644
 --- a/BalaoClassFleetBoat/4inchRF/part.cfg
 +++ b/BalaoClassFleetBoat/4inchRF/part.cfg
 @@ -1,4 +1,7 @@
 -PART
 +// Modified in 2026-11 by the unofficial KSP 1.12.5 / BDArmory 1.13 update of Iron Seas KANES (see CHANGES.md). Original by SkunkWorksCommand, GPLv2.
 +// Needs NAS (sounds, NASCategoryModule, localisation) and BDArmory (100mmShells); the bullet IronSeas4in50HC is defined in IronSeasKANES/BulletDefs. MM drops this part if either is missing.
-+// WARNING: this model.mu has no Rotate/Pitch/fireTransform transforms (static mesh), so BDArmory cannot aim or fire it until the model gets them. See CHANGES.md.
++// Turret rig: this model.mu is one static mesh without Rotate/Pitch/fireTransform. ModuleRigTurret (IronSeasKANES/Plugins/SkizzyRig.dll) adds invisible SkizzyRig* yaw, pitch and fire transforms at load time, so BDArmory aims the gun and fires from its muzzle, but the mesh itself does not turn. See CHANGES.md.
 +PART:NEEDS[NAS,BDArmory]
  {
  // Kerbal Space Program - Part Config
@@ -407,7 +479,7 @@ index 157e318..87e4e31 100644
  // attachment rules: stack, srfAttach, allowStack, allowSrfAttach, allowCollision
  attachRules = 1,1,0,0,0
  
-@@ -41,7 +44,7 @@ maxTemp = 3400
+@@ -41,21 +44,38 @@ maxTemp = 3400
  breakingForce = 5000
  breakingTorque = 5000
  buoyancy = -1
@@ -415,10 +487,31 @@ index 157e318..87e4e31 100644
 +tags = nas bdarmory balao submarine sub gun turret navy naval deck gun 4 inch 4in 102mm surface us usn
  stagingIcon = SOLID_BOOSTER
  
++MODULE:NEEDS[SkizzyRig]
++{
++	name = ModuleRigTurret
++	// SkizzyRig.dll (MIT, source in src/SkizzyRig) builds the turret transforms this model lacks.
++	// The model is one merged mesh, so no mesh node is moved: the transforms are invisible and the gun mesh stays still.
++	// Part frame, metres; up on the boat is -Z. Measured from the mesh vertices (see CHANGES.md).
++	baseName = SkizzyRigBase
++	yawName = SkizzyRigYaw
++	pitchName = SkizzyRigPitch
++	fireName = SkizzyRigFire
++	upAxis = 0, 0, -1
++	pivot = 0, 0, -0.179	// yaw axis through the pedestal centre, at the top of the fixed pedestal
++	trunnion = 0, 0.0006, -0.7652	// centre of the trunnion pins
++	boreDirection = 0, -1, -0.0057	// barrel as modelled: 0.33 deg up, toward -Y
++	muzzles = 0, -2.4298, -0.7643	// muzzle face, on the bore axis
++}
  MODULE
-@@ -51,11 +54,11 @@ MODULE
- 	yawTransformName = Rotate
- 	pitchTransformName = Pitch
+ {
+ 	name = ModuleTurret
+ 	
+-	yawTransformName = Rotate
+-	pitchTransformName = Pitch
++	yawTransformName = SkizzyRigYaw
++	pitchTransformName = SkizzyRigPitch
++	baseTransformName = SkizzyRigBase
  	
 -	pitchSpeedDPS = 15
 -	yawSpeedDPS = 28.75
@@ -431,16 +524,19 @@ index 157e318..87e4e31 100644
  	yawRange = 328.5
  	
  	smoothRotation = true
-@@ -70,7 +73,7 @@ MODULE
+@@ -70,9 +90,9 @@ MODULE
  {
  	name = ModuleWeapon
  	
 -	//shortName = Mk 12 5"/38 DP
 +	shortName = 4in/50 Mk 9
  	
- 	fireTransformName = fireTransform
+-	fireTransformName = fireTransform
++	fireTransformName = SkizzyRigFire
  	
-@@ -82,18 +85,14 @@ MODULE
+ 	oneShotWorldParticles = true
+ 	
+@@ -82,18 +102,14 @@ MODULE
  	//fireAnimName = m1
  	spinDownAnimation = false
  	
@@ -467,7 +563,7 @@ index 157e318..87e4e31 100644
  	requestResourceAmount = 1
  	recoilReduction = 0.85
  	
-@@ -105,7 +104,7 @@ MODULE
+@@ -105,7 +121,7 @@ MODULE
  	onlyFireInRange = false
  	bulletDrop = true
  	
@@ -476,7 +572,7 @@ index 157e318..87e4e31 100644
  	
  	projectileColor = 255, 250, 0, 255
  	
-@@ -120,7 +119,7 @@ MODULE
+@@ -120,7 +136,7 @@ MODULE
  	heatLoss = 740
  	autoProxyTrackRange = 300
  	
@@ -485,7 +581,7 @@ index 157e318..87e4e31 100644
  	engageMissile = false
  	engageGround = true
  	engageSLW = false
-@@ -141,9 +140,9 @@ MODULE
+@@ -141,9 +157,9 @@ MODULE
  }
  RESOURCE
  {
@@ -499,14 +595,14 @@ index 157e318..87e4e31 100644
  MODULE
  {
 diff --git a/BalaoClassFleetBoat/50Cal/part.cfg b/BalaoClassFleetBoat/50Cal/part.cfg
-index 28c6fda..1d7a4e9 100644
+index 28c6fda..0a2354b 100644
 --- a/BalaoClassFleetBoat/50Cal/part.cfg
 +++ b/BalaoClassFleetBoat/50Cal/part.cfg
 @@ -1,4 +1,7 @@
 -PART
 +// Modified in 2026-11 by the unofficial KSP 1.12.5 / BDArmory 1.13 update of Iron Seas KANES (see CHANGES.md). Original by SkunkWorksCommand, GPLv2.
 +// Needs NAS (NASCategoryModule, localisation) and BDArmory (bullet 12.7mmBullet, 50CalAmmo, sounds); MM drops this part if either is missing.
-+// WARNING: this model.mu has no Rotate/Pitch/fireTransform transforms (static mesh), so BDArmory cannot aim or fire it until the model gets them. See CHANGES.md.
++// Turret rig: this model.mu is one static mesh without Rotate/Pitch/fireTransform. ModuleRigTurret (IronSeasKANES/Plugins/SkizzyRig.dll) adds invisible SkizzyRig* yaw, pitch and fire transforms at load time, so BDArmory aims the gun and fires from its muzzle, but the mesh itself does not turn. See CHANGES.md.
 +PART:NEEDS[NAS,BDArmory]
  {
  // Kerbal Space Program - Part Config
@@ -520,7 +616,7 @@ index 28c6fda..1d7a4e9 100644
  // attachment rules: stack, srfAttach, allowStack, allowSrfAttach, allowCollision
  attachRules = 1,1,0,0,0
  
-@@ -41,7 +44,7 @@ maxTemp = 3400
+@@ -41,18 +44,35 @@ maxTemp = 3400
  breakingForce = 5000
  breakingTorque = 5000
  buoyancy = -1
@@ -528,10 +624,31 @@ index 28c6fda..1d7a4e9 100644
 +tags = nas bdarmory balao submarine sub gun turret navy naval 50 cal browning m2 machine gun anti aircraft aa us usn
  stagingIcon = SOLID_BOOSTER
  
++MODULE:NEEDS[SkizzyRig]
++{
++	name = ModuleRigTurret
++	// SkizzyRig.dll (MIT, source in src/SkizzyRig) builds the turret transforms this model lacks.
++	// The model is one merged mesh, so no mesh node is moved: the transforms are invisible and the gun mesh stays still.
++	// Part frame, metres; up on the boat is -Z. Measured from the mesh vertices (see CHANGES.md).
++	baseName = SkizzyRigBase
++	yawName = SkizzyRigYaw
++	pitchName = SkizzyRigPitch
++	fireName = SkizzyRigFire
++	upAxis = 0, 0, -1
++	pivot = 0, 0, -0.026	// yaw axis through the pintle, at its top
++	trunnion = 0, 0.0548, -0.1413	// centre of the round lug at the top of the cradle yoke
++	boreDirection = 0, -1, 0	// barrel as modelled: level, toward -Y
++	muzzles = 0, -0.6832, -0.1355	// muzzle tip, on the bore axis
++}
  MODULE
-@@ -51,8 +54,8 @@ MODULE
- 	yawTransformName = Rotate
- 	pitchTransformName = Pitch
+ {
+ 	name = ModuleTurret
+ 	
+-	yawTransformName = Rotate
+-	pitchTransformName = Pitch
++	yawTransformName = SkizzyRigYaw
++	pitchTransformName = SkizzyRigPitch
++	baseTransformName = SkizzyRigBase
  	
 -	pitchSpeedDPS = 15
 -	yawSpeedDPS = 28.75
@@ -540,16 +657,19 @@ index 28c6fda..1d7a4e9 100644
  	
  	minPitch = -15
  	maxPitch = 85
-@@ -70,7 +73,7 @@ MODULE
+@@ -70,9 +90,9 @@ MODULE
  {
  	name = ModuleWeapon
  	
 -	//shortName = Mk 12 5"/38 DP
 +	shortName = .50 cal M2 Browning
  	
- 	fireTransformName = fireTransform
+-	fireTransformName = fireTransform
++	fireTransformName = SkizzyRigFire
  	
-@@ -82,18 +85,14 @@ MODULE
+ 	oneShotWorldParticles = true
+ 	
+@@ -82,18 +102,14 @@ MODULE
  	//fireAnimName = m1
  	spinDownAnimation = false
  	
@@ -576,7 +696,7 @@ index 28c6fda..1d7a4e9 100644
  	requestResourceAmount = 1
  	recoilReduction = 0.85
  	
-@@ -105,19 +104,20 @@ MODULE
+@@ -105,19 +121,20 @@ MODULE
  	onlyFireInRange = false
  	bulletDrop = true
  	
@@ -604,7 +724,7 @@ index 28c6fda..1d7a4e9 100644
  	autoProxyTrackRange = 300
  	
  	engageAir = true
-@@ -125,13 +125,13 @@ MODULE
+@@ -125,13 +142,13 @@ MODULE
  	engageGround = true
  	engageSLW = false
  	
@@ -622,7 +742,7 @@ index 28c6fda..1d7a4e9 100644
  }
  MODULE
  {
-@@ -141,9 +141,9 @@ MODULE
+@@ -141,9 +158,9 @@ MODULE
  }
  RESOURCE
  {
@@ -800,14 +920,14 @@ index 40ac2e0..5970edd 100644
  
  MODULE
 diff --git a/BalaoClassFleetBoat/Single40mm/part.cfg b/BalaoClassFleetBoat/Single40mm/part.cfg
-index b801b8f..95c121c 100644
+index b801b8f..a2502b5 100644
 --- a/BalaoClassFleetBoat/Single40mm/part.cfg
 +++ b/BalaoClassFleetBoat/Single40mm/part.cfg
 @@ -1,4 +1,7 @@
 -PART
 +// Modified in 2026-11 by the unofficial KSP 1.12.5 / BDArmory 1.13 update of Iron Seas KANES (see CHANGES.md). Original by SkunkWorksCommand, GPLv2.
 +// Needs NAS (bullet 40mmHEBofors, NASCategoryModule, localisation) and BDArmory (40x311Ammo, sounds); MM drops this part if either is missing.
-+// WARNING: this model.mu has no Rotate/Pitch/fireTransform transforms (static mesh), so BDArmory cannot aim or fire it until the model gets them. See CHANGES.md.
++// Turret rig: this model.mu is one static mesh without Rotate/Pitch/fireTransform. ModuleRigTurret (IronSeasKANES/Plugins/SkizzyRig.dll) adds invisible SkizzyRig* yaw, pitch and fire transforms at load time, so BDArmory aims the gun and fires from its muzzle, but the mesh itself does not turn. See CHANGES.md.
 +PART:NEEDS[NAS,BDArmory]
  {
  // Kerbal Space Program - Part Config
@@ -821,7 +941,7 @@ index b801b8f..95c121c 100644
  // attachment rules: stack, srfAttach, allowStack, allowSrfAttach, allowCollision
  attachRules = 1,1,0,0,0
  
-@@ -41,7 +44,7 @@ maxTemp = 3400
+@@ -41,18 +44,35 @@ maxTemp = 3400
  breakingForce = 5000
  breakingTorque = 5000
  buoyancy = -1
@@ -829,10 +949,31 @@ index b801b8f..95c121c 100644
 +tags = nas bdarmory balao submarine sub gun turret navy naval 40mm bofors anti aircraft aa us usn
  stagingIcon = SOLID_BOOSTER
  
++MODULE:NEEDS[SkizzyRig]
++{
++	name = ModuleRigTurret
++	// SkizzyRig.dll (MIT, source in src/SkizzyRig) builds the turret transforms this model lacks.
++	// The model is one merged mesh, so no mesh node is moved: the transforms are invisible and the gun mesh stays still.
++	// Part frame, metres; up on the boat is -Z. Measured from the mesh vertices (see CHANGES.md).
++	baseName = SkizzyRigBase
++	yawName = SkizzyRigYaw
++	pitchName = SkizzyRigPitch
++	fireName = SkizzyRigFire
++	upAxis = 0, 0, -1
++	pivot = 0, 0, -0.187	// yaw axis through the base centre, at the top of the base plate
++	trunnion = 0, -0.0814, -0.852	// axis of the trunnion bearings on the carriage side plates
++	boreDirection = 0, -0.8641, -0.5033	// barrel as modelled: 30.22 deg up, toward -Y
++	muzzles = 0, -1.3224, -1.9608	// muzzle tip, on the bore axis
++}
  MODULE
-@@ -51,8 +54,8 @@ MODULE
- 	yawTransformName = Rotate
- 	pitchTransformName = Pitch
+ {
+ 	name = ModuleTurret
+ 	
+-	yawTransformName = Rotate
+-	pitchTransformName = Pitch
++	yawTransformName = SkizzyRigYaw
++	pitchTransformName = SkizzyRigPitch
++	baseTransformName = SkizzyRigBase
  	
 -	pitchSpeedDPS = 15
 -	yawSpeedDPS = 28.75
@@ -841,16 +982,19 @@ index b801b8f..95c121c 100644
  	
  	minPitch = -15
  	maxPitch = 85
-@@ -70,7 +73,7 @@ MODULE
+@@ -70,9 +90,9 @@ MODULE
  {
  	name = ModuleWeapon
  	
 -	//shortName = Mk 12 5"/38 DP
 +	shortName = 40mm Bofors Mk 3
  	
- 	fireTransformName = fireTransform
+-	fireTransformName = fireTransform
++	fireTransformName = SkizzyRigFire
  	
-@@ -82,18 +85,15 @@ MODULE
+ 	oneShotWorldParticles = true
+ 	
+@@ -82,18 +102,15 @@ MODULE
  	//fireAnimName = m1
  	spinDownAnimation = false
  	
@@ -878,7 +1022,7 @@ index b801b8f..95c121c 100644
  	requestResourceAmount = 1
  	recoilReduction = 0.85
  	
-@@ -105,19 +105,20 @@ MODULE
+@@ -105,19 +122,20 @@ MODULE
  	onlyFireInRange = false
  	bulletDrop = true
  	
@@ -906,7 +1050,7 @@ index b801b8f..95c121c 100644
  	autoProxyTrackRange = 300
  	
  	engageAir = true
-@@ -125,10 +126,10 @@ MODULE
+@@ -125,10 +143,10 @@ MODULE
  	engageGround = true
  	engageSLW = false
  	
@@ -919,7 +1063,7 @@ index b801b8f..95c121c 100644
  	reloadCompletePath = NAS/Sounds/reload_complete
  	explModelPath = BDArmory/Models/explosion/explosion
  	explSoundPath = BDArmory/Sounds/explode1
-@@ -141,9 +142,9 @@ MODULE
+@@ -141,9 +159,9 @@ MODULE
  }
  RESOURCE
  {
@@ -1416,12 +1560,154 @@ index 0000000..97e4eaa
 +//    in their cfgs), the 4"/50 bullet is BULLET:NEEDS[BDArmory], and the antenna, periscope and snorkel
 +//    now carry plain-text manufacturer/description in their own cfgs (no NAS localisation tags).
 +// ---------------------------------------------------------------------------------------------
+diff --git a/Plugins/SkizzyRig-LICENSE.txt b/Plugins/SkizzyRig-LICENSE.txt
+new file mode 100644
+index 0000000..68b1180
+--- /dev/null
++++ b/Plugins/SkizzyRig-LICENSE.txt
+@@ -0,0 +1,21 @@
++MIT License
++
++Copyright (c) 2026 Skizzy-create
++
++Permission is hereby granted, free of charge, to any person obtaining a copy
++of this software and associated documentation files (the "Software"), to deal
++in the Software without restriction, including without limitation the rights
++to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is
++furnished to do so, subject to the following conditions:
++
++The above copyright notice and this permission notice shall be included in all
++copies or substantial portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
++SOFTWARE.
+diff --git a/Plugins/SkizzyRig.dll b/Plugins/SkizzyRig.dll
+new file mode 100644
+index 0000000000000000000000000000000000000000..f1b9d55d5da8e6a60cfb1ee348ce27ffc4801df1
+GIT binary patch
+literal 11264
+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
+a?)fc<z%J~xaO3HXzXiVh&V^q)0{;iAkdbu&
+
+literal 0
+HcmV?d00001
+
 diff --git a/README.txt b/README.txt
 new file mode 100644
-index 0000000..518742d
+index 0000000..07f5eaa
 --- /dev/null
 +++ b/README.txt
-@@ -0,0 +1,11 @@
+@@ -0,0 +1,15 @@
 +Iron Seas KANES (Balao class fleet boat) - unofficial update for KSP 1.12.5 / BDArmory Plus 1.13
 +
 +Original mod: Iron Seas KANES FIGHTING SHIPS 1 by SkunkWorksCommand
@@ -1432,4 +1718,8 @@ index 0000000..518742d
 +What changed and why: CHANGES.md in the release package (next to the GameData folder),
 +which also contains the full diff against the original release and the scripts that made it.
 +
-+Known issue: the six gun models have no turret/fire transforms, so BDArmory cannot aim or fire them.
++Deck guns: the six gun models have no turret/fire transforms (each is one merged mesh).
++Plugins/SkizzyRig.dll adds invisible yaw/pitch/fire transforms at load time, so BDArmory aims
++the guns and fires from their muzzles, but the gun meshes do not turn or elevate.
++SkizzyRig was written for this update: MIT licence (Plugins/SkizzyRig-LICENSE.txt), source in
++src/SkizzyRig in the release package.

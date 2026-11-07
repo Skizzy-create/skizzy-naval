@@ -2,9 +2,9 @@
 
 ## Layout and install
 
-The original zip has two top-level folders, `BalaoClassFleetBoat` and `4BladeFastScrew`, meant to go straight into `GameData`. Here they are grouped under **`GameData/IronSeasKANES/`**, together with new `Patches/` and `BulletDefs/` folders, `LICENSE.txt` and `README.txt`. No config uses absolute paths, so the move is safe. If you installed the old version, delete `GameData/BalaoClassFleetBoat` and `GameData/4BladeFastScrew` first; otherwise every part loads twice.
+The original zip has two top-level folders, `BalaoClassFleetBoat` and `4BladeFastScrew`, meant to go straight into `GameData`. Here they are grouped under **`GameData/IronSeasKANES/`**, together with new `Patches/`, `BulletDefs/` and `Plugins/` folders, `LICENSE.txt` and `README.txt`. No config uses absolute paths, so the move is safe. If you installed the old version, delete `GameData/BalaoClassFleetBoat` and `GameData/4BladeFastScrew` first; otherwise every part loads twice.
 
-`diffs/IronSeasKANES_to_KSP1.12.5-BDA1.13.diff` holds every change against the original zip contents (paths relative to the zip root / `GameData/IronSeasKANES`). It was checked with `git apply` on a clean copy of the original zip, and the result is byte-identical to this folder.
+`diffs/IronSeasKANES_to_KSP1.12.5-BDA1.13.diff` holds every change against the original zip contents (paths relative to the zip root / `GameData/IronSeasKANES`), including `Plugins/SkizzyRig.dll` as a git binary patch. It was checked with `git apply` on a clean copy of the original zip, and the result is byte-identical to this folder.
 
 ## Dependencies (looked up on 2026-11-07, nothing installed)
 
@@ -19,6 +19,7 @@ The original zip has two top-level folders, `BalaoClassFleetBoat` and `4BladeFas
 | Ballast fallback | **KerbalPowers Naval** (`Cavitation.dll`, `ModuleShipBallast`) | Yes |
 | `IntakeLqd` ballast resource | CommunityResourcePack (already in your GameData) | Yes |
 | Automatic trim / depth hold (optional) | **SubTrim 1.0** (`../SubTrim`) flags `BalaoClassHull` as a submarine and drives the WBI ballast, the KP fallback or virtual ballast | Yes |
+| Deck gun turret transforms | **SkizzyRig 1.0.0**, included as `Plugins/SkizzyRig.dll` (written for this update, see "Turret rig" below) | Yes (built against the 1.12.5 assemblies) |
 
 Every dependency for 1.12.5 exists, so the WBI, BonVoyage and Firespitter modules stay in the part configs. Fallbacks (below) cover the cases where they are not installed. Your current GameData has CRP, Firespitter and BDArmory, but **no WildBlueTools, KerbalActuators, BonVoyage, KerbalPowers Naval or NAS**. As installed today, the fallbacks would therefore make the boat a surface-only ship without guns. Install WildBlueTools (1.90.6) or KerbalPowers Naval to dive.
 
@@ -45,6 +46,48 @@ Rebalance. All six were clones of the NAS 5"/38 (5" HE `5inchHEUS` at 30 rpm fro
 * New descriptions and tags on all six (no more NAS 5"/38 text). Sounds: 20 mm and .50 use BDArmory's `50CalTurret/sounds/shot`, the 40 mm uses `m230ChainGun/Sounds/m230shot` (as NAS's Bofors does), and the 4" keeps NAS `dd_fire`. The stale `5inchHEUS` comments and `//bulletVelocity = 792` are gone.
 * Ammo mass changed with the ammo: per gun it was 0.82 t of `5/62Shell`. Now it is 0.16 t (20 mm), 0.12 t (.50), 0.42 t (40 mm) and 1.12 t (4"). The parts themselves still weigh 0.01 t (not changed).
 * Every bullet, ammo resource, sound and explosion-model path was checked against BDArmory 1.13.1 (installed GameData), the patched NAS and this folder. The check found no missing names and no duplicate bullet names.
+
+### Deck guns: turret rig (`Plugins/SkizzyRig.dll`, new)
+
+**The problem.** None of the six gun models has a `Rotate`, `Pitch` or `fireTransform` transform. BDArmory logged `has no pitchTransform`, `Turret unlikely to function properly` and `Weapon missing fireTransform`, and the guns never turned or fired. Each model is **one merged mesh**: a single mesh node (plus a convex mesh collider built from the same geometry) holds the base, the mount and the barrel. Split into connected pieces it is 17 to 188 loose islands, but there are no separate nodes to reparent, so the visible mount and barrel cannot be made to move without editing the models.
+
+**The fix.** A small plugin, SkizzyRig (`Plugins/SkizzyRig.dll`, written for this update, MIT licence, source in `src/SkizzyRig/`), adds the part module `ModuleRigTurret`. From numbers in the part cfg it builds these transforms under the part's `model` transform:
+
+| Transform | Where | Used by |
+|---|---|---|
+| `SkizzyRigBase` | on the yaw axis (`pivot`); +Y = up (`upAxis`), +Z = the barrel's horizontal direction | ModuleTurret `baseTransformName`. Yaw 0, and the centre of `yawRange`, is along +Z |
+| `SkizzyRigYaw` | same place, child of the base | ModuleTurret `yawTransformName` |
+| `SkizzyRigPitch` | on the trunnion axis (`trunnion`), child of the yaw transform | ModuleTurret `pitchTransformName` |
+| `SkizzyRigFire` | at the muzzle, child of the pitch transform, +Z along the bore | ModuleWeapon `fireTransformName` |
+
+* BDArmory's rest pose is pitch 0 (barrel level), but some barrels are modelled elevated (`boreDirection`). So the fire transform goes where the modelled muzzle ends up when the barrel is swung down about the trunnion to level. When BDArmory elevates the gun to the modelled angle, the fire transform sits exactly on the visible muzzle and points along the visible bore. This was checked numerically for all six guns.
+* The module can also move named mesh nodes under the yaw and pitch transforms (`yawMeshes`, `pitchMeshes`; pitch meshes are swung down by the same angle), so that a mount and barrel visibly turn. None of these models has separate nodes, so **all six guns use the invisible-transform fallback: the gun aims and fires from the right point, but its mesh does not move.**
+* Timing: the transforms are built in `OnLoad` on the part prefab while KSP compiles the part. Every copy of the part therefore has them before BDArmory's `OnStart`, whatever the module order. `OnAwake` and `OnStart` repeat an idempotent check. KSP.log gets one line per gun at load: `[SkizzyRig.ModuleRigTurret]: <part>: built SkizzyRigBase/SkizzyRigYaw/SkizzyRigPitch + 1 x SkizzyRigFire; ... rest fire point(s) (...); no mesh nodes reparented: invisible rig, the model's mesh stays static`.
+* If a model already has transforms with these names, the module builds nothing and logs a warning.
+* Build: `dotnet build -c Release -p:DebugType=None -p:DebugSymbols=false` in `src/SkizzyRig` (net48; references `Assembly-CSharp`, `UnityEngine` and `UnityEngine.CoreModule` from `KSP_x64_Data/Managed`; set `-p:KSPRoot=<KSP folder>`). There is no BDArmory reference. The DLL contains no local paths and no PDB reference.
+
+Per gun (part frame, metres; up on the boat is −Z, and the guns stack-attach with +Y toward the bow; x = 0 on all six, measured |x| < 2 mm):
+
+| Part folder | Rig | Pivot (on the yaw axis) | Trunnion | Bore as modelled | Muzzle as modelled | Fire point at rest (pitch 0) |
+|---|---|---|---|---|---|---|
+| `20mmFF` | invisible (one mesh, 44 islands) | (0, 0, −0.666): top of the fixed column | (0, 0.006, −0.8316): flat top of the cradle fork arms (no pin is modelled) | 12.86° up, toward +Y | (0, 0.8442, −1.175): flash hider tip | (0, 0.8996, −0.9798) |
+| `20mmRF` | invisible (one mesh, 45 islands) | (0, 0, −0.666) | (0, −0.006, −0.8316) | 12.86° up, toward −Y | (0, −0.8442, −1.175) | (0, −0.8996, −0.9798) |
+| `50Cal` | invisible (one mesh, 17 islands) | (0, 0, −0.026): top of the pintle | (0, 0.0548, −0.1413): round lug at the top of the yoke (r 13 mm) | level, toward −Y | (0, −0.6832, −0.1355): muzzle tip | same as the muzzle |
+| `Single40mm` | invisible (one mesh, 55 islands) | (0, 0, −0.187): top of the base plate | (0, −0.0814, −0.852): trunnion bearings (three coaxial pairs) | 30.22° up, toward −Y | (0, −1.3224, −1.9608): muzzle tip | (0, −1.7118, −1.1855) |
+| `4inchFF` | invisible (one mesh, 188 islands) | (0, 0, −0.179): top of the fixed pedestal | (0, −0.0006, −0.7652): trunnion pins (r 83 mm) | 0.33° up, toward +Y | (0, 2.4298, −0.7643): muzzle face | (0, 2.4298, −0.7504) |
+| `4inchRF` | invisible (one mesh, 188 islands) | (0, 0, −0.179) | (0, 0.0006, −0.7652) | 0.33° up, toward −Y | (0, −2.4298, −0.7643) | (0, −2.4298, −0.7504) |
+
+How the numbers were measured (`tools/measure_gun_rigs.py` repeats this and checks the cfgs; all agree within 1 mm and 0.07°): the mesh is split into islands (connected triangles, vertices welded by position). The barrel is the longest island that is at least 6× longer than it is thick, and the bore axis is its principal axis. The muzzle is the furthest point along that axis over the barrel and any muzzle-device islands on the axis. Trunnions come from circle fits on the trunnion pins, bearings or yoke lug (in the Y-Z plane, as every trunnion axis is parallel to X), and for the 20 mm from the fork arms. The rear 20 mm and rear 4" models are the front ones turned 180° about the vertical axis (vertex check; the rear 20 mm adds one 8-triangle sliver).
+
+Config changes on the six guns (stage 3 of the patch scripts):
+
+* New `MODULE:NEEDS[SkizzyRig]` block `ModuleRigTurret` before `ModuleTurret`, with the numbers above. If the DLL is missing, ModuleManager drops only this block, and the gun loads but cannot aim or fire, as before.
+* `ModuleTurret`: `yawTransformName = SkizzyRigYaw` (was `Rotate`), `pitchTransformName = SkizzyRigPitch` (was `Pitch`), new `baseTransformName = SkizzyRigBase`. Turret speeds and limits are unchanged.
+* `ModuleWeapon`: `fireTransformName = SkizzyRigFire` (was `fireTransform`).
+* The header comment `// WARNING: this model.mu has no Rotate/Pitch/fireTransform ...` is replaced by a `// Turret rig: ...` note.
+* All key names were checked against the BDArmory 1.13.1 `ModuleTurret` and `ModuleWeapon` sources.
+
+What it looks like in game: at yaw 0 and the modelled elevation, the rounds leave the visible muzzle. At any other angle they leave from where the muzzle would be if the barrel had turned, which can be up to about 4.8 m from the visible muzzle (a 4" firing aft). The static gun mesh does not block its own fire, because BDArmory ignores hits on the part that fired. BDArmory's own-vessel check still applies: a gun does not fire while its line of fire crosses its own boat. There is no muzzle flash, shell ejection or recoil movement, because the models have none.
 
 ### `BulletDefs/IronSeasKANES_Bullets.cfg` (new)
 
@@ -88,14 +131,15 @@ Each patch only runs when its dependency is **missing** (`:NEEDS[!X]`, checked a
 
 * `LICENSE.txt` (GNU GPL v2, the original mod's license, verbatim from gnu.org) is in the package root and in `GameData/IronSeasKANES/`. `GameData/IronSeasKANES/README.txt` credits SkunkWorksCommand and links the original.
 * GPLv2 §2(a): every modified part cfg now starts with `// Modified in 2026-11 by the unofficial KSP 1.12.5 / BDArmory 1.13 update ... Original by SkunkWorksCommand, GPLv2.` The new files (`Patches/`, `BulletDefs/`) carry a similar line.
+* `Plugins/SkizzyRig.dll` is a separate plugin written for this update, under the MIT licence (`Plugins/SkizzyRig-LICENSE.txt`, and `src/SkizzyRig/LICENSE` next to its source). MIT is compatible with the GPLv2 of the rest of the mod.
 
 ### Reproducing
 
-`tools/patch_ironseas.py` (stage 1: BDArmory 1.13 compatibility) and `tools/patch_ironseas_stage2.py` (rebalance, descriptions, depths, trim, notices) turn the original zip contents into this tree byte for byte: `python -I tools/patch_ironseas.py <extracted original folder>`. Running them a second time changes nothing. `Patches/`, `BulletDefs/`, `LICENSE.txt` and `README.txt` are hand-written or copied. `tools/verify_ironseas_guns.py <IronSeasKANES> <BDArmory> <NAS>` checks every name the guns reference.
+`tools/patch_ironseas.py` (stage 1: BDArmory 1.13 compatibility), `tools/patch_ironseas_stage2.py` (rebalance, descriptions, depths, trim, notices) and `tools/patch_ironseas_stage3.py` (turret rig) turn the original zip contents into this tree byte for byte: `python -I tools/patch_ironseas.py <extracted original folder>`. Running them a second time changes nothing. `Patches/`, `BulletDefs/`, `LICENSE.txt` and `README.txt` are hand-written or copied. `Plugins/SkizzyRig.dll` is built from `src/SkizzyRig/`, whose `LICENSE` is copied as `Plugins/SkizzyRig-LICENSE.txt`. `tools/verify_ironseas_guns.py <IronSeasKANES> <BDArmory> <NAS>` checks every name the guns reference, and `tools/measure_gun_rigs.py <IronSeasKANES>` measures the rig numbers from the gun models again and compares them with stage 3.
 
 ## Pre-existing issues left alone (upstream content, reported only)
 
-* **The gun models cannot aim or fire.** None of the six gun `model.mu` files contains a `Rotate`, `Pitch` or `fireTransform` transform; each is one static mesh (checked in the original zip). BDArmory therefore logs `has no pitchTransform` / `Turret unlikely to function properly` and `Weapon missing fireTransform [fireTransform]! Please fix your model`, and the guns never turn or shoot, whatever the numbers above say. The fix needs the models: in Unity/PartTools add an empty `Rotate` (yaw axis at the mount's pivot), a child `Pitch` (at the trunnions) holding the moving barrel meshes, and a child `fireTransform` at the muzzle (+Z along the bore). The configs above are ready for that.
+* **The gun models are single static meshes.** None of the six gun `model.mu` files has a `Rotate`, `Pitch` or `fireTransform` transform, and in each the base, mount and barrel are one merged mesh (checked in the original zip). SkizzyRig (see "Turret rig") now makes the guns aim and fire, but the meshes cannot turn without editing the models. The real fix is in Unity/PartTools: split each gun into base, mount and barrel nodes. `ModuleRigTurret`'s `yawMeshes` and `pitchMeshes` can then move those nodes without a code change.
 * **Duplicate attach-node IDs**: the hull has 12 nodes and the sail 6, all named `node_stack_top1`. KSP looks nodes up by ID, so re-attaching or reloading a craft can link to the wrong node. Fixing this means renaming the nodes, which changes existing craft files, so it was left for the author.
 * **Snorkel intake**: its `ModuleResourceIntake` uses `intakeTransformName = Intake`, but the snorkel model has no `Intake` transform. KSP then reports the intake as Closed and never refills its 100 `IntakeAir`. The hull's diesel generator burns 0.001 IntakeAir/s, so the stored air lasts about 28 h of running. Probable one-line fix (untested): `intakeTransformName = Snorkel` (that transform exists in the model).
 * The guns weigh 0.01 t each and have `maxHitPoints = 100000` (copied from the 5"/38 clone). A real 4"/50 on its mount weighs about 5 t, so a full-weight gun would change the boat's trim.
@@ -103,7 +147,7 @@ Each patch only runs when its dependency is **missing** (`:NEEDS[!X]`, checked a
 ## Not verified
 
 * No in-game test was possible here. Unverified: WildBlueTools 1.90.6 ballast behaviour with this hull and the new 0-unit start, the 2300 kPa crush depth in flight, the KerbalPowers fallback numbers, and BonVoyage 1.4.1 on 1.12.5.
-* The gun numbers can only be tested once the gun models have turret transforms (see above). `BeltFed = false` drum reloading on the 20 mm is a BDArmory 1.13 feature (the fields exist in 1.13.1), but it has not been seen in game on these parts.
+* The turret rig has not been seen in game. The transform positions and the pitch maths were checked numerically (`tools/measure_gun_rigs.py`, plus a re-implementation of the module's maths that puts every fire transform on its muzzle at the modelled elevation), and the DLL builds against the KSP 1.12.5 assemblies, but KSP never ran it here. The gun numbers (rate of fire, ranges, drum reloads) are untested for the same reason. `BeltFed = false` drum reloading on the 20 mm is a BDArmory 1.13 feature (the fields exist in 1.13.1), but it has not been seen in game on these parts.
 * Bon Voyage /L may use a different assembly or folder name. If it does not load as `BonVoyage`, fallback 3 removes `BonVoyageModule` even when /L is installed; check the Sail's PAW.
 * The NEEDS checks assume assembly names `WildBlueTools`, `KerbalActuators`, `BonVoyage`, `Firespitter` and `Cavitation`.
 
@@ -112,5 +156,6 @@ Each patch only runs when its dependency is **missing** (`:NEEDS[!X]`, checked a
 1. ModuleManager's loading screen should show no patch errors. In `ModuleManager.ConfigCache`, check that `BalaoClassHull` has either `WBIBallastTank` (WildBlueTools installed) or `ModuleShipBallast` (KP Naval only), never both, and `maxPressure = 2300`.
 2. Editor: all 17 parts appear; the six guns appear only with NAS + BDArmory. Gun info should show the new bullets: `20mm AP (long)`, `Raufoss Mk211`, `40mm HE (Bofors)` and `4in/50 HC (US)`. The antenna, periscope and snorkel should show their own descriptions.
 3. Splash the boat (VesselMover or launch from water). It should spawn **surfaced** (IntakeLqd 0/1400). Flood the ballast (WBI ballast, KP "Target Depth", or SubTrim): it should submerge, hold depth and resurface when blown. The WBI dive computer should show about 56 % hull pressure at 120 m. Going below about 224 m should destroy the Sail and Hull (overpressure).
-4. Guns: expect the BDArmory log lines quoted above; the guns will not fire until the models are fixed. After a model fix: surface, engage an AI destroyer, and check that the 4" fires about 9 rounds per minute and ignores aircraft, and that the 20 mm pauses about 8 s every 60 rounds.
-5. Without BonVoyage/KerbalActuators: the Sail's PAW must not show broken module entries, and KSP.log must not list "Cannot find a PartModule" for Iron Seas parts.
+4. Guns, at load: KSP.log should show six `[SkizzyRig.ModuleRigTurret]: ... built SkizzyRigBase/...` lines (one per gun part) and no `has no pitchTransform`, `Turret unlikely to function properly` or `Weapon missing fireTransform` lines for these parts. `ModuleManager.ConfigCache` should show `ModuleRigTurret` on all six guns.
+5. Guns, in flight: put the Balao on the surface with a weapon manager (guard mode on, a team set) and an AI boat or destroyer of another team within 2-5 km. The guns traverse and elevate invisibly (the meshes stay still), and the tracers should start at the muzzles: exactly at the visible muzzle when the gun aims along its modelled direction (for example the 4" at a level target dead ahead of a forward gun), otherwise where the muzzle would be. Check that the 4" fires about 9 rounds per minute and ignores aircraft, that the 20 mm pauses about 8 s every 60 rounds, and that no gun fires through the sail or hull.
+6. Without BonVoyage/KerbalActuators: the Sail's PAW must not show broken module entries, and KSP.log must not list "Cannot find a PartModule" for Iron Seas parts.
