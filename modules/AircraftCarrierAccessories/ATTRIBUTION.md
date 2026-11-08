@@ -11,3 +11,9 @@
 - **Patch:** `KFC/Patches/zz_KSP1125_BDA113_Compat.cfg` by Skizzy-create, 2026, MIT.
 
 Both copyright notices and the licence text are in `LICENSE.txt`.
+
+## Credit for the SkizzyNaval changes
+
+The MIT License requires its copyright and permission notices to be included in all copies or substantial portions. Keep both notices in `LICENSE.txt` (flywlyx's and Skizzy-create's) and this credit:
+
+> SkizzyNaval changes by Skizzy-create (https://github.com/Skizzy-create/skizzy-naval)

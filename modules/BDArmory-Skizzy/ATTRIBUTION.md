@@ -11,3 +11,9 @@
   `01d0c9676585731e6fe9df85ee2be0ab802a20bf`) and new strings in
   `Localization/UI/en-us.cfg`. Everything else is the unmodified 1.13.1.0 release. The
   modifications are licensed CC BY-SA 2.0.
+
+## Credit for the SkizzyNaval changes
+
+CC BY-SA 2.0 (section 4(c)) requires credit when you distribute this work or a derivative. Credit BDArmory's original authors as listed above, together with:
+
+> SkizzyNaval changes by Skizzy-create (https://github.com/Skizzy-create/skizzy-naval)

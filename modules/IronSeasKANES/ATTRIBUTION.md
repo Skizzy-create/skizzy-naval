@@ -19,3 +19,9 @@
   Papa_Joe, DocNappers and contributors; CC BY-SA 2.0). Their bullets, ammunition and sounds
   are referenced by name only; none of their files are included.
 - **Ship data:** navweaps.com (4"/50 Mk 9).
+
+## Credit for the SkizzyNaval changes
+
+The SkizzyNaval changes are Copyright (C) 2026 Skizzy-create, under GPL-2.0. Sections 1 and 2 of GPL-2.0 require every copy and modified version to keep the copyright notices and the notices saying which files were changed. Do not remove Skizzy-create's notices or this file's credit:
+
+> SkizzyNaval changes by Skizzy-create (https://github.com/Skizzy-create/skizzy-naval)

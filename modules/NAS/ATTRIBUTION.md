@@ -9,3 +9,9 @@
   (bullet, weapon and radar configs; plugin rebuilt with fixes). Every change is listed in
   `CHANGES.md` and in `diffs/`. The adaptation is licensed CC BY-SA 4.0.
 - **Not included:** the ModuleManager and Firespitter copies from the original zip.
+
+## Credit for the SkizzyNaval changes
+
+Skizzy-create is designated to receive attribution for the SkizzyNaval changes, under section 3(a)(1)(A)(i) of CC BY-SA 4.0. If you share this module, or adapted material based on it, you must keep this file or an equivalent notice, and give the credit for the original mod listed above together with:
+
+> SkizzyNaval changes by Skizzy-create (https://github.com/Skizzy-create/skizzy-naval)
