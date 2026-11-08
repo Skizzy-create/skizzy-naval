@@ -22,9 +22,14 @@ DOCS_DIR_IN_ZIP = "SkizzyNaval-docs"
 
 # --------------------------------------------------------------------------- upstream
 
-def _download(url: str, target: Path, attempts: int = 3) -> None:
+def _download(url: str, target: Path, attempts: int = 5, delay: float = 30) -> None:
+    """Download url to target, retrying any network error (GitHub release downloads sometimes
+    return 5xx for minutes at a time): `attempts` tries, `delay` seconds apart."""
     last = None
     for i in range(attempts):
+        if i:
+            log(f"  retrying in {delay:.0f} s ({last})")
+            time.sleep(delay)
         try:
             req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
             with urllib.request.urlopen(req, timeout=180) as resp, open(target, "wb") as fh:
@@ -32,8 +37,7 @@ def _download(url: str, target: Path, attempts: int = 3) -> None:
             return
         except Exception as exc:  # noqa: BLE001 - report and retry any network error
             last = exc
-            time.sleep(3 * (i + 1))
-    raise SkizzyError(f"download failed: {last}")
+    raise SkizzyError(f"download failed after {attempts} attempts: {last}")
 
 
 def _check_archive(path: Path, up: dict) -> str | None:

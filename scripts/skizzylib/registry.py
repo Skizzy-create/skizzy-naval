@@ -187,6 +187,12 @@ def check_registry(reg: Registry) -> list[str]:
                 reg.expand(m.get(rel))
             except SkizzyError as exc:
                 problems.append(f"{where}: {rel}: {exc}")
+        if m.get("replaced_by") is not None:
+            rb = m.get("replaced_by")
+            if not (isinstance(rb, str) and rb and not rb.startswith("@")) and not (
+                    isinstance(rb, dict) and rb.get("name") and "any_of" not in rb):
+                problems.append(f"{where}: replaced_by must be one identifier or one "
+                                "{ name = ..., version/min_version = ... } table")
         if m.strategy not in ("metapackage", "external") and not m.folder.is_dir():
             problems.append(f"{where}: folder modules/{m.key}/ does not exist")
         if m.strategy == "metapackage":

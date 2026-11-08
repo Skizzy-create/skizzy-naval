@@ -75,6 +75,8 @@ def build_ckan(reg: Registry, mod: Module, release_version: str, tag: str,
             items = items + _pack_members(reg, rel)
         if items:
             doc[rel] = _dedupe(items)
+    if mod.get("replaced_by"):
+        doc["replaced_by"] = reg.expand([mod.get("replaced_by")])[0]
     if mod.is_package:
         doc["install"] = [dict(d) for d in mod.get("install")]
         if mod.strategy == "external":

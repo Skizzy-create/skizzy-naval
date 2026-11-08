@@ -22,7 +22,13 @@ These builds are unofficial. Please report problems here, not to the original au
    `SkizzyNaval-*` modules.
 
 The pack depends on every module marked "pack" below, plus ModuleManager and BDArmory Plus
-1.13 (either `BDArmoryForRunwayProject` from the main CKAN repository or `BDArmory-Skizzy`).
+1.13 (either `BDArmoryForRunwayProject` from the main CKAN repository or `BDArmory-Overdrive`).
+
+**BDArmory Overdrive** (`BDArmory-Overdrive`) is the Skizzy fork of BDArmory Plus 1.13.1
+(multi-target missiles, parallel salvos, depth charges, memory-leak fixes). It is released from
+[Skizzy-create/BDArmory](https://github.com/Skizzy-create/BDArmory/releases) and listed in this
+CKAN repository. To use it, install "BDArmory Overdrive" together with (or before) "Skizzy
+Naval Pack". It replaces `BDArmory-Skizzy`, which is retired.
 It recommends Kerbal Powers Naval, Buoyancy Adjuster and S.A.C.D., and suggests Hangar and
 the TBAE patch.
 
@@ -52,12 +58,13 @@ The rules:
 | `SkizzyNaval-AircraftCarrierAccessories` | Aircraft Carrier Accessories 1.9.1, flywlyx | MIT | full mod with a rebuilt `ACA.dll`, rebuild | The fix is in the DLL, which CKAN's original owns. Replaces `AircraftCarrierAccessories` (an overlay until 0.1.1) |
 | `SkizzyNaval-FishyWeapons` | Fishy Weapons, Fishy Mod Core | CC BY-SA 4.0 / restricted | overlay, depends on `FishyAntiMissileSpam` | Fishy Mod Core forbids redistribution; both are on CKAN |
 | `SkizzyNaval-TitansBDArmoryExtension` | TBAE | unclear (SpaceDock says MIT, but the models are BDArmory's) | overlay, original installed **by hand** | Licence unclear and not on CKAN. Suggested by the pack only |
-| `BDArmory-Skizzy` | BDArmory Plus 1.13.1.0, BahamutoD, Papa_Joe, DocNappers and others | CC BY-SA 2.0 | upstream release zip with our `BDArmory.dll` and `en-us.cfg` | SA allows it. Provides and conflicts with `BDArmory`; optional alternative |
+| `BDArmory-Overdrive` | BDArmory Plus 1.13.1.0, BahamutoD, Papa_Joe, DocNappers and others | CC BY-SA 2.0 | external: released from [Skizzy-create/BDArmory](https://github.com/Skizzy-create/BDArmory/releases); only its `.ckan` is generated here | SA allows it. Provides and conflicts with `BDArmory` and `BDArmoryForRunwayProject`; optional alternative |
+| `BDArmory-Skizzy` | the same | CC BY-SA 2.0 | upstream release zip with our `BDArmory.dll` and `en-us.cfg` | **Retired after 0.1.2**, `replaced_by` `BDArmory-Overdrive` |
 | `SubTrim` | SubTrim, Skizzy-create | MIT | external: released from [Skizzy-create/SubTrim](https://github.com/Skizzy-create/SubTrim); only its `.ckan` is generated here | Own repository and releases |
 | `SkizzyNavalPack` | metapackage | MIT | `.ckan` only | |
 
-The pack depends on every module in the table except TBAE (suggested) and BDArmory-Skizzy
-(an alternative). Each `modules/<name>/README.md` explains the decision
+The pack depends on every module in the table except TBAE (suggested), BDArmory-Overdrive
+(an alternative) and BDArmory-Skizzy (retired). Each `modules/<name>/README.md` explains the decision
 in more detail, and `CHANGES.md` lists every change.
 
 ### What "rebuild" means
@@ -110,9 +117,11 @@ pinned hash. `RELEASING.md` covers the release flow, adding a module and the tok
   `modules/TitansBDArmoryExtension/not-shipped.txt`.
 - **Maritime Pack** includes `FSResizer.dll` (Allis Tauri), as the original does. It is
   flagged in its README.
-- **BDArmory-Skizzy** provides `BDArmoryForRunwayProject`, so mods that depend on it by name
-  (for example NKD Reborn Extended) install with it. CKAN does not check version bounds
-  against a provided module.
+- **BDArmory-Overdrive** (and the retired BDArmory-Skizzy) provides `BDArmoryForRunwayProject`,
+  so mods that depend on it by name (for example NKD Reborn Extended) install with it. CKAN
+  does not check version bounds against a provided module.
+- **Switching from BDArmory-Skizzy to BDArmory Overdrive**: `ckan upgrade --all`, then
+  `ckan replace BDArmory-Skizzy` (or tick *Replace* in the CKAN GUI).
 - **Aircraft Carrier Accessories, upgrading from 0.1.1**: `ckan upgrade --all` leaves
   `SkizzyNaval-AircraftCarrierAccessories` at 0.1.1, because 0.1.2 replaces (conflicts with)
   the original ACA that 0.1.1 needed. Run

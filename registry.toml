@@ -19,11 +19,12 @@ ksp_version_min = "1.12.0"
 ksp_version_max = "1.12.99"
 
 [aliases]
-# BDArmory Plus 1.13.x from the main CKAN repo, or the Skizzy fork build when it ships.
+# BDArmory Plus 1.13.x from the main CKAN repo, or BDArmory Overdrive (the Skizzy fork). Both
+# BDArmory-Overdrive and the retired BDArmory-Skizzy also provide BDArmoryForRunwayProject.
 bdarmory = { any_of = [
   { name = "BDArmoryForRunwayProject", min_version = "2:v1.13.0.0" },
-  { name = "BDArmory-Skizzy" },
-], choice_help_text = "BDArmory Plus 1.13 (BDArmoryForRunwayProject) or the Skizzy fork build (BDArmory-Skizzy)." }
+  { name = "BDArmory-Overdrive" },
+], choice_help_text = "BDArmory Plus 1.13 (BDArmoryForRunwayProject) or BDArmory Overdrive (BDArmory-Overdrive)." }
 
 [policy]
 max_file_mb = 95
@@ -350,7 +351,7 @@ name = "Skizzy Naval Pack"
 abstract = "Everything for KSP 1.12.5 + BDArmory Plus 1.13 naval combat: the SkizzyNaval compatibility builds plus recommended naval mods from the main CKAN repository."
 description = """
 Installs every SkizzyNaval module marked pack = depends in registry.toml, ModuleManager and
-BDArmory Plus 1.13 (or the Skizzy fork build), and recommends Kerbal Powers Naval, Buoyancy
+BDArmory Plus 1.13 (or BDArmory Overdrive), and recommends Kerbal Powers Naval, Buoyancy
 Adjuster and S.A.C.D. Hangar and the TBAE patch (TBAE needs a manual install) are
 suggestions.
 """
@@ -361,14 +362,59 @@ depends = ["ModuleManager", "@bdarmory"]
 recommends = ["KerbalPowersNaval", "BuoyancyAdjuster", "StockalikeAircraftCarrierDecks"]
 suggests = ["Hangar"]
 
-# ============================================================================ BDArmory fork
+# ============================================================================ BDArmory Overdrive
+
+[[module]]
+key = "BDArmory-Overdrive"
+identifier = "BDArmory-Overdrive"
+strategy = "external"
+enabled = true
+pack = "none"          # alternative to BDArmoryForRunwayProject via the @bdarmory any_of
+version = "2:v1.13.1.0-overdrive.1"
+release_date = "2026-11-08T09:46:00Z"
+name = "BDArmory Overdrive"
+abstract = "BDArmory Plus 1.13.1 with bug fixes and improvements: up to 1024 targets and 128 missiles per target, missile retargeting, parallel salvos, depth charges and memory-leak fixes. Drop-in replacement for BDArmory Plus."
+description = """
+Built on top of BDArmory Plus 1.13.1, with bug fixes and improvements: multi-target missile
+engagement (up to 1024 targets, 128 missiles per target, 2-target cap fixed), retargeting of
+missiles whose target dies, parallel salvo firing in guard mode, depth-charge release over
+submerged targets, MultiMissileLauncher fixes, memory-leak fixes for long battles, and a 1-900 s
+debris clean-up delay slider. Same GameData/BDArmory folder, plugin, part modules and config
+nodes as BDArmory Plus, so weapon mods keep working. Provides and conflicts with BDArmory and
+BDArmoryForRunwayProject, so only one BDArmory can be installed. Replaces BDArmory-Skizzy.
+Released from Skizzy-create/BDArmory (branch multitarget-1.13.1). BDArmory by BahamutoD,
+maintained by Papa_Joe, then the BDArmory Plus team (DocNappers, SuicidalInsanity, josue,
+BillNyeTheIE and contributors), CC BY-SA 2.0.
+"""
+author = ["BahamutoD", "Papa_Joe", "jrodrigv", "DocNappers", "SuicidalInsanity", "josue",
+          "BillNyeTheIE", "Gedas-S", "Skizzy-create"]
+license = "CC-BY-SA-2.0"
+tags = ["plugin", "parts", "sound", "combat"]
+provides = ["BDArmory", "BDArmoryForRunwayProject"]
+conflicts = ["BDArmory", "BDArmoryForRunwayProject"]
+depends = ["ModuleManager", "PhysicsRangeExtender"]
+install = [
+  { find = "BDArmory", install_to = "GameData" },
+  { find = "craft", install_to = "Ships", as = "SPH" },
+]
+resources = { homepage = "https://github.com/Skizzy-create/BDArmory/tree/multitarget-1.13.1", repository = "https://github.com/Skizzy-create/BDArmory", bugtracker = "https://github.com/Skizzy-create/BDArmory/issues", x_upstream = "https://github.com/BrettRyland/BDArmory" }
+
+[module.external]
+# Written out in full: the version has an epoch, which can't appear in the URL.
+url = "https://github.com/Skizzy-create/BDArmory/releases/download/v1.13.1.0-overdrive.1/BDArmoryOverdrive-1.13.1.0-overdrive.1.zip"
+
+# ============================================================================ BDArmory fork (retired)
 
 [[module]]
 key = "BDArmory-Skizzy"
 identifier = "BDArmory-Skizzy"
 strategy = "rebuild"
-enabled = true         # set to false to stop releasing it (see modules/BDArmory-Skizzy/README.md)
-pack = "none"          # alternative to BDArmoryForRunwayProject via the @bdarmory any_of
+# Retired after 0.1.2: the same plugin is now released as BDArmory Overdrive from the fork's own
+# repository (BDArmory-Overdrive below). Its last .ckan (2:v1.13.1.0-skizzy.0.1.2) carries
+# replaced_by, so CKAN offers the switch ("ckan replace BDArmory-Skizzy").
+enabled = false
+replaced_by = "BDArmory-Overdrive"
+pack = "none"
 version_template = "2:v1.13.1.0-skizzy.{version}"
 name = "BDArmory Plus (Skizzy fork build)"
 abstract = "BDArmory Plus 1.13.1 with the Skizzy-create/BDArmory multitarget-1.13.1 plugin (multi-target, parallel salvo, depth-charge and memory-leak fixes). Drop-in replacement for BDArmoryForRunwayProject."
@@ -497,7 +543,7 @@ author = "Skizzy-create"
 license = "MIT"
 tags = ["plugin", "control"]
 depends = ["ModuleManager"]
-suggests = ["BDArmory-Skizzy", "BDArmoryForRunwayProject"]
+suggests = ["BDArmory-Overdrive", "BDArmoryForRunwayProject"]
 supports = ["KerbalPowersNaval", "BuoyancyAdjuster", "WildBlueTools"]
 install = [{ file = "GameData/SubTrim", install_to = "GameData" }]
 resources = { homepage = "https://github.com/Skizzy-create/SubTrim", repository = "https://github.com/Skizzy-create/SubTrim", bugtracker = "https://github.com/Skizzy-create/SubTrim/issues" }

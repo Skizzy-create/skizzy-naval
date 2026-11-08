@@ -133,13 +133,14 @@ for files that must never be shipped).
 | `name`, `abstract`, `description`, `author`, `license`, `tags` | Copied into the `.ckan` (the description is joined into one line) |
 | `ksp_version_min`, `ksp_version_max`, `spec_version` | Override the `[pack]` defaults |
 | `provides`, `depends`, `recommends`, `suggests`, `supports`, `conflicts` | CKAN relationships. A plain string means a name, `"@alias"` uses `[aliases]`, and tables pass through |
+| `replaced_by` | CKAN `replaced_by`: one identifier (or a `{ name, version }` table) that CKAN offers as the replacement (`ckan replace`) |
 | `install` | CKAN install directives. Every directive needs `install_to` |
 | `resources` | Merged over the default homepage, repository and bugtracker links |
 | `release_date` | External modules only (others use the release time) |
 | `[module.upstream]` `urls`, `size`, `sha256` | Original archive and mirrors, checked before use. Leave `sha256` out only when the archive isn't byte-stable (GitHub source archives); `manifest.json` still checks every file |
 | `[module.upstream]` `strip_top` | Drop the archive's single top folder |
 | `[module.upstream]` `extract` | `{ from, to }` folder mappings from the archive into the zip (`from = ""` means everything), optional `exclude` globs |
-| `[module.external]` `url` | Release asset URL; `{version}` is filled in |
+| `[module.external]` `url` | Release asset URL; `{version}` is filled in (write the URL out in full when the version has an epoch) |
 
 ## Checks
 

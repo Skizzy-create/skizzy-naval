@@ -2,6 +2,14 @@
 
 CKAN: `BDArmory-Skizzy` | strategy: **rebuild** | licence: **CC BY-SA 2.0** (inherited)
 
+> **Retired after 0.1.2.** The same plugin is now released as **BDArmory Overdrive**
+> (`BDArmory-Overdrive`) from [Skizzy-create/BDArmory](https://github.com/Skizzy-create/BDArmory/releases),
+> and this module is no longer built (`enabled = false`). Its last version,
+> `2:v1.13.1.0-skizzy.0.1.2`, has `replaced_by: BDArmory-Overdrive`, so CKAN offers the switch:
+> `ckan upgrade --all` (picks up that metadata), then `ckan replace BDArmory-Skizzy`, or tick
+> *Replace* in the GUI. BDArmory Overdrive 1.13.1.0-overdrive.1 ships the same `BDArmory.dll`
+> as 0.1.2 (SHA-256 `B70B1DED...B2F9`).
+
 BDArmory Plus 1.13.1.0 with the plugin from
 [Skizzy-create/BDArmory `multitarget-1.13.1`](https://github.com/Skizzy-create/BDArmory/tree/multitarget-1.13.1)
 at commit `ff5130c19ffbe0ee4dc0eacde1a5ca6d6a59cf8e`:
@@ -33,8 +41,9 @@ it for BDArmoryForRunwayProject and mods that depend on either name stay install
 version is `2:v1.13.1.0-skizzy.<release>`: epoch 2, the same as BDArmoryForRunwayProject's.
 
 **Version constraints.** Because this build provides `BDArmoryForRunwayProject`, mods that
-depend on it by name (e.g. NorthKerbinDynamicsRenewedExtended) accept it. A dependency with a
-`max_version` below 1.13.1 would still not accept it.
+depend on it by name (e.g. NorthKerbinDynamicsRenewedExtended) accept it. CKAN does not check
+version bounds against a provided module (`RelationshipDescriptor.WithinBounds` in CKAN 1.36),
+so `min_version`/`max_version` on such a dependency don't matter.
 
 **Why not a CI compile.** Building BDArmory.dll needs KSP's `Assembly-CSharp.dll` and Unity
 assemblies, which are proprietary and can't be downloaded by a public GitHub runner. A
