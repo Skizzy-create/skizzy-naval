@@ -1,0 +1,5 @@
+# Files removed from the upstream archive before the overlay is applied.
+# One path per line, relative to the zip root of the release asset.
+# CKAN's AircraftCarrierAccessories install filters out KFC/Resource (resource definitions
+# AntiProton and GNparticle, which no ACA part uses); this build leaves it out the same way.
+GameData/KFC/Resource/ResourcesGeneric.cfg

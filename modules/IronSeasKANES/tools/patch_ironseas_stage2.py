@@ -3,6 +3,7 @@
 * Six deck guns: replace the cloned NAS 5"/38 numbers with the real weapon (bullet, ammo, RPM, ranges, turret limits,
   heat, sounds, description, tags), keep everything else.
 * Antenna / periscope / snorkel: own descriptions, tags and a plain-text manufacturer (no NAS localisation needed).
+* Snorkel: the intake uses the model's "Snorkel" transform (the model has no "Intake" transform).
 * Sail dive computer + Sail/Hull maxPressure: Balao depths (test ~120 m, crush ~224 m) in KSP pressure terms.
 * Hull: start surfaced with the main ballast blown (IntakeLqd amount 0).
 Attach nodes are NOT touched. The comment line under the NEEDS note (turret rig) comes from stage 3.
@@ -421,6 +422,14 @@ def run(root, log):
         c.set(part, 'description', s['description'])
         c.set(part, 'tags', s['tags'])
         c.save(log, root)
+
+    # --- snorkel: intake transform ---------------------------------------------------------------------------------
+    # The model's transforms are GameObject > Snorkel > BowShape, MidFrontShape; there is no "Intake", so the intake
+    # stayed Closed and never refilled. "Snorkel" is the (static) mast root at the attach point.
+    c = Cfg(os.path.join(base, 'Snorkel', 'part.cfg'))
+    intake = lambda: c.find('MODULE', 'ModuleResourceIntake')
+    c.set(intake, 'intakeTransformName', 'Snorkel', comment='// the model has no "Intake" transform')
+    c.save(log, root)
 
     # --- sail: dive computer and crush depth -----------------------------------------------------------------------
     c = Cfg(os.path.join(base, 'Sail', 'part.cfg'))

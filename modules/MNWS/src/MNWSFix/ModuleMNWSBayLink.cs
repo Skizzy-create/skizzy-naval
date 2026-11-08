@@ -21,6 +21,11 @@
 //    (BDArmory reads DeployModuleIndex when it fires, so the repair is effective for BDArmory; the stock bay's
 //    own door callbacks keep the module it found in its OnStart).
 //
+// 4. Door buttons (doorLabels): BDArmory only opens a cargo-bay door whose button reads exactly "Open"/"Close",
+//    so a hull with two bay doors shows two identical "Open" buttons. For each listed door, the door's own
+//    button is hidden and this module shows "Open <label>" / "Close <label>" instead, which toggles the same
+//    door. The door module, its event (which BDArmory reads and calls directly) and its action are unchanged.
+//
 // No BDArmory reference: fields are accessed by name through KSP's BaseFieldList, so the module is inert
 // without BDArmory.
 
@@ -56,15 +61,31 @@ namespace MNWSFix
         /// <summary>Expected door animation of each ModuleCargoBay on this part, in module order: "anim1, anim2". Empty = no check.</summary>
         [KSPField] public string bayAnimations = "";
 
+        /// <summary>Labelled buttons for door modules: "animation: label; animation: label". See (4) above. Empty = none.</summary>
+        [KSPField] public string doorLabels = "";
+
         [KSPField] public bool debug = false;
 
         readonly List<Vector4> zoneList = new List<Vector4>();
         readonly HashSet<PartModule> reported = new HashSet<PartModule>();
 
+        sealed class DoorButton
+        {
+            public BaseEvent own;     // the door module's "Toggle" event, read by BDArmory
+            public BaseEvent button;  // the labelled event shown in its place
+            public string label;
+            public string shownState; // own.guiName the label was last built from
+        }
+        readonly List<DoorButton> doorButtons = new List<DoorButton>();
+
         public override void OnStart(StartState state)
         {
             base.OnStart(state);
-            if (HighLogic.LoadedSceneIsEditor || HighLogic.LoadedSceneIsFlight) CheckBayIndices();
+            if (HighLogic.LoadedSceneIsEditor || HighLogic.LoadedSceneIsFlight)
+            {
+                CheckBayIndices();
+                SetupDoorButtons();
+            }
             if (!HighLogic.LoadedSceneIsFlight) return;
             ParseZones();
             if (zoneList.Count > 0 && zoneBayGroup > 0) BindDoorAction();
@@ -85,6 +106,8 @@ namespace MNWSFix
 
         void Scan()
         {
+            // Forget missiles that were fired or destroyed, so the set does not keep their dead modules (and parts) alive.
+            if (reported.Count > 0) reported.RemoveWhere(pm => pm == null);
             List<ModuleCargoBay> bays = flagCargoBayMissiles ? part.FindModulesImplementing<ModuleCargoBay>() : null;
             bool useZones = zoneList.Count > 0 && zoneBayGroup > 0;
             if ((bays == null || bays.Count == 0) && !useZones) return;
@@ -178,6 +201,77 @@ namespace MNWSFix
                 }
                 else
                     Debug.LogError($"[MNWSFix.ModuleMNWSBayLink]: {part.partInfo?.name}: cargo bay {i}: no ModuleAnimateGeneric with animation '{anim}' on this part; BDArmory cannot open this bay");
+            }
+        }
+
+        void SetupDoorButtons()
+        {
+            doorButtons.Clear();
+            if (string.IsNullOrEmpty(doorLabels)) return;
+            foreach (string entry in doorLabels.Split(';'))
+            {
+                int colon = entry.IndexOf(':');
+                if (colon <= 0) continue;
+                string anim = entry.Substring(0, colon).Trim();
+                string label = entry.Substring(colon + 1).Trim();
+                if (anim.Length == 0 || label.Length == 0) continue;
+                int index = FindAnimationModule(anim);
+                BaseEvent own = index >= 0 ? part.Modules[index].Events["Toggle"] : null;
+                if (own == null)
+                {
+                    Debug.LogWarning($"[MNWSFix.ModuleMNWSBayLink]: {part.partInfo?.name}: no door module with animation '{anim}'; no '{label}' button");
+                    continue;
+                }
+                string id = "MNWSDoor_" + anim;
+                BaseEvent button = Events[id];
+                if (button == null)
+                {
+                    // Hidden until SyncDoorButtons moves the door button's visibility over to it.
+                    var attr = new KSPEvent
+                    {
+                        guiName = label,
+                        active = own.active,
+                        unfocusedRange = own.unfocusedRange,
+                        externalToEVAOnly = own.externalToEVAOnly,
+                        requireFullControl = own.requireFullControl,
+                    };
+                    button = new BaseEvent(Events, id, new BaseEventDelegate(own.Invoke), attr);
+                    Events.Add(button);
+                }
+                doorButtons.Add(new DoorButton { own = own, button = button, label = label });
+            }
+            SyncDoorButtons();
+        }
+
+        void Update()
+        {
+            if (doorButtons.Count > 0) SyncDoorButtons();
+        }
+
+        void SyncDoorButtons()
+        {
+            for (int i = 0; i < doorButtons.Count; i++)
+            {
+                DoorButton b = doorButtons[i];
+                BaseEvent own = b.own, button = b.button;
+                // The door module sets its button's visibility in OnStart (and in SetUIWrite); move it to ours.
+                if (own.guiActive || own.guiActiveEditor || own.guiActiveUnfocused)
+                {
+                    button.guiActive = own.guiActive;
+                    button.guiActiveEditor = own.guiActiveEditor;
+                    button.guiActiveUnfocused = own.guiActiveUnfocused;
+                    button.unfocusedRange = own.unfocusedRange;
+                    own.guiActive = false;
+                    own.guiActiveEditor = false;
+                    own.guiActiveUnfocused = false;
+                }
+                button.active = own.active; // the door hides its button while it moves
+                string state = own.guiName;  // "Open" or "Close"
+                if (state != b.shownState)
+                {
+                    b.shownState = state;
+                    button.guiName = string.IsNullOrEmpty(state) ? b.label : state + " " + b.label;
+                }
             }
         }
 

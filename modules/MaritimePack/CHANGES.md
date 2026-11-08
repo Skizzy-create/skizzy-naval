@@ -12,6 +12,35 @@ The goal is to stop the NullReferenceExceptions (NREs) users report in KSP 1.12 
 **Install:** copy the three folders in `GameData\` into KSP's `GameData\`, overwriting any existing copies.
 ModuleManager is required for the cfg fixes. It is not bundled, and neither is Firespitter. The pack never shipped either one, and no MM or Firespitter DLL exists anywhere in this tree.
 
+## 0.1.2: start-up recursion fix (urgent) and fewer per-frame allocations
+
+**MPEngineSounds.dll and FengistAnim.dll from 0.1.1 are broken; update.** In the decompiled
+sources the original base calls appeared as `((PartModule)this).OnStart(state)` and
+`((PartModule)this).OnStartFinished(state)`. The C# compiler turns those into virtual calls
+(`callvirt PartModule::OnStart`), which dispatch straight back to the override itself:
+`MPengineSounds.OnStart` and `FAnimEngine.OnStartFinished` recursed until the stack overflowed,
+for every part using them (StackOverflowException in the log; engine sounds and FAnimEngine
+animations never set up). Both are `base.OnStart(state)` / `base.OnStartFinished(state)` again,
+which compile to `call`, as in the original DLLs. `MPengineSounds.FixedUpdate`'s
+`OnFixedUpdate` call is a base call again too (harmless before, as nothing overrides it).
+
+Checked in IL (ilspycmd) on all four rebuilt DLLs: every call from a method to the same-named
+method of a base class is `call`, and no external method that the original DLL calls with
+`call` is called with `callvirt` (the same check flags exactly these calls in the 0.1.1 DLLs).
+No other decompiled source has a cast-on-`this` call to a virtual method.
+
+Per-frame allocations removed:
+
+| Plugin | Change |
+|---|---|
+| FengistAnim, MPUtils | `FAnimEngine.Play_Anim` / `MPanimEngine.Play_Anim` cache the animator instead of calling `part.FindModelAnimators` (new arrays) every physics frame. |
+| MPHover | `MPHoverEngine` builds its two constant AnimationCurves once instead of for every lift point every physics frame. |
+| MPUtils | `MPSub` formats `sPressure` once and only when it changes, not for every part of the vessel every physics frame. `MPIconify` creates the filter icon textures once instead of on every editor visit, and keeps the owner of its editor-toolbar handler alive (`OnDestroy` removes it) instead of leaving the handler on a destroyed object. |
+| MPEngineSounds | `useGUILayout = false` (its `OnGUI` only uses `GUI`), so Unity no longer runs a layout pass for every engine part every frame. |
+
+The DLLs are built as Release without debug info (the 0.1.1 DLLs contained a local PDB path).
+Same changes upstream: Fengist/Maritime-Pack#1, commit 5dcb985. `upstream.diff` is updated.
+
 ## 1. What changed, file by file
 
 The original sources the line numbers refer to:
@@ -138,12 +167,12 @@ Harmless and left alone:
 | Target | `net472` (SDK-style projects, `LangVersion latest`) |
 | References | `D:\Epic Games\KerbalSpaceProgram\English\KSP_x64_Data\Managed\` (Assembly-CSharp, -firstpass, UnityEngine + Core/Physics/Animation/Audio/IMGUI/ImageConversion modules, UnityEngine.UI), all `Private=false` |
 | Result | All four projects build with **0 errors and 0 warnings**. Suppressed in `Directory.Build.props`: CS0618, CS0649, CS0414, CS0169 (obsolete-API and unused-field noise from the original code). |
-| Output | Only the four plugin DLLs were copied into `GameData` (no PDBs, no KSP or Unity DLLs). |
+| Output | Only the four plugin DLLs were copied into `GameData` (no PDBs, no KSP or Unity DLLs). Since 0.1.2 they are built with `-p:DebugType=none -p:DebugSymbols=false`, so they contain no PDB path. |
 
-To rebuild elsewhere, run this inside `src\<Project>\`:
+To rebuild elsewhere, run this inside `src\<Project>\` (or set the `KSPDIR` environment variable instead of passing `KSPRoot`):
 
 ```
-dotnet build -c Release -p:KSPRoot="C:\path\to\KSP"
+dotnet build -c Release -p:KSPRoot="C:\path\to\KSP" -p:DebugType=none -p:DebugSymbols=false
 ```
 
 Static checks on the rebuilt DLLs:

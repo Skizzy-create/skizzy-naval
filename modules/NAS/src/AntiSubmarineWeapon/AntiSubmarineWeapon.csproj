@@ -2,8 +2,10 @@
   <!--
     AntiSubmarineWeapon (NAS anti-submarine plugin) for KSP 1.12.x + BDArmory Plus 1.13.
     Build:   dotnet build -c Release  (or MSBuild 17+)
-    Override paths if KSP/BDArmory live elsewhere:
-      dotnet build -c Release -p:KSPDir="C:\KSP" -p:BDArmoryDll="C:\KSP\GameData\BDArmory\Plugins\BDArmory.dll"
+    Point KSPDir at a KSP 1.12.x install (or set the KSPDIR environment variable):
+      dotnet build -c Release -p:KSPDir="C:\KSP"
+    BDArmory.dll is taken from $(KSPDir)\GameData\BDArmory\Plugins unless overridden:
+      dotnet build -c Release -p:KSPDir="C:\KSP" -p:BDArmoryDll="C:\path\to\BDArmory.dll"
   -->
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
@@ -20,7 +22,6 @@
     <ImportDirectoryBuildProps>false</ImportDirectoryBuildProps>
     <ImportDirectoryBuildTargets>false</ImportDirectoryBuildTargets>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    <KSPDir Condition=" '$(KSPDir)' == '' ">D:\Epic Games\KerbalSpaceProgram\English</KSPDir>
     <KSPManaged Condition=" '$(KSPManaged)' == '' ">$(KSPDir)\KSP_x64_Data\Managed</KSPManaged>
     <BDArmoryDll Condition=" '$(BDArmoryDll)' == '' ">$(KSPDir)\GameData\BDArmory\Plugins\BDArmory.dll</BDArmoryDll>
   </PropertyGroup>
@@ -58,4 +59,9 @@
     <Reference Include="UnityEngine.UI"><HintPath>$(KSPManaged)\UnityEngine.UI.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="BDArmory"><HintPath>$(BDArmoryDll)</HintPath><Private>false</Private></Reference>
   </ItemGroup>
+
+  <Target Name="CheckKSPReferences" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(KSPManaged)\Assembly-CSharp.dll')" Text="KSP assemblies not found in '$(KSPManaged)'. Pass -p:KSPDir=&quot;path\to\KSP&quot; or set the KSPDIR environment variable." />
+    <Error Condition="!Exists('$(BDArmoryDll)')" Text="BDArmory.dll not found at '$(BDArmoryDll)'. Pass -p:BDArmoryDll=&quot;path\to\BDArmory.dll&quot;." />
+  </Target>
 </Project>

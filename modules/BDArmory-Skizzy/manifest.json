@@ -4,7 +4,7 @@
  "strategy": "rebuild",
  "note": "Expected result after extracting the upstream archive, applying delete.txt and copying GameData/ on top.",
  "file_count": 653,
- "total_size": 59327442,
+ "total_size": 59331538,
  "files": {
   "GameData/BDArmory/ATM_BDArmory.cfg": [
    296,
@@ -2019,8 +2019,8 @@
    "38D0DB7FD3661216AD5C70D2FD5383391DA79F94C2BBE693800FEA364B23E0C9"
   ],
   "GameData/BDArmory/Plugins/BDArmory.dll": [
-   2843136,
-   "C0C5B82F8E960F8FF2ACE775B55BC46345B6B5C3F4463522AD61D8682FD975A8"
+   2847232,
+   "B70B1DED908D52E985D1CF5C8622F974F02BDD6C19A0F4991F85B6306564B2F9"
   ],
   "GameData/BDArmory/Resources/Armor.cfg": [
    277,

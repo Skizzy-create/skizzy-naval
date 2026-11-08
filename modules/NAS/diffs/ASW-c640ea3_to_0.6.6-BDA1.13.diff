@@ -1,8 +1,8 @@
 diff --git a/AntiSubmarineWeapon.csproj b/AntiSubmarineWeapon.csproj
-index 4a9fedd..58c07e8 100644
+index 4a9fedd..1242837 100755
 --- a/AntiSubmarineWeapon.csproj
 +++ b/AntiSubmarineWeapon.csproj
-@@ -1,93 +1,61 @@
+@@ -1,93 +1,67 @@
 -﻿<?xml version="1.0" encoding="utf-8"?>
 -<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 -  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -100,8 +100,10 @@ index 4a9fedd..58c07e8 100644
 +  <!--
 +    AntiSubmarineWeapon (NAS anti-submarine plugin) for KSP 1.12.x + BDArmory Plus 1.13.
 +    Build:   dotnet build -c Release  (or MSBuild 17+)
-+    Override paths if KSP/BDArmory live elsewhere:
-+      dotnet build -c Release -p:KSPDir="C:\KSP" -p:BDArmoryDll="C:\KSP\GameData\BDArmory\Plugins\BDArmory.dll"
++    Point KSPDir at a KSP 1.12.x install (or set the KSPDIR environment variable):
++      dotnet build -c Release -p:KSPDir="C:\KSP"
++    BDArmory.dll is taken from $(KSPDir)\GameData\BDArmory\Plugins unless overridden:
++      dotnet build -c Release -p:KSPDir="C:\KSP" -p:BDArmoryDll="C:\path\to\BDArmory.dll"
 +  -->
 +  <PropertyGroup>
 +    <TargetFramework>net48</TargetFramework>
@@ -118,7 +120,6 @@ index 4a9fedd..58c07e8 100644
 +    <ImportDirectoryBuildProps>false</ImportDirectoryBuildProps>
 +    <ImportDirectoryBuildTargets>false</ImportDirectoryBuildTargets>
 +    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-+    <KSPDir Condition=" '$(KSPDir)' == '' ">D:\Epic Games\KerbalSpaceProgram\English</KSPDir>
 +    <KSPManaged Condition=" '$(KSPManaged)' == '' ">$(KSPDir)\KSP_x64_Data\Managed</KSPManaged>
 +    <BDArmoryDll Condition=" '$(BDArmoryDll)' == '' ">$(KSPDir)\GameData\BDArmory\Plugins\BDArmory.dll</BDArmoryDll>
 +  </PropertyGroup>
@@ -156,9 +157,14 @@ index 4a9fedd..58c07e8 100644
 +    <Reference Include="UnityEngine.UI"><HintPath>$(KSPManaged)\UnityEngine.UI.dll</HintPath><Private>false</Private></Reference>
 +    <Reference Include="BDArmory"><HintPath>$(BDArmoryDll)</HintPath><Private>false</Private></Reference>
 +  </ItemGroup>
++
++  <Target Name="CheckKSPReferences" BeforeTargets="ResolveAssemblyReferences">
++    <Error Condition="!Exists('$(KSPManaged)\Assembly-CSharp.dll')" Text="KSP assemblies not found in '$(KSPManaged)'. Pass -p:KSPDir=&quot;path\to\KSP&quot; or set the KSPDIR environment variable." />
++    <Error Condition="!Exists('$(BDArmoryDll)')" Text="BDArmory.dll not found at '$(BDArmoryDll)'. Pass -p:BDArmoryDll=&quot;path\to\BDArmory.dll&quot;." />
++  </Target>
 +</Project>
 diff --git a/DepthContorllerApplicationLauncher.cs b/DepthContorllerApplicationLauncher.cs
-index 9232544..510841c 100644
+index 9232544..510841c 100755
 --- a/DepthContorllerApplicationLauncher.cs
 +++ b/DepthContorllerApplicationLauncher.cs
 @@ -25,9 +25,18 @@ namespace AntiSubmarineWeapon
@@ -183,10 +189,10 @@ index 9232544..510841c 100644
              }
 diff --git a/FlagWave.cs b/FlagWave.cs
 new file mode 100644
-index 0000000..1f92e86
+index 0000000..29a5d60
 --- /dev/null
 +++ b/FlagWave.cs
-@@ -0,0 +1,104 @@
+@@ -0,0 +1,122 @@
 +using UnityEngine;
 +
 +namespace AntiSubmarineWeapon
@@ -263,6 +269,23 @@ index 0000000..1f92e86
 +
 +        private static Vector3[] GetVertices(MeshFilter mf) => mf != null ? mf.mesh.vertices : null;
 +
++        // MeshFilter.mesh (in GetVertices and Wave) gives each flag its own copy of the shared mesh. Unity does
++        // not free such copies when the part is destroyed, so keep them and destroy them in OnDestroy.
++        private Mesh[] ownedMeshes;
++
++        private static Mesh GetOwnedMesh(MeshFilter mf) => mf != null ? mf.mesh : null;
++
++        private void OnDestroy()
++        {
++            if (ownedMeshes == null) return;
++            for (int i = 0; i < ownedMeshes.Length; i++)
++            {
++                if (ownedMeshes[i] != null)
++                    Destroy(ownedMeshes[i]);
++            }
++            ownedMeshes = null;
++        }
++
 +        public override void OnStart(StartState state)
 +        {
 +            base.OnStart(state);
@@ -277,6 +300,7 @@ index 0000000..1f92e86
 +            flagVertex2 = GetVertices(flagMesh2);
 +            flagmVertex1 = GetVertices(flagmMesh1);
 +            flagmVertex2 = GetVertices(flagmMesh2);
++            ownedMeshes = new[] { GetOwnedMesh(flagMesh1), GetOwnedMesh(flagMesh2), GetOwnedMesh(flagmMesh1), GetOwnedMesh(flagmMesh2) };
 +            if (flagMesh1 == null && flagMesh2 == null && flagmMesh1 == null && flagmMesh2 == null)
 +                Debug.LogWarning("[NAS-ASW] FlagWave: no flag meshes found on " + part.partInfo?.name);
 +        }
@@ -292,7 +316,7 @@ index 0000000..1f92e86
 +    }
 +}
 diff --git a/ModUiManager.cs b/ModUiManager.cs
-index e449cde..0f0803d 100644
+index e449cde..50e2e7b 100755
 --- a/ModUiManager.cs
 +++ b/ModUiManager.cs
 @@ -1,6 +1,6 @@
@@ -303,7 +327,29 @@ index e449cde..0f0803d 100644
  
  namespace AntiSubmarineWeapon
  {
-@@ -21,7 +21,7 @@ namespace AntiSubmarineWeapon
+@@ -15,13 +15,29 @@ namespace AntiSubmarineWeapon
+ 
+         public static Rect settingsWindowRect = new Rect(100, 100, 400, 80);
+ 
++        // "N m" labels, rebuilt only when the value changes (OnGUI runs several times per frame).
++        private static int _depthChargesLabelValue = int.MinValue;
++        private static string _depthChargesLabel;
++        private static int _torpedosLabelValue = int.MinValue;
++        private static string _torpedosLabel;
++
++        private static string DepthLabel(int value, ref int labelValue, ref string label)
++        {
++            if (label == null || value != labelValue)
++            {
++                labelValue = value;
++                label = value.ToString() + " m";
++            }
++            return label;
++        }
++
+         public void Awake()
+         {
+             GameEvents.onShowUI.Add(ShowUi);
              GameEvents.onHideUI.Add(HideUi);
          }
  
@@ -312,7 +358,7 @@ index e449cde..0f0803d 100644
          {
              GameEvents.onShowUI.Remove(ShowUi);
              GameEvents.onHideUI.Remove(HideUi);
-@@ -39,7 +39,7 @@ namespace AntiSubmarineWeapon
+@@ -39,7 +55,7 @@ namespace AntiSubmarineWeapon
  
          private void OnGUI()
          {
@@ -321,7 +367,25 @@ index e449cde..0f0803d 100644
              {
                  settingsWindowRect = GUI.Window(976233, settingsWindowRect, DrawDepthContorllerWindow, Localizer.Format("#autoLOC_NAS_DepthSettings_title"));
              }
-@@ -104,10 +104,13 @@ namespace AntiSubmarineWeapon
+@@ -58,7 +74,7 @@ namespace AntiSubmarineWeapon
+             
+             if (depthChargeMaxValue > 0)
+             {
+-                GUILayout.Label(setAllDepthCharges.ToString() + " m");
++                GUILayout.Label(DepthLabel(setAllDepthCharges, ref _depthChargesLabelValue, ref _depthChargesLabel));
+                 setAllDepthCharges = (int)GUILayout.HorizontalScrollbar(
+                     setAllDepthCharges, 2, 25,
+                     depthChargeMaxValue + 2, GUILayout.MinWidth(100));
+@@ -80,7 +96,7 @@ namespace AntiSubmarineWeapon
+             GUILayout.FlexibleSpace();
+             if (torpedoMaxValue > 0)
+             {
+-                GUILayout.Label(setAllTorpedos.ToString() + " m");
++                GUILayout.Label(DepthLabel(setAllTorpedos, ref _torpedosLabelValue, ref _torpedosLabel));
+                 setAllTorpedos = (int)GUILayout.HorizontalScrollbar(setAllTorpedos, 2, 1, torpedoMaxValue, GUILayout.MinWidth(100));
+                 if (setAllTorpedos != _setAllTorpedosTemp)
+                 {
+@@ -104,10 +120,13 @@ namespace AntiSubmarineWeapon
              var min = -1.0f;
              foreach (var current in FlightGlobals.ActiveVessel.Parts)
              {
@@ -337,11 +401,12 @@ index e449cde..0f0803d 100644
  
                  min = target.maxDepth < min ? target.maxDepth : min;
 diff --git a/ModuleAntiSubmarineWeapon.cs b/ModuleAntiSubmarineWeapon.cs
-index 9e42d2e..300ad99 100644
+index 9e42d2e..fae3eb8 100755
 --- a/ModuleAntiSubmarineWeapon.cs
 +++ b/ModuleAntiSubmarineWeapon.cs
-@@ -1,7 +1,8 @@
+@@ -1,7 +1,9 @@
  ﻿using System;
++using System.Collections.Generic;
  using KSP.Localization;
  using UnityEngine;
 -using BDArmory.Parts;
@@ -350,7 +415,7 @@ index 9e42d2e..300ad99 100644
  
  namespace AntiSubmarineWeapon
  {
-@@ -22,6 +23,10 @@ namespace AntiSubmarineWeapon
+@@ -22,6 +24,10 @@ namespace AntiSubmarineWeapon
          [KSPField(isPersistant = false)]
          public float volum;
  
@@ -361,7 +426,7 @@ index 9e42d2e..300ad99 100644
          [KSPField(isPersistant = false)]
          public float buoyancyForce;
  
-@@ -85,6 +90,9 @@ namespace AntiSubmarineWeapon
+@@ -85,6 +91,9 @@ namespace AntiSubmarineWeapon
          [KSPField(isPersistant = false)]
          public float recognitionAccuracy;
  
@@ -371,7 +436,7 @@ index 9e42d2e..300ad99 100644
          private AswData _data;
          private BombSystem _bomb;
          private Buoyancy _buoyancy;
-@@ -95,18 +103,26 @@ namespace AntiSubmarineWeapon
+@@ -95,18 +104,27 @@ namespace AntiSubmarineWeapon
          private UI_Control _depthField;
          private MissileLauncher _missileLauncher;
          private Rigidbody _partRigidbodyValue;
@@ -379,6 +444,7 @@ index 9e42d2e..300ad99 100644
 +        private bool _waitingForArmingLogged;
 +        private bool _cfgIsTimed;
 +        private bool _missCancelLogged;
++        private List<BDWarheadBase> _warheads;
 +
          private Rigidbody PartRigidbody
          {
@@ -402,7 +468,7 @@ index 9e42d2e..300ad99 100644
  
          [KSPField(isPersistant = true, guiActive = false, guiActiveEditor = false, guiName = "Destroy Depth"),
           UI_FloatRange(controlEnabled = true, maxValue = 500, minValue = 25, scene = UI_Scene.All, stepIncrement = 1f)]
-@@ -130,15 +146,17 @@ namespace AntiSubmarineWeapon
+@@ -130,15 +148,17 @@ namespace AntiSubmarineWeapon
                      _bomb.Ran();
  
                      _buoyancy = new Buoyancy();
@@ -424,7 +490,7 @@ index 9e42d2e..300ad99 100644
                      _depthField = Fields["autoDestroyDepth"].uiControlFlight;
  
                      Fields["cruiseDepth"].guiActive = false;
-@@ -149,6 +167,9 @@ namespace AntiSubmarineWeapon
+@@ -149,6 +169,9 @@ namespace AntiSubmarineWeapon
  
                      ((UI_FloatRange)Fields["autoDestroyDepth"].uiControlEditor).maxValue = maxDepth;
                      ((UI_FloatRange)Fields["autoDestroyDepth"].uiControlFlight).maxValue = maxDepth;
@@ -434,7 +500,7 @@ index 9e42d2e..300ad99 100644
                      break;
                  case "Torpedo":
                      _pida = new PidSystem();
-@@ -157,14 +178,16 @@ namespace AntiSubmarineWeapon
+@@ -157,14 +180,16 @@ namespace AntiSubmarineWeapon
                      _pidt.PidDataWrite(maxTorque.x, pidTorqueInfo.x, pidTorqueInfo.y, pidTorqueInfo.z);
  
                      _buoyancy = new Buoyancy();
@@ -454,7 +520,7 @@ index 9e42d2e..300ad99 100644
  
                      Fields["autoDestroyDepth"].guiActive = false;
                      Fields["autoDestroyDepth"].guiActiveEditor = false;
-@@ -174,65 +197,108 @@ namespace AntiSubmarineWeapon
+@@ -174,65 +199,112 @@ namespace AntiSubmarineWeapon
  
                      ((UI_FloatRange)Fields["cruiseDepth"].uiControlEditor).maxValue = maxDepth - 2;
                      ((UI_FloatRange)Fields["cruiseDepth"].uiControlFlight).maxValue = maxDepth - 2;
@@ -535,7 +601,11 @@ index 9e42d2e..300ad99 100644
 +
 +        private bool WarheadsArmed()
 +        {
-+            var warheads = part.FindModulesImplementing<BDWarheadBase>();
++            // Called every frame while a charge waits to be armed; FindModulesImplementing allocates a new list
++            // per call and a part's modules do not change, so look them up once.
++            if (_warheads == null)
++                _warheads = part.FindModulesImplementing<BDWarheadBase>();
++            var warheads = _warheads;
 +            for (int i = 0; i < warheads.Count; i++)
 +            {
 +                if (warheads[i] != null && !warheads[i].Armed)
@@ -597,7 +667,7 @@ index 9e42d2e..300ad99 100644
          }
      }
 diff --git a/ModuleRotor.cs b/ModuleRotor.cs
-index 3d6472d..ed4620f 100644
+index 3d6472d..ed4620f 100755
 --- a/ModuleRotor.cs
 +++ b/ModuleRotor.cs
 @@ -2,14 +2,18 @@
@@ -640,7 +710,7 @@ index 3d6472d..ed4620f 100644
          }
      }
 diff --git a/NASCategory.cs b/NASCategory.cs
-index c5d5547..6cd2397 100644
+index c5d5547..6cd2397 100755
 --- a/NASCategory.cs
 +++ b/NASCategory.cs
 @@ -12,9 +12,15 @@ namespace AntiSubmarineWeapon
@@ -675,7 +745,7 @@ index c5d5547..6cd2397 100644
                  PartCategorizer.AddCustomSubcategoryFilter(filter, customCategoryName, Localizer.Format("#autoLOC_NAS_Category"), icon, p => availableParts.Contains(p));
          }
 diff --git a/PidSystem.cs b/PidSystem.cs
-index a9df8eb..6b66bbd 100644
+index a9df8eb..6b66bbd 100755
 --- a/PidSystem.cs
 +++ b/PidSystem.cs
 @@ -26,6 +26,7 @@ namespace AntiSubmarineWeapon
@@ -687,7 +757,7 @@ index a9df8eb..6b66bbd 100644
              _data.Integral = _data.Integral + _data.Error * deltaTime;
              _data.Derivative = (_data.Error - _data.Lasterror) / deltaTime;
 diff --git a/Properties/AssemblyInfo.cs b/Properties/AssemblyInfo.cs
-index d56cad8..be0cd30 100644
+index d56cad8..be0cd30 100755
 --- a/Properties/AssemblyInfo.cs
 +++ b/Properties/AssemblyInfo.cs
 @@ -32,5 +32,10 @@ using System.Runtime.InteropServices;

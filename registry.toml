@@ -164,7 +164,8 @@ abstract = "Fengist's Maritime Pack with its plugins rebuilt to stop the NullRef
 description = """
 MPUtils, MPHover, MPEngineSounds and FengistAnim rebuilt from source with null guards for
 destroyed or split vessels, own-vessel instead of active-vessel lookups, cached hover lists
-and NaN guards. A ModuleManager patch fixes a missing sound and the misspelt MaxDepth key.
+and NaN guards. 0.1.2 fixes the endless start-up recursion in the 0.1.1 MPEngineSounds and
+FengistAnim builds and removes several per-frame allocations. A ModuleManager patch fixes a missing sound and the misspelt MaxDepth key.
 All class names and fields are unchanged, so craft and saves load as before. The Maritime
 Pack is not on CKAN; this build is made from the GitHub snapshot 2822417. Original by
 Fengist (DataInterlock), CC BY-NC 4.0, non-commercial use only. Bundled FSResizer.dll
@@ -205,7 +206,8 @@ abstract = "Advanced Weapons Pack 0.22 missiles for BDArmory Plus 1.13: the Cast
 description = """
 Adds one ModuleManager patch: the 15 Mt bomb's ModuleShockwave (an old NKD plugin that no
 longer exists) and conventional warhead are replaced with BDModuleNuke using the same values
-as NKD Reborn's Castle Bravo. Shipped as a full copy because the CKAN AdvancedWeaponsPack
+as NKD Reborn's Castle Bravo. Since 0.1.2 BDArmory's AI never selects the bomb (its engage
+flags are off); players can still select and drop it. Shipped as a full copy because the CKAN AdvancedWeaponsPack
 depends on the KSP 1.3.1-only NorthKerbinDynamics and can't be installed on 1.12.5; this
 build recommends NKD Reborn instead. Replaces AdvancedWeaponsPack (provides and conflicts).
 Original by hentaichou, MIT.
@@ -233,32 +235,48 @@ extract = [{ from = "Advanced Weapons Pack", to = "GameData/Advanced Weapons Pac
 [[module]]
 key = "AircraftCarrierAccessories"
 identifier = "SkizzyNaval-AircraftCarrierAccessories"
-strategy = "overlay"
+strategy = "rebuild"
 enabled = true
 pack = "depends"
-name = "Aircraft Carrier Accessories: KSP 1.12.5 / BDA 1.13 patch (SkizzyNaval)"
-abstract = "ModuleManager patch for Aircraft Carrier Accessories: removes the Enterprise's Hangar modules when Hangar isn't installed and works around the CLLS OnStart crash."
+name = "Aircraft Carrier Accessories (SkizzyNaval build)"
+abstract = "Aircraft Carrier Accessories 1.9.1 with a rebuilt ACA.dll: the CLLS start-up crash is fixed and the catapult arms and fires from action group 7 instead of the brakes BDArmory's AI uses."
 description = """
-Installs one file, KFC/Patches/zz_KSP1125_BDA113_Compat.cfg, next to the original Aircraft
-Carrier Accessories from CKAN (pulled in as a dependency). The CLLS block is a stopgap until
-ACA.dll null-checks its missing Base transform. Patch by Skizzy-create; Aircraft Carrier
-Accessories by flywlyx, MIT.
+The complete Aircraft Carrier Accessories 1.9.1, with ACA.dll rebuilt from the decompiled 1.9.1
+plugin (MIT): CLLS no longer throws in OnStart (its model has no Base transform), and the
+catapult hooks, arms and fires from a per-catapult action group of the aircraft (default AG7,
+or Brakes for the original behaviour), so BDArmory pilot AI braking no longer arms or launches
+it. Also drops a destroyed aircraft from the shuttle instead of throwing every frame, and
+removes the Enterprise's Hangar modules when Hangar isn't installed. Since 0.1.2 this replaces
+the CKAN AircraftCarrierAccessories module (provides and conflicts with it; up to 0.1.1 it was
+a patch on top of it). Original by flywlyx, MIT.
 """
-author = ["Skizzy-create"]
+author = ["flywlyx", "Skizzy-create"]
 license = "MIT"
-tags = ["config", "combat"]
-depends = ["ModuleManager", "AircraftCarrierAccessories"]
+tags = ["parts", "plugin", "combat"]
+provides = ["AircraftCarrierAccessories"]
+conflicts = ["AircraftCarrierAccessories"]
+depends = ["ModuleManager"]
 suggests = ["Hangar"]
-install = [{ file = "GameData/KFC/Patches/zz_KSP1125_BDA113_Compat.cfg", install_to = "GameData/KFC/Patches" }]
+install = [
+  { file = "GameData/KFC", install_to = "GameData" },
+  { file = "Ships/SPH", install_to = "Ships" },
+]
 resources = { x_upstream = "https://spacedock.info/mod/1068/Aircraft%20Carrier%20Accessories" }
 
 [module.upstream]
-# Reference copy used by 'skizzy.py import' to find our additions; not downloaded by CI.
-name = "Aircraft Carrier Accessories 1.9.1 (SpaceDock; = CKAN AircraftCarrierAccessories 1:1.9.1)"
-urls = ["https://spacedock.info/mod/1068/Aircraft%20Carrier%20Accessories/download/1.9.1"]
+name = "Aircraft Carrier Accessories 1.9.1 (SpaceDock; the file CKAN lists for AircraftCarrierAccessories 1:1.9.1)"
+urls = [
+  "https://spacedock.info/mod/1068/Aircraft%20Carrier%20Accessories/download/1.9.1",
+  "https://archive.org/download/AircraftCarrierAccessories-1-1.9.1/19826E02-AircraftCarrierAccessories-1-1.9.1.zip",
+]
 size = 25212387
 sha256 = "6EBDF6DA38C23DC150FE4002F434EF6D282F6D64DF9C335917EAA36C040CA1A3"
-extract = [{ from = "GameData/KFC", to = "GameData/KFC" }]
+# First matching rule wins: the craft goes to Ships/ (CKAN's original install does the same),
+# everything else stays in GameData/KFC.
+extract = [
+  { from = "GameData/KFC/Ships", to = "Ships" },
+  { from = "GameData/KFC", to = "GameData/KFC" },
+]
 
 [[module]]
 key = "FishyWeapons"
@@ -353,11 +371,13 @@ enabled = true         # set to false to stop releasing it (see modules/BDArmory
 pack = "none"          # alternative to BDArmoryForRunwayProject via the @bdarmory any_of
 version_template = "2:v1.13.1.0-skizzy.{version}"
 name = "BDArmory Plus (Skizzy fork build)"
-abstract = "BDArmory Plus 1.13.1 with the Skizzy-create/BDArmory multitarget-1.13.1 plugin (multi-target, parallel salvo, depth-charge fixes). Drop-in replacement for BDArmoryForRunwayProject."
+abstract = "BDArmory Plus 1.13.1 with the Skizzy-create/BDArmory multitarget-1.13.1 plugin (multi-target, parallel salvo, depth-charge and memory-leak fixes). Drop-in replacement for BDArmoryForRunwayProject."
 description = """
 The upstream BDArmory Plus 1.13.1.0 release zip with two files swapped:
 GameData/BDArmory/Plugins/BDArmory.dll (built from Skizzy-create/BDArmory branch
-multitarget-1.13.1, commit 01d0c9676585731e6fe9df85ee2be0ab802a20bf) and
+multitarget-1.13.1, commit ff5130c19ffbe0ee4dc0eacde1a5ca6d6a59cf8e: multi-target, parallel
+salvo and depth-charge fixes, memory-leak fixes for long battles, and a debris clean-up delay
+slider of 1-900 s) and
 GameData/BDArmory/Localization/UI/en-us.cfg (the fork's new UI strings). Same install layout
 and dependencies as BDArmoryForRunwayProject 1.13.1.0. Provides and conflicts with BDArmory and BDArmoryForRunwayProject,
 so only one BDArmory can be installed. BDArmory by BahamutoD, Papa_Joe, jrodrigv,
@@ -399,8 +419,9 @@ abstract = "MNWS 2.4 modern warships, missiles, VLS and aircraft updated for KSP
 description = """
 Adds MMPatches/MNWS_BDA113.cfg (removes modules from plugins that no longer exist, updates
 renamed BDArmory modules and keys, moves fuzes to bullets, SLW homing for torpedoes, naval AI
-fixes), an optional MNWS_BDA113_Balance.cfg, and the small MNWSFix.dll helper (AVLS launch
-transforms, hull bay links; source in the repository). No original file is edited. Shipped as
+fixes), an optional MNWS_BDA113_Balance.cfg, and the small MNWSFix.dll helper (launch
+transforms for the AVLS11V/22V/33V and MissleCell2050V vertical launchers, hull bay links,
+labelled SSBN002 door buttons; source in the repository). No original file is edited. Shipped as
 a full copy because the CKAN MNWSModernNavalWeaponSystem targets KSP 1.4.4 and depends on
 BDArmory Continued; this build provides and conflicts with it. Original by Johnny005611,
 CC BY-SA 4.0.
@@ -468,8 +489,8 @@ identifier = "SubTrim"
 strategy = "external"
 enabled = true
 pack = "depends"             # adds SubTrim to SkizzyNavalPack's depends
-version = "1.0.0"
-release_date = "2026-11-07T18:55:56Z"
+version = "1.0.1"
+release_date = "2026-11-08T08:00:27Z"
 name = "SubTrim"
 abstract = "Automatic neutral trim and depth hold for KSP submarines (works with BDArmory AI, Kerbal Powers Naval, Buoyancy Adjuster and WildBlueTools)."
 author = "Skizzy-create"

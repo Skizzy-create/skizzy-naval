@@ -2,8 +2,9 @@
   <!--
     HullBreach for KSP 1.12.x + BDArmory Plus 1.13.x.
 
-    Build:  dotnet build -c Release
-    Override paths if your install differs:
+    Build (point KSPRoot at a KSP 1.12.x install, or set the KSPDIR environment variable):
+      dotnet build -c Release -p:KSPRoot="C:\KSP"
+    BDArmory.dll is taken from $(KSPRoot)\GameData\BDArmory\Plugins unless overridden:
       dotnet build -c Release -p:KSPRoot="C:\KSP" -p:BDArmoryDll="C:\path\to\BDArmory.dll"
     Output: bin\Release\net48\HullBreach.dll  (copy to GameData\HullBreach\Plugins)
   -->
@@ -19,7 +20,7 @@
     <DebugType>portable</DebugType>
     <Optimize Condition="'$(Configuration)' == 'Release'">true</Optimize>
     <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
-    <KSPRoot Condition="'$(KSPRoot)' == ''">D:\Epic Games\KerbalSpaceProgram\English</KSPRoot>
+    <KSPRoot Condition="'$(KSPRoot)' == ''">$(KSPDIR)</KSPRoot>
     <KSPManaged>$(KSPRoot)\KSP_x64_Data\Managed</KSPManaged>
     <BDArmoryDll Condition="'$(BDArmoryDll)' == ''">$(KSPRoot)\GameData\BDArmory\Plugins\BDArmory.dll</BDArmoryDll>
   </PropertyGroup>
@@ -45,4 +46,9 @@
     <Reference Include="UnityEngine.UI"><HintPath>$(KSPManaged)\UnityEngine.UI.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="BDArmory"><HintPath>$(BDArmoryDll)</HintPath><Private>false</Private></Reference>
   </ItemGroup>
+
+  <Target Name="CheckKSPReferences" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(KSPManaged)\Assembly-CSharp.dll')" Text="KSP assemblies not found in '$(KSPManaged)'. Pass -p:KSPRoot=&quot;path\to\KSP&quot; or set the KSPDIR environment variable." />
+    <Error Condition="!Exists('$(BDArmoryDll)')" Text="BDArmory.dll not found at '$(BDArmoryDll)'. Pass -p:BDArmoryDll=&quot;path\to\BDArmory.dll&quot;." />
+  </Target>
 </Project>

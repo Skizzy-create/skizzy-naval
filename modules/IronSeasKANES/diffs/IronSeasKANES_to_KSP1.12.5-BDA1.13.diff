@@ -1077,7 +1077,7 @@ index b801b8f..a2502b5 100644
  MODULE
  {
 diff --git a/BalaoClassFleetBoat/Snorkel/part.cfg b/BalaoClassFleetBoat/Snorkel/part.cfg
-index 0775e1c..2570686 100644
+index 0775e1c..e340519 100644
 --- a/BalaoClassFleetBoat/Snorkel/part.cfg
 +++ b/BalaoClassFleetBoat/Snorkel/part.cfg
 @@ -1,3 +1,4 @@
@@ -1105,6 +1105,15 @@ index 0775e1c..2570686 100644
  stagingIcon = SOLID_BOOSTER
  
  MODULE
+@@ -62,7 +63,7 @@ MODULE
+ 		checkForOxygen = true
+ 		area = 1
+ 		intakeSpeed = 100
+-		intakeTransformName = Intake
++		intakeTransformName = Snorkel	// the model has no "Intake" transform
+ 		machCurve
+ 		{
+ 			key = 1 1 0 0
 diff --git a/BulletDefs/IronSeasKANES_Bullets.cfg b/BulletDefs/IronSeasKANES_Bullets.cfg
 new file mode 100644
 index 0000000..7aa2ac4

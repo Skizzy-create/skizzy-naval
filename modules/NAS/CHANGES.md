@@ -8,7 +8,6 @@ This is an unofficial community update. NAS 0.7.0 ("Land of Dragon") was built f
 |---|---|
 | `GameData/NAS/` | Patched mod folder (drop-in replacement for the 0.7.0 `GameData/NAS`) |
 | `src/AntiSubmarineWeapon/` | Plugin source plus SDK-style `.csproj` (net48) |
-| `src/AntiSubmarineWeapon.dll` | Built plugin (identical to `GameData/NAS/Plugins/AntiSubmarineWeapon.dll`) |
 | `diffs/NAS-0.7.0-GameData_to_KSP1.12.5-BDA1.13.diff` | All config/text changes against the 0.7.0 release (`git apply`, paths `a/GameData/NAS/...`; the DLL is binary and not in the diff) |
 | `diffs/ASW-c640ea3_to_0.6.6-BDA1.13.diff` | Plugin changes against https://github.com/Summerfirefly/ASW commit `c640ea3` (`git apply` in the repo root) |
 
@@ -80,7 +79,7 @@ The source is Summerfirefly/ASW `c640ea3`, which matches the 0.6.5.2 DLL that sh
 
 * SDK-style `AntiSubmarineWeapon.csproj`, `net48` (BDArmory 1.13 targets 4.8), C# 9.
 * References KSP `Assembly-CSharp`, `Assembly-CSharp-firstpass`, `UnityEngine` (Core, Physics, IMGUI, Animation, UI) and `BDArmory.dll`, all `Private=false`.
-* Paths can be overridden: `dotnet build -c Release -p:KSPDir="C:\KSP" -p:BDArmoryDll="...\BDArmory.dll"`.
+* Build: `dotnet build -c Release -p:KSPDir="C:\KSP" -p:DebugType=none -p:DebugSymbols=false` (or set `KSPDIR`); `-p:BDArmoryDll="...\BDArmory.dll"` overrides the BDArmory reference.
 * Adds `KSPAssembly("AntiSubmarineWeapon", 0, 6, 6)` and `KSPAssemblyDependency("BDArmory", 1, 0)` so KSP loads it after BDArmory.
 
 **API port**
@@ -106,6 +105,13 @@ The source is Summerfirefly/ASW `c640ea3`, which matches the 0.6.5.2 DLL that sh
 * FlagWave: made public and null-safe if a flag mesh is missing.
 * PID: no NaN when `deltaTime` is 0.
 * The "Neither depth charge nor torpedo" warning is logged once at start, not every physics frame.
+
+**Memory fixes (SkizzyNaval 0.1.2)**
+
+* FlagWave: `MeshFilter.mesh` gives each flag its own copy of the shared mesh, and Unity does not free those copies when the part is destroyed. They are now destroyed in `OnDestroy`.
+* `WarheadsArmed` (every frame while a charge waits to be armed) looks the part's `BDWarheadBase` modules up once instead of allocating a new list on each call.
+* ModUiManager: the "N m" depth labels are rebuilt only when the value changes, not on every `OnGUI` pass.
+* The DLL is built as Release without debug info (the 0.1.1 DLL contained a local PDB path). Same changes upstream: Summerfirefly/ASW#2, commit a58c064.
 
 ## Corrections to the task brief
 

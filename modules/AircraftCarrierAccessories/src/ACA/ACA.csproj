@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    ACA.dll (Aircraft Carrier Accessories 1.9.1 by flywlyx, MIT), rebuilt for SkizzyNaval.
+    The sources are the 1.9.1 DLL decompiled with ILSpy (the public GitHub source is the older 1.5.1),
+    plus the fixes listed in ../../CHANGES.md. Same assembly name, version and target framework
+    (.NET Framework 4.5) as the original.
+    Build (point KSPRoot at a KSP 1.12.x install, or set the KSPDIR environment variable):
+      dotnet build -c Release -p:KSPRoot="C:\path\to\Kerbal Space Program"
+    Output: bin\Release\ACA.dll -> GameData\KFC\Plugins\ACA.dll
+    Release builds carry no debug info, so no PDB path is embedded in the DLL.
+  -->
+  <PropertyGroup>
+    <KSPRoot Condition="'$(KSPRoot)' == ''">$(KSPDIR)</KSPRoot>
+    <KSPManaged>$(KSPRoot)\KSP_x64_Data\Managed</KSPManaged>
+    <TargetFramework>net45</TargetFramework>
+    <AssemblyName>ACA</AssemblyName>
+    <RootNamespace>ACA</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <DebugType>portable</DebugType>
+    <DebugType Condition="'$(Configuration)' == 'Release'">none</DebugType>
+    <DebugSymbols Condition="'$(Configuration)' == 'Release'">false</DebugSymbols>
+    <Nullable>disable</Nullable>
+    <Optimize>true</Optimize>
+    <Deterministic>true</Deterministic>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <NoWarn>$(NoWarn);CS0618;CS0649;CS0414;CS0169;CS0162</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp"><HintPath>$(KSPManaged)\Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.CoreModule"><HintPath>$(KSPManaged)\UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.PhysicsModule"><HintPath>$(KSPManaged)\UnityEngine.PhysicsModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.AnimationModule"><HintPath>$(KSPManaged)\UnityEngine.AnimationModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.InputLegacyModule"><HintPath>$(KSPManaged)\UnityEngine.InputLegacyModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <Target Name="CheckKSPReferences" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(KSPManaged)\Assembly-CSharp.dll')" Text="KSP assemblies not found in '$(KSPManaged)'. Pass -p:KSPRoot=&quot;path\to\KSP&quot; or set the KSPDIR environment variable." />
+  </Target>
+</Project>

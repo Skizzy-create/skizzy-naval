@@ -49,7 +49,7 @@ The rules:
 | `SkizzyNaval-AdvancedWeaponsPack` | Advanced Weapons Pack | MIT | full pack, rebuild | CKAN's package needs NorthKerbinDynamics (KSP 1.3.1) and can't install on 1.12.5 |
 | `SkizzyNaval-MNWS` | [MNWS] Modern Naval Weapon System 2.4, Johnny005611 | CC BY-SA 4.0 | full pack, rebuild | CKAN's package targets KSP 1.4.4 and BDArmory Continued. Replaces it |
 | `SkizzyNaval-IronSeasKANES` | Iron Seas KANES Fighting Ships 1, SkunkWorksCommand | GPL-2.0 (plugin: MIT) | full pack, committed (bundle) with diff, patch scripts and plugin source | GPLv2 allows modified copies; not on CKAN. Licence text added. Our SkizzyRig plugin (MIT) gives the guns turret transforms |
-| `SkizzyNaval-AircraftCarrierAccessories` | Aircraft Carrier Accessories | MIT (patch: MIT) | overlay, depends on `AircraftCarrierAccessories` | One added patch, and the original is on CKAN |
+| `SkizzyNaval-AircraftCarrierAccessories` | Aircraft Carrier Accessories 1.9.1, flywlyx | MIT | full mod with a rebuilt `ACA.dll`, rebuild | The fix is in the DLL, which CKAN's original owns. Replaces `AircraftCarrierAccessories` (an overlay until 0.1.1) |
 | `SkizzyNaval-FishyWeapons` | Fishy Weapons, Fishy Mod Core | CC BY-SA 4.0 / restricted | overlay, depends on `FishyAntiMissileSpam` | Fishy Mod Core forbids redistribution; both are on CKAN |
 | `SkizzyNaval-TitansBDArmoryExtension` | TBAE | unclear (SpaceDock says MIT, but the models are BDArmory's) | overlay, original installed **by hand** | Licence unclear and not on CKAN. Suggested by the pack only |
 | `BDArmory-Skizzy` | BDArmory Plus 1.13.1.0, BahamutoD, Papa_Joe, DocNappers and others | CC BY-SA 2.0 | upstream release zip with our `BDArmory.dll` and `en-us.cfg` | SA allows it. Provides and conflicts with `BDArmory`; optional alternative |
@@ -110,8 +110,14 @@ pinned hash. `RELEASING.md` covers the release flow, adding a module and the tok
   `modules/TitansBDArmoryExtension/not-shipped.txt`.
 - **Maritime Pack** includes `FSResizer.dll` (Allis Tauri), as the original does. It is
   flagged in its README.
-- **BDArmory-Skizzy**: mods that depend on `BDArmoryForRunwayProject` by name (for example
-  NKD Reborn Extended) can't be installed alongside it through CKAN.
+- **BDArmory-Skizzy** provides `BDArmoryForRunwayProject`, so mods that depend on it by name
+  (for example NKD Reborn Extended) install with it. CKAN does not check version bounds
+  against a provided module.
+- **Aircraft Carrier Accessories, upgrading from 0.1.1**: `ckan upgrade --all` leaves
+  `SkizzyNaval-AircraftCarrierAccessories` at 0.1.1, because 0.1.2 replaces (conflicts with)
+  the original ACA that 0.1.1 needed. Run
+  `ckan upgrade SkizzyNaval-AircraftCarrierAccessories=0.1.2`; CKAN removes the original in
+  the same step. Details in `modules/AircraftCarrierAccessories/README.md`.
 
 ## Licence
 

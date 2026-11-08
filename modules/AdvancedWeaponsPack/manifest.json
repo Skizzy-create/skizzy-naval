@@ -4,7 +4,7 @@
  "strategy": "rebuild",
  "note": "Expected result after extracting the upstream archive, applying delete.txt and copying GameData/ on top.",
  "file_count": 47,
- "total_size": 7188345,
+ "total_size": 7189399,
  "files": {
   "GameData/Advanced Weapons Pack/AAM3/AAM3.cfg": [
    2055,
@@ -131,8 +131,8 @@
    "CF3E5CF055F8F7AC0E7A8EB6446888F151B2DA7F7725E9734C79757FEAA74B27"
   ],
   "GameData/Advanced Weapons Pack/Patches/zz_AWP_BDA113_Compat.cfg": [
-   2139,
-   "ECC15DBA62DB869D6F17C0F2EA98915F41945837229773975F7F2DD9C814E8A8"
+   3193,
+   "1F836DC67F42E89DA90BB7675ADCCDF3A1EAF474968395EBC8F6B778344E7AC4"
   ],
   "GameData/Advanced Weapons Pack/R_550_Magic/R_550_Magic.cfg": [
    2177,

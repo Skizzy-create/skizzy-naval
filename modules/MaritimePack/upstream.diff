@@ -28,10 +28,10 @@ KSP 1.12.5 (net472, KSP/Unity references Private=false).
 #### SECTION 1: Fengist/Maritime-Pack (repository root, -p1)
 #
 # Binary changes (cannot be shown as text). The rebuilt DLLs are in GameData/ of this release:
-#   BINARY REPLACE  GameData/MPUtils/Plugins/MPUtils.dll           sha256 1e06461e717a1dee47a47ebf65ca7cd4a488d6b16cd6f5e48ed602155b28f30f  (from section 2)
-#   BINARY REPLACE  GameData/MPUtils/Plugins/MPEngineSounds.dll    sha256 a83c9e7aadd1995a01cfbe18c03215ea3694c26976129ea2c10a1a16e4cb23c7  (from section 4)
-#   BINARY REPLACE  GameData/Maritime Pack/Plugins/MPHover.dll     sha256 0fe8d2188bee4b453aaf0cae90bad00e8f4b3ac85f9c5e8bf6364a0eb381519f  (from section 3)
-#   BINARY REPLACE  GameData/FengistAnim/FengistAnim.dll           sha256 3e276576a9aca66ea76c69ee843b5cbe6e50738083a47509803aa27a7b006796  (from section 4)
+#   BINARY REPLACE  GameData/MPUtils/Plugins/MPUtils.dll           sha256 09af07e7fdce0510f52a4f6351cfe21cd6c279a97e605dac10ddb6e019546d6d  (from section 2)
+#   BINARY REPLACE  GameData/MPUtils/Plugins/MPEngineSounds.dll    sha256 2ff096ad21ca40365852c7a3571e03c8094f89c53cb2522d1b0299a10aefdc62  (from section 4)
+#   BINARY REPLACE  GameData/Maritime Pack/Plugins/MPHover.dll     sha256 21adb4cde2160f9cf6ee644bd9213df4dcb2f365a37b763e133d4789c541ee04  (from section 3)
+#   BINARY REPLACE  GameData/FengistAnim/FengistAnim.dll           sha256 caf8a81a5bcc21cff6dc384644465cd9f402adfb1de90d9a7bc8c3c1d6a4a2c2  (from section 4)
 #   UNCHANGED       GameData/MPUtils/Plugins/FSResizer.dll         sha256 44738cd1a6b0c2cb048c767847917d10ac076f2479c02e909e4224b360526408
 #
 # Text changes: new ModuleManager patch (cfg fixes), and removal of a stray developer log file.
@@ -81,8 +81,8 @@ diff -ruN "a/GameData/Maritime Pack/Patches/zz_MP_KSP1125_Compat.cfg" "b/GameDat
 #### SECTION 2: Fengist/MPUtils @ 40615d6 (repository root, -p1)
 
 diff -ruN a/MPUtils/FCWSolarSteam.cs b/MPUtils/FCWSolarSteam.cs
---- a/MPUtils/FCWSolarSteam.cs	2026-11-07 22:36:11.096612500 +0530
-+++ b/MPUtils/FCWSolarSteam.cs	2026-11-07 22:36:11.344871900 +0530
+--- a/MPUtils/FCWSolarSteam.cs	2026-11-08 13:35:51.527716900 +0530
++++ b/MPUtils/FCWSolarSteam.cs	2026-11-08 13:35:51.527716900 +0530
 @@ -13,12 +13,13 @@
  
          public override void OnStart(StartState state)
@@ -117,8 +117,8 @@ diff -ruN a/MPUtils/FCWSolarSteam.cs b/MPUtils/FCWSolarSteam.cs
                              }
                          }
 diff -ruN a/MPUtils/MPAnim.cs b/MPUtils/MPAnim.cs
---- a/MPUtils/MPAnim.cs	2026-11-07 22:36:11.107714100 +0530
-+++ b/MPUtils/MPAnim.cs	2026-11-07 22:36:11.474569700 +0530
+--- a/MPUtils/MPAnim.cs	2026-11-08 13:35:51.567541700 +0530
++++ b/MPUtils/MPAnim.cs	2026-11-08 13:35:51.569554100 +0530
 @@ -15,16 +15,20 @@
  
      public class ModuleLayeredAnimator : ModuleAnimateGeneric
@@ -144,7 +144,7 @@ diff -ruN a/MPUtils/MPAnim.cs b/MPUtils/MPAnim.cs
          }
      }
  
-@@ -74,9 +78,11 @@
+@@ -74,13 +78,30 @@
  
          private double logdelay = 0.0f;
          public Animation aniEngine = null; //the animation
@@ -158,7 +158,41 @@ diff -ruN a/MPUtils/MPAnim.cs b/MPUtils/MPAnim.cs
          private float lastThrottle = 0;  //tracks the last throttle position. Always 0 or 1 for non sync'd engines
          private Quaternion startRotation = new Quaternion(0, 0, 0, 0);
          private float lastdirection = 1.0f;
-@@ -141,8 +147,18 @@
+-        
++        private Animation playAnimator = null;
++        private string playAnimatorName = null;
++
++        // Play_Anim runs every physics frame; part.FindModelAnimators allocates new arrays on every call.
++        // The model's animators do not change, so look the first one up once per animation name.
++        private Animation GetPlayAnimator(string aname)
++        {
++            if (playAnimatorName != aname || playAnimator == null)
++            {
++                Animation[] animators = part.FindModelAnimators(aname);
++                playAnimator = animators.Length > 0 ? animators[0] : null;
++                playAnimatorName = aname;
++            }
++            return playAnimator;
++        }
++
+         public void Play_Anim(string aname, float aspeed, float atime = 0.0f)
+         {
+             logdelay -= Time.deltaTime;
+@@ -103,11 +124,9 @@
+             }
+             try
+             {
+-                Animation anim;
+-                Animation[] animators = part.FindModelAnimators(aname);
+-                if (animators.Length > 0)
++                Animation anim = GetPlayAnimator(aname);
++                if (anim != null)
+                 {
+-                    anim = animators[0];
+                     anim.clip = anim.GetClip(animationName);
+                     if (loopAnim == true)
+                     {
+@@ -141,8 +160,18 @@
                  if (partType == "Engine")
                  {
                      myEngine = part.Modules.OfType<ModuleEngines>().FirstOrDefault();
@@ -179,7 +213,7 @@ diff -ruN a/MPUtils/MPAnim.cs b/MPUtils/MPAnim.cs
                      if (useRotorDiscSwap == true)
                      {
                          MPLog.Writelog("[Maritime Pack] (aniEngine) Disc swapping active.");
-@@ -210,7 +226,7 @@
+@@ -210,7 +239,7 @@
          private float CheckDirection()
          {
              float newdirection = 1.0f;
@@ -188,7 +222,7 @@ diff -ruN a/MPUtils/MPAnim.cs b/MPUtils/MPAnim.cs
              {
                  if (startRotation.x != mytransform.localRotation.x)
                  {
-@@ -249,7 +265,12 @@
+@@ -249,7 +278,12 @@
          public void FixedUpdate()
          {
              if (!HighLogic.LoadedSceneIsFlight ) { return; }
@@ -202,7 +236,7 @@ diff -ruN a/MPUtils/MPAnim.cs b/MPUtils/MPAnim.cs
              {
                  return;
              }
-@@ -275,7 +296,7 @@
+@@ -275,7 +309,7 @@
                  {
                      double rTotal = MPFunctions.GetResourceTotal(FlightGlobals.ActiveVessel, "ElectricCharge");
                      double rMax = MPFunctions.GetResourceMax(FlightGlobals.ActiveVessel, "ElectricCharge");
@@ -211,7 +245,7 @@ diff -ruN a/MPUtils/MPAnim.cs b/MPUtils/MPAnim.cs
                   }
                  else
                  {
-@@ -289,7 +310,7 @@
+@@ -289,7 +323,7 @@
                          if (syncThrust)
                          {
                              float direction = CheckDirection();
@@ -220,7 +254,7 @@ diff -ruN a/MPUtils/MPAnim.cs b/MPUtils/MPAnim.cs
                              Play_Anim(animationName, (float)thisenergy * direction, 0.0f);
                              return;
                          }
-@@ -341,7 +362,7 @@
+@@ -341,7 +375,7 @@
                      if (syncThrust)
                      {
                          float direction = CheckDirection();
@@ -230,8 +264,8 @@ diff -ruN a/MPUtils/MPAnim.cs b/MPUtils/MPAnim.cs
                          {
                              Play_Anim(animationName, (float)thisenergy, 0.0f);
 diff -ruN a/MPUtils/MPBuoyancy.cs b/MPUtils/MPBuoyancy.cs
---- a/MPUtils/MPBuoyancy.cs	2026-11-07 22:36:11.109818100 +0530
-+++ b/MPUtils/MPBuoyancy.cs	2026-11-07 22:36:11.609267300 +0530
+--- a/MPUtils/MPBuoyancy.cs	2026-11-08 13:35:51.608047300 +0530
++++ b/MPUtils/MPBuoyancy.cs	2026-11-08 13:35:51.609170200 +0530
 @@ -51,11 +51,12 @@
              base.OnStart(state);
              //defaultMinDrag = part.minimum_drag;
@@ -351,8 +385,8 @@ diff -ruN a/MPUtils/MPBuoyancy.cs b/MPUtils/MPBuoyancy.cs
                  }
              }
 diff -ruN a/MPUtils/MPEngine.cs b/MPUtils/MPEngine.cs
---- a/MPUtils/MPEngine.cs	2026-11-07 22:36:11.093092400 +0530
-+++ b/MPUtils/MPEngine.cs	2026-11-07 22:36:11.752728000 +0530
+--- a/MPUtils/MPEngine.cs	2026-11-08 13:35:51.645280000 +0530
++++ b/MPUtils/MPEngine.cs	2026-11-08 13:35:51.647292500 +0530
 @@ -26,18 +26,18 @@
              {
                  return;
@@ -376,8 +410,8 @@ diff -ruN a/MPUtils/MPEngine.cs b/MPUtils/MPEngine.cs
                      for (int i = this.part.Modules.Count - 1; i >= 0; --i)
                      {
 diff -ruN a/MPUtils/MPFuelSwitch.cs b/MPUtils/MPFuelSwitch.cs
---- a/MPUtils/MPFuelSwitch.cs	2026-11-07 22:36:11.098611700 +0530
-+++ b/MPUtils/MPFuelSwitch.cs	2026-11-07 22:36:11.887623900 +0530
+--- a/MPUtils/MPFuelSwitch.cs	2026-11-08 13:35:51.688131000 +0530
++++ b/MPUtils/MPFuelSwitch.cs	2026-11-08 13:35:51.688131000 +0530
 @@ -207,7 +207,7 @@
  
              //Debug.Log("refreshing UI");
@@ -396,8 +430,8 @@ diff -ruN a/MPUtils/MPFuelSwitch.cs b/MPUtils/MPFuelSwitch.cs
              {
                  if (selectedTankSetup == tankCount)
 diff -ruN a/MPUtils/MPFunctions.cs b/MPUtils/MPFunctions.cs
---- a/MPUtils/MPFunctions.cs	2026-11-07 22:36:11.084372200 +0530
-+++ b/MPUtils/MPFunctions.cs	2026-11-07 22:36:12.027879900 +0530
+--- a/MPUtils/MPFunctions.cs	2026-11-08 13:35:51.729270800 +0530
++++ b/MPUtils/MPFunctions.cs	2026-11-08 13:35:51.731110300 +0530
 @@ -99,20 +99,43 @@
          private const string MPPath = "GameData/MPUtils/Plugins/PluginData/";
          private const string MPDebugLog = "MPLog.dat";
@@ -609,28 +643,36 @@ diff -ruN a/MPUtils/MPFunctions.cs b/MPUtils/MPFunctions.cs
              {
                  return "> 1000 m";
 diff -ruN a/MPUtils/MPIconify.cs b/MPUtils/MPIconify.cs
---- a/MPUtils/MPIconify.cs	2026-11-07 22:36:11.095320200 +0530
-+++ b/MPUtils/MPIconify.cs	2026-11-07 22:36:12.166346800 +0530
-@@ -110,7 +110,10 @@
+--- a/MPUtils/MPIconify.cs	2026-11-08 13:35:51.772288700 +0530
++++ b/MPUtils/MPIconify.cs	2026-11-08 13:35:51.775498000 +0530
+@@ -110,7 +110,19 @@
  
              print(categoryTitle + "  Filter Count: " + parts.Count);
              if (parts.Count > 0)
 +            {
++                // This once-only addon owns a handler that must run on every editor visit. Keep the owner
++                // alive instead of leaving the handler on a destroyed MonoBehaviour (reported as a leak by
++                // KSPCommunityFixes on every scene switch).
++                DontDestroyOnLoad(gameObject);
 +                GameEvents.onGUIEditorToolbarReady.Remove(SubCategories); // never register twice
                  GameEvents.onGUIEditorToolbarReady.Add(SubCategories);
 +            }
++        }
++
++        void OnDestroy()
++        {
++            GameEvents.onGUIEditorToolbarReady.Remove(SubCategories);
          }
  
          private bool EditorItemsFilter(AvailablePart avPart)
-@@ -120,9 +123,24 @@
+@@ -120,28 +132,65 @@
  
          private void SubCategories()
          {
 -            var icon = GenIcon(categoryTitle);
 -            var filter = PartCategorizer.Instance.filters.Find(f => f.button.categorydisplayName == "#autoLOC_453547");//change for 1.3.1
 -            PartCategorizer.AddCustomSubcategoryFilter(filter, categoryTitle, categoryTitle, icon, EditorItemsFilter);            
-+            // This handler stays subscribed after the (once-only) addon object is destroyed, so it must
-+            // not rely on Unity state, and it must survive a missing category instead of throwing.
++            // Runs on every editor visit; it must survive a missing category instead of throwing.
 +            try
 +            {
 +                if (PartCategorizer.Instance == null || PartCategorizer.Instance.filters == null) return;
@@ -649,8 +691,13 @@ diff -ruN a/MPUtils/MPIconify.cs b/MPUtils/MPIconify.cs
 +            }
          }
  
++        // Created on the first editor visit and reused afterwards (was: two new Texture2Ds per filter on
++        // every editor visit, never destroyed).
++        private Texture2D normIconTex, selIconTex;
++
          private Icon GenIcon(string iconName)
-@@ -131,17 +149,29 @@
+         {
+-            Texture2D normIcon = new Texture2D(32, 32, TextureFormat.RGBA32, false), selIcon = new Texture2D(32, 32, TextureFormat.RGBA32, false);
              var normIconFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), iconName + "_off.png"); // icon to be present in same folder as dll
              var selIconFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), iconName + "_on.png");// icon to be present in same folder as dll
  
@@ -663,10 +710,19 @@ diff -ruN a/MPUtils/MPIconify.cs b/MPUtils/MPIconify.cs
 -            www.Dispose();
 +            // was: new WWW(<plain file path>) (no file:// scheme, so nothing loaded) and the "on" icon was
 +            // read from the "_off" file. Read the PNGs directly instead.
-+            LoadPng(normIcon, normIconFile);
-+            LoadPng(selIcon, File.Exists(selIconFile) ? selIconFile : normIconFile);
++            if (normIconTex == null)
++            {
++                normIconTex = new Texture2D(32, 32, TextureFormat.RGBA32, false);
++                LoadPng(normIconTex, normIconFile);
++            }
++            if (selIconTex == null)
++            {
++                selIconTex = new Texture2D(32, 32, TextureFormat.RGBA32, false);
++                LoadPng(selIconTex, File.Exists(selIconFile) ? selIconFile : normIconFile);
++            }
  
-             var icon = new Icon(iconName + "Icon", normIcon, selIcon);
+-            var icon = new Icon(iconName + "Icon", normIcon, selIcon);
++            var icon = new Icon(iconName + "Icon", normIconTex, selIconTex);
              return icon;
          }
 +
@@ -689,8 +745,8 @@ diff -ruN a/MPUtils/MPIconify.cs b/MPUtils/MPIconify.cs
  }
 \ No newline at end of file
 diff -ruN a/MPUtils/MPResDecay.cs b/MPUtils/MPResDecay.cs
---- a/MPUtils/MPResDecay.cs	2026-11-07 22:36:11.087390700 +0530
-+++ b/MPUtils/MPResDecay.cs	2026-11-07 22:36:12.300406700 +0530
+--- a/MPUtils/MPResDecay.cs	2026-11-08 13:35:51.812662400 +0530
++++ b/MPUtils/MPResDecay.cs	2026-11-08 13:35:51.812662400 +0530
 @@ -26,14 +26,19 @@
  
          public void FixedUpdate()
@@ -715,8 +771,8 @@ diff -ruN a/MPUtils/MPResDecay.cs b/MPUtils/MPResDecay.cs
                      try
                      {
 diff -ruN a/MPUtils/MPStirling.cs b/MPUtils/MPStirling.cs
---- a/MPUtils/MPStirling.cs	2026-11-07 22:36:11.101611800 +0530
-+++ b/MPUtils/MPStirling.cs	2026-11-07 22:36:12.434216200 +0530
+--- a/MPUtils/MPStirling.cs	2026-11-08 13:35:51.850812400 +0530
++++ b/MPUtils/MPStirling.cs	2026-11-08 13:35:51.850812400 +0530
 @@ -31,17 +31,18 @@
  
          public void FixedUpdate()
@@ -744,9 +800,16 @@ diff -ruN a/MPUtils/MPStirling.cs b/MPUtils/MPStirling.cs
                      if (actRad == true) // look for active radiator
                      {
 diff -ruN a/MPUtils/MPSub.cs b/MPUtils/MPSub.cs
---- a/MPUtils/MPSub.cs	2026-11-07 22:36:11.100611400 +0530
-+++ b/MPUtils/MPSub.cs	2026-11-07 22:36:12.565345200 +0530
-@@ -110,7 +110,7 @@
+--- a/MPUtils/MPSub.cs	2026-11-08 13:35:51.893340900 +0530
++++ b/MPUtils/MPSub.cs	2026-11-08 13:35:51.895398500 +0530
+@@ -105,12 +105,14 @@
+ 
+         private double messageDelay = 0.0f;
+ 
++        private double lastSPressure = double.NaN; // value sPressure was last built from
++
+         public override void OnStart(StartState state)
+         {
  
              MPLog.Writelog("[Maritime Pack] MPSub Found");
  
@@ -755,7 +818,7 @@ diff -ruN a/MPUtils/MPSub.cs b/MPUtils/MPSub.cs
              {
                  // set the default pressure to all parts
                  if (currentPressure <= 0.0f)
-@@ -138,11 +138,13 @@
+@@ -138,11 +140,13 @@
  
          public bool ConsumeResource (string thisresource, double amount)
          {
@@ -773,7 +836,7 @@ diff -ruN a/MPUtils/MPSub.cs b/MPUtils/MPSub.cs
                  double rFlow = rPart.RequestResource(id, amount, ResourceFlowMode.ALL_VESSEL);
                  if (rFlow > 0)
                  {
-@@ -154,7 +156,7 @@
+@@ -154,7 +158,7 @@
  
          public void FixedUpdate()
          {
@@ -782,7 +845,20 @@ diff -ruN a/MPUtils/MPSub.cs b/MPUtils/MPSub.cs
              {
                  return;
              }
-@@ -255,7 +257,7 @@
+@@ -233,6 +237,12 @@
+                 {
+                     maxSPressure = thisp;
+                 }
++            }
++            // was formatted inside the loop above: a string.Format, boxing and concatenation for every part
++            // of the vessel on every physics frame. Same final value, now built once and only when it changes.
++            if (this.vessel.parts.Count > 0 && maxSPressure != lastSPressure)
++            {
++                lastSPressure = maxSPressure;
+                 sPressure = string.Format("{0:0.00}", (maxSPressure * 100)) + " kPa";
+             }
+ 
+@@ -255,7 +265,7 @@
              //}
  
              //Close Intakes if we're diving
@@ -792,8 +868,8 @@ diff -ruN a/MPUtils/MPSub.cs b/MPUtils/MPSub.cs
                  if (this.vessel.altitude <= -1.0)
                  {
 diff -ruN a/MPUtils/MPSubComputer.cs b/MPUtils/MPSubComputer.cs
---- a/MPUtils/MPSubComputer.cs	2026-11-07 22:36:11.105714200 +0530
-+++ b/MPUtils/MPSubComputer.cs	2026-11-07 22:36:12.701070300 +0530
+--- a/MPUtils/MPSubComputer.cs	2026-11-08 13:35:51.933611300 +0530
++++ b/MPUtils/MPSubComputer.cs	2026-11-08 13:35:51.936176900 +0530
 @@ -26,26 +26,60 @@
  
          public void Start()
@@ -943,8 +1019,8 @@ diff -ruN a/MPUtils/MPSubComputer.cs b/MPUtils/MPSubComputer.cs
                              if (Math.Abs(alt1 - alt2) < 1.0f)
                              {
 diff -ruN a/MPUtils/MPSubGui.cs b/MPUtils/MPSubGui.cs
---- a/MPUtils/MPSubGui.cs	2026-11-07 22:36:11.103687300 +0530
-+++ b/MPUtils/MPSubGui.cs	2026-11-07 22:36:12.846930300 +0530
+--- a/MPUtils/MPSubGui.cs	2026-11-08 13:35:51.975318700 +0530
++++ b/MPUtils/MPSubGui.cs	2026-11-08 13:35:51.977216000 +0530
 @@ -11,17 +11,27 @@
      public class MPSubGUI : MonoBehaviour
      {
@@ -978,8 +1054,8 @@ diff -ruN a/MPUtils/MPSubGui.cs b/MPUtils/MPSubGui.cs
          }
      }   
 diff -ruN a/MPUtils/Properties/AssemblyInfo.cs b/MPUtils/Properties/AssemblyInfo.cs
---- a/MPUtils/Properties/AssemblyInfo.cs	2026-11-07 22:36:11.091092100 +0530
-+++ b/MPUtils/Properties/AssemblyInfo.cs	2026-11-07 22:36:13.126041500 +0530
+--- a/MPUtils/Properties/AssemblyInfo.cs	2026-11-08 13:35:52.057541400 +0530
++++ b/MPUtils/Properties/AssemblyInfo.cs	2026-11-08 13:35:52.057541400 +0530
 @@ -32,3 +32,4 @@
  // by using the '*' as shown below:
  [assembly: AssemblyVersion("0.1.*")]
@@ -989,8 +1065,8 @@ diff -ruN a/MPUtils/Properties/AssemblyInfo.cs b/MPUtils/Properties/AssemblyInfo
 #### SECTION 3: Fengist/MPHover @ 6736813 (repository root, -p1)
 
 diff -ruN a/MPHover/MPHover.cs b/MPHover/MPHover.cs
---- a/MPHover/MPHover.cs	2026-11-07 22:36:13.230667900 +0530
-+++ b/MPHover/MPHover.cs	2026-11-07 22:36:13.456233400 +0530
+--- a/MPHover/MPHover.cs	2026-11-08 13:35:52.543112300 +0530
++++ b/MPHover/MPHover.cs	2026-11-08 13:35:52.543112300 +0530
 @@ -52,7 +52,8 @@
          {
              Debug.Log("[FS Hover] Init");
@@ -1001,7 +1077,15 @@ diff -ruN a/MPHover/MPHover.cs b/MPHover/MPHover.cs
              {
                  var partHeightQuery = new PartHeightQuery(float.MaxValue);
                  int count = this.vessel.parts.Count;
-@@ -110,6 +111,9 @@
+@@ -103,6 +104,7 @@
+         private float hoverHeight = 0f;
+         public AnimationCurve thrustCurve;
+         public AnimationCurve thrustToNegate;
++        private bool curvesBuilt = false;
+ 
+ 
+         public static float CalculateHoverHeight(Vector3 LiftPos)
+@@ -110,6 +112,9 @@
              float Height = 10, GD = 10, SD = 10;
              RaycastHit HoverRay;
  
@@ -1011,7 +1095,7 @@ diff -ruN a/MPHover/MPHover.cs b/MPHover/MPHover.cs
              Vector3 geeDir = FlightGlobals.getGeeForceAtPosition(LiftPos).normalized;
  
              if (Physics.Raycast(LiftPos, geeDir, out HoverRay, maxHoverDist + 10, layermask))
-@@ -145,9 +149,34 @@
+@@ -145,9 +150,34 @@
          {
          }
  
@@ -1047,7 +1131,7 @@ diff -ruN a/MPHover/MPHover.cs b/MPHover/MPHover.cs
          }
  
          public void alterHEVesselList()
-@@ -156,27 +185,37 @@
+@@ -156,27 +186,37 @@
  
              foreach (Vessel aVessel in FlightGlobals.Vessels)
              {
@@ -1088,7 +1172,7 @@ diff -ruN a/MPHover/MPHover.cs b/MPHover/MPHover.cs
                  {
                      alterHEVesselList();
                  }
-@@ -188,20 +227,24 @@
+@@ -188,20 +228,24 @@
          {
              int totalThrust = 0;
  
@@ -1120,7 +1204,7 @@ diff -ruN a/MPHover/MPHover.cs b/MPHover/MPHover.cs
                          }
                      }
                  }
-@@ -217,7 +260,12 @@
+@@ -217,7 +261,12 @@
  
              Rigidbody rb;
  
@@ -1134,7 +1218,7 @@ diff -ruN a/MPHover/MPHover.cs b/MPHover/MPHover.cs
  
              transformList.Clear();
              rbList.Clear();
-@@ -225,15 +273,22 @@
+@@ -225,15 +274,22 @@
  
              foreach (Part aPart in affectVessel.Parts)
              {
@@ -1160,7 +1244,7 @@ diff -ruN a/MPHover/MPHover.cs b/MPHover/MPHover.cs
                              heightList.Add(thisHoverSkirt.heightList[i]);
                          }
                      }
-@@ -242,6 +297,9 @@
+@@ -242,6 +298,9 @@
  
              //Debug.Log(affectVessel.name);
  
@@ -1170,7 +1254,36 @@ diff -ruN a/MPHover/MPHover.cs b/MPHover/MPHover.cs
              float thrustToAdd = 0f;
              float totalHeight = 0f;
              for (int i = 0; i < transformList.Count; i++)
-@@ -303,11 +361,14 @@
+@@ -249,6 +308,15 @@
+                 totalHeight += CalculateHoverHeight(transformList[i].position);
+             }
+             float aveHeight = totalHeight / transformList.Count;
++            // Both curves are constant. They used to be rebuilt (two AnimationCurve allocations) for every
++            // lift point on every physics frame.
++            if (!curvesBuilt)
++            {
++                thrustCurve = AnimationCurve.EaseInOut(0f, 1f, maxHoverDist, 0.0f);
++                thrustCurve.AddKey(new Keyframe(maxHoverDist * 0.8f, 0.9f));
++                thrustToNegate = AnimationCurve.EaseInOut(-0.001f, -1, 0.001f, 1);
++                curvesBuilt = true;
++            }
+             for (int i = 0; i < transformList.Count; i++)
+             {
+                 rb = rbList[i];
+@@ -265,12 +333,9 @@
+                 //Debug.Log("HN :" + heightNeeded);
+                 ////thrust needed
+ 
+-                thrustCurve = AnimationCurve.EaseInOut(0f, 1f, maxHoverDist, 0.0f);
+-                thrustCurve.AddKey(new Keyframe(maxHoverDist * 0.8f, 0.9f));
+                 thrustToAdd = thrustCurve.Evaluate(hoverHeight) * (totalThrust / transformList.Count);
+                 //Debug.Log("Eval :" + thrustCurve.Evaluate(hoverHeight));
+ 
+-                thrustToNegate = AnimationCurve.EaseInOut(-0.001f, -1, 0.001f, 1);
+                 var reverseThrust = thrustToNegate.Evaluate((float)heightChange);
+                 if (hoverHeight < maxHoverDist)
+                 {
+@@ -303,11 +368,14 @@
                  float totalHeight = 0;
                  for (int i = 0; i < transformList.Count; i++)
                  {
@@ -1187,8 +1300,8 @@ diff -ruN a/MPHover/MPHover.cs b/MPHover/MPHover.cs
          }
  
 diff -ruN a/MPHover/Properties/AssemblyInfo.cs b/MPHover/Properties/AssemblyInfo.cs
---- a/MPHover/Properties/AssemblyInfo.cs	2026-11-07 22:36:13.228177300 +0530
-+++ b/MPHover/Properties/AssemblyInfo.cs	2026-11-07 22:36:13.620029100 +0530
+--- a/MPHover/Properties/AssemblyInfo.cs	2026-11-08 13:35:52.585891700 +0530
++++ b/MPHover/Properties/AssemblyInfo.cs	2026-11-08 13:35:52.587556600 +0530
 @@ -33,4 +33,5 @@
  // by using the '*' as shown below:
  // [assembly: AssemblyVersion("1.0.*")]
@@ -1201,8 +1314,8 @@ diff -ruN a/MPHover/Properties/AssemblyInfo.cs b/MPHover/Properties/AssemblyInfo
 #    NOT directly applicable to the stale Fengist/MPEngineSounds or Fengist/Fengist-s-Animator repos.
 
 diff -ruN a/MPEngineSounds/MPengineSounds.cs b/MPEngineSounds/MPengineSounds.cs
---- a/MPEngineSounds/MPengineSounds.cs	2026-11-07 22:36:13.716260700 +0530
-+++ b/MPEngineSounds/MPengineSounds.cs	2026-11-07 22:36:13.924386700 +0530
+--- a/MPEngineSounds/MPengineSounds.cs	2026-11-08 13:35:52.762930400 +0530
++++ b/MPEngineSounds/MPengineSounds.cs	2026-11-08 13:35:52.764938900 +0530
 @@ -123,7 +123,8 @@
  
  	public bool createGroup(FXGroup group, string name, bool loop)
@@ -1213,10 +1326,26 @@ diff -ruN a/MPEngineSounds/MPengineSounds.cs b/MPEngineSounds/MPengineSounds.cs
  		{
  			if (!GameDatabase.Instance.ExistsAudioClip(name))
  			{
-@@ -203,6 +204,32 @@
+@@ -200,9 +201,47 @@
+ 		paused = false;
+ 	}
+ 
++	public override void OnAwake()
++	{
++		base.OnAwake();
++		// OnGUI below only draws in the debug modes and uses GUI, not GUILayout. With the default
++		// useGUILayout = true Unity still runs a layout pass for every engine part every frame (two
++		// GUILayoutGroup allocations per part per frame) and keeps a layout cache per part instance
++		// for the rest of the session.
++		useGUILayout = false;
++	}
++
  	public override void OnStart(StartState state)
  	{
- 		((PartModule)this).OnStart(state);
+-		((PartModule)this).OnStart(state);
++		// was: ((PartModule)this).OnStart(state), which compiles to a virtual call back into this
++		// override (endless recursion -> StackOverflowException logged for every part, module never set up).
++		base.OnStart(state);
 +		// FXGroup fields are normally created by Unity serialization when the part is instantiated;
 +		// make sure they exist so createGroup can never be handed a null group.
 +		if (engageGroup == null)
@@ -1246,16 +1375,18 @@ diff -ruN a/MPEngineSounds/MPengineSounds.cs b/MPEngineSounds/MPengineSounds.cs
  		engageAssigned = createGroup(engageGroup, engage, loop: false);
  		runningAssigned = createGroup(runningGroup, running, loop: true);
  		powerAssigned = createGroup(powerGroup, power, loop: true);
-@@ -234,7 +261,7 @@
+@@ -233,8 +272,8 @@
+ 
  	public void FixedUpdate()
  	{
- 		((PartModule)this).OnFixedUpdate();
+-		((PartModule)this).OnFixedUpdate();
 -		if (!HighLogic.LoadedSceneIsFlight || engine == null)
++		base.OnFixedUpdate();
 +		if (!HighLogic.LoadedSceneIsFlight || engine == null || (UnityEngine.Object)(object)((PartModule)this).part == (UnityEngine.Object)null)
  		{
  			return;
  		}
-@@ -295,7 +322,7 @@
+@@ -295,7 +334,7 @@
  				}
  				else if (engine.getIgnitionState && !engine.getFlameoutState && !engageGroup.audio.isPlaying)
  				{
@@ -1264,7 +1395,7 @@ diff -ruN a/MPEngineSounds/MPengineSounds.cs b/MPEngineSounds/MPengineSounds.cs
  					smoothedPowerPitch = Mathf.Lerp(smoothedPowerPitch, num, 0.1f);
  					if (!powerGroup.audio.isPlaying)
  					{
-@@ -314,7 +341,7 @@
+@@ -314,7 +353,7 @@
  						{
  							currentPowerDelay -= Time.deltaTime;
  						}
@@ -1273,7 +1404,7 @@ diff -ruN a/MPEngineSounds/MPengineSounds.cs b/MPEngineSounds/MPengineSounds.cs
  						smoothedPowerPitch = Mathf.Lerp(smoothedPowerPitch, num2, 0.1f);
  						if (currentPowerDelay <= 0f)
  						{
-@@ -326,7 +353,7 @@
+@@ -326,7 +365,7 @@
  									currentPowerFadeIn = 1f;
  								}
  							}
@@ -1282,7 +1413,7 @@ diff -ruN a/MPEngineSounds/MPengineSounds.cs b/MPEngineSounds/MPengineSounds.cs
  							{
  								powerGroup.audio.volume = GameSettings.SHIP_VOLUME * currentPowerFadeIn * powerVolume;
  							}
-@@ -416,6 +443,16 @@
+@@ -416,6 +455,16 @@
  		}
  	}
  
@@ -1300,8 +1431,8 @@ diff -ruN a/MPEngineSounds/MPengineSounds.cs b/MPEngineSounds/MPengineSounds.cs
  	{
  		if (showVolumeDebug)
 diff -ruN a/MPEngineSounds/MPengineWrapper.cs b/MPEngineSounds/MPengineWrapper.cs
---- a/MPEngineSounds/MPengineWrapper.cs	2026-11-07 22:36:13.719273500 +0530
-+++ b/MPEngineSounds/MPengineWrapper.cs	2026-11-07 22:36:14.051797100 +0530
+--- a/MPEngineSounds/MPengineWrapper.cs	2026-11-08 13:35:52.800158600 +0530
++++ b/MPEngineSounds/MPengineWrapper.cs	2026-11-08 13:35:52.800158600 +0530
 @@ -209,7 +209,7 @@
  		}
  	}
@@ -1323,8 +1454,8 @@ diff -ruN a/MPEngineSounds/MPengineWrapper.cs b/MPEngineSounds/MPengineWrapper.c
  
  	public MPengineWrapper(Part part, string name)
 diff -ruN a/MPEngineSounds/Properties/AssemblyInfo.cs b/MPEngineSounds/Properties/AssemblyInfo.cs
---- a/MPEngineSounds/Properties/AssemblyInfo.cs	2026-11-07 22:36:13.714748400 +0530
-+++ b/MPEngineSounds/Properties/AssemblyInfo.cs	2026-11-07 22:36:14.193352900 +0530
+--- a/MPEngineSounds/Properties/AssemblyInfo.cs	2026-11-08 13:35:52.838997200 +0530
++++ b/MPEngineSounds/Properties/AssemblyInfo.cs	2026-11-08 13:35:52.840100100 +0530
 @@ -13,5 +13,6 @@
  [assembly: AssemblyTrademark("")]
  [assembly: ComVisible(false)]
@@ -1334,8 +1465,8 @@ diff -ruN a/MPEngineSounds/Properties/AssemblyInfo.cs b/MPEngineSounds/Propertie
 +[assembly: AssemblyInformationalVersion("1.0-ksp1.12.5-nrefix.1")]
  [assembly: AssemblyVersion("1.0.0.0")]
 diff -ruN a/FengistAnim/FAnimEngine.cs b/FengistAnim/FAnimEngine.cs
---- a/FengistAnim/FAnimEngine.cs	2026-11-07 22:36:14.303896000 +0530
-+++ b/FengistAnim/FAnimEngine.cs	2026-11-07 22:36:14.510204800 +0530
+--- a/FengistAnim/FAnimEngine.cs	2026-11-08 13:35:52.879809000 +0530
++++ b/FengistAnim/FAnimEngine.cs	2026-11-08 13:35:52.881819900 +0530
 @@ -74,11 +74,13 @@
  
  	public Animation aniEngine = null;
@@ -1352,7 +1483,44 @@ diff -ruN a/FengistAnim/FAnimEngine.cs b/FengistAnim/FAnimEngine.cs
  
  	private float lastThrottle = 0f;
  
-@@ -144,8 +146,20 @@
+@@ -88,6 +90,23 @@
+ 
+ 	private bool loadComplete = false;
+ 
++	private Animation playAnimator;
++
++	private string playAnimatorName;
++
++	// Play_Anim runs every physics frame; part.FindModelAnimators allocates new arrays on every call.
++	// The model's animators do not change, so look the first one up once per animation name.
++	private Animation GetPlayAnimator(string aname)
++	{
++		if (playAnimatorName != aname || (Object)(object)playAnimator == (Object)null)
++		{
++			Animation[] array = ((PartModule)this).part.FindModelAnimators(aname);
++			playAnimator = ((array.Length != 0) ? array[0] : null);
++			playAnimatorName = aname;
++		}
++		return playAnimator;
++	}
++
+ 	public void Play_Anim(string aname, float aspeed, float atime = 0f)
+ 	{
+ 		logdelay -= Time.deltaTime;
+@@ -106,10 +125,9 @@
+ 		}
+ 		try
+ 		{
+-			Animation[] array = ((PartModule)this).part.FindModelAnimators(aname);
+-			if (array.Length != 0)
++			Animation val = GetPlayAnimator(aname);
++			if ((Object)(object)val != (Object)null)
+ 			{
+-				Animation val = array[0];
+ 				val.clip = val.GetClip(animationName);
+ 				if (loopAnim)
+ 				{
+@@ -144,8 +162,20 @@
  		if (partType == "Engine")
  		{
  			myEngine = ((IEnumerable)((PartModule)this).part.Modules).OfType<ModuleEngines>().FirstOrDefault();
@@ -1375,7 +1543,18 @@ diff -ruN a/FengistAnim/FAnimEngine.cs b/FengistAnim/FAnimEngine.cs
  			if (useRotorDiscSwap)
  			{
  				Debug.Log((object)"[Maritime Pack] (aniEngine) Disc swapping active.");
-@@ -214,6 +228,10 @@
+@@ -206,7 +236,9 @@
+ 
+ 	public override void OnStartFinished(StartState state)
+ 	{
+-		((PartModule)this).OnStartFinished(state);
++		// was: ((PartModule)this).OnStartFinished(state), a virtual call back into this override (endless
++		// recursion -> StackOverflowException logged for every part, FAnimStartup never ran).
++		base.OnStartFinished(state);
+ 		FAnimStartup();
+ 		loadComplete = true;
+ 	}
+@@ -214,6 +246,10 @@
  	private float CheckDirection()
  	{
  		float num = 1f;
@@ -1386,7 +1565,7 @@ diff -ruN a/FengistAnim/FAnimEngine.cs b/FengistAnim/FAnimEngine.cs
  		Quaternion localRotation = mytransform.localRotation;
  		if (!(thrustRotation == localRotation))
  		{
-@@ -250,7 +268,13 @@
+@@ -250,7 +286,13 @@
  
  	public void FixedUpdate()
  	{
@@ -1401,7 +1580,7 @@ diff -ruN a/FengistAnim/FAnimEngine.cs b/FengistAnim/FAnimEngine.cs
  		{
  			return;
  		}
-@@ -278,13 +302,13 @@
+@@ -278,13 +320,13 @@
  		}
  		if (!(partType == "Battery"))
  		{
@@ -1418,8 +1597,8 @@ diff -ruN a/FengistAnim/FAnimEngine.cs b/FengistAnim/FAnimEngine.cs
  		float num2 = 1f;
  		if (detectReverseThrust)
 diff -ruN a/FengistAnim/ModuleLayeredAnimator.cs b/FengistAnim/ModuleLayeredAnimator.cs
---- a/FengistAnim/ModuleLayeredAnimator.cs	2026-11-07 22:36:14.298121300 +0530
-+++ b/FengistAnim/ModuleLayeredAnimator.cs	2026-11-07 22:36:14.779431700 +0530
+--- a/FengistAnim/ModuleLayeredAnimator.cs	2026-11-08 13:35:52.961557600 +0530
++++ b/FengistAnim/ModuleLayeredAnimator.cs	2026-11-08 13:35:52.961557600 +0530
 @@ -2,11 +2,15 @@
  
  public class ModuleLayeredAnimator : ModuleAnimateGeneric
@@ -1441,8 +1620,8 @@ diff -ruN a/FengistAnim/ModuleLayeredAnimator.cs b/FengistAnim/ModuleLayeredAnim
  	}
  }
 diff -ruN a/FengistAnim/Properties/AssemblyInfo.cs b/FengistAnim/Properties/AssemblyInfo.cs
---- a/FengistAnim/Properties/AssemblyInfo.cs	2026-11-07 22:36:14.299684400 +0530
-+++ b/FengistAnim/Properties/AssemblyInfo.cs	2026-11-07 22:36:14.900044800 +0530
+--- a/FengistAnim/Properties/AssemblyInfo.cs	2026-11-08 13:35:52.997608300 +0530
++++ b/FengistAnim/Properties/AssemblyInfo.cs	2026-11-08 13:35:52.997608300 +0530
 @@ -13,5 +13,6 @@
  [assembly: AssemblyTrademark("")]
  [assembly: ComVisible(false)]

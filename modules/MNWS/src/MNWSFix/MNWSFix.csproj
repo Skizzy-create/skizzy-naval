@@ -1,12 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <!--
     MNWSFix for KSP 1.12.5 (.NET Framework 4.8). No BDArmory reference: BDArmory fields are accessed by name.
-    Build:  dotnet build -c Release            (or MSBuild.exe MNWSFix.csproj -p:Configuration=Release -restore)
-    Override the KSP install with -p:KSPRoot="C:\path\to\Kerbal Space Program".
+    Build (point KSPRoot at a KSP 1.12.x install, or set the KSPDIR environment variable):
+      dotnet build -c Release -p:KSPRoot="C:\path\to\Kerbal Space Program"
+    (or MSBuild.exe MNWSFix.csproj -p:Configuration=Release -restore -p:KSPRoot=...)
     Output: bin\Release\MNWSFix.dll -> copy to GameData\Johnny\Plugins\
+    Release builds carry no debug info, so no PDB path is embedded in the DLL.
   -->
   <PropertyGroup>
-    <KSPRoot Condition="'$(KSPRoot)' == ''">D:\Epic Games\KerbalSpaceProgram\English</KSPRoot>
+    <KSPRoot Condition="'$(KSPRoot)' == ''">$(KSPDIR)</KSPRoot>
     <KSPManaged>$(KSPRoot)\KSP_x64_Data\Managed</KSPManaged>
     <TargetFramework>net48</TargetFramework>
     <AssemblyName>MNWSFix</AssemblyName>
@@ -15,6 +17,8 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <DebugType>portable</DebugType>
+    <DebugType Condition="'$(Configuration)' == 'Release'">none</DebugType>
+    <DebugSymbols Condition="'$(Configuration)' == 'Release'">false</DebugSymbols>
     <Nullable>disable</Nullable>
     <Optimize>true</Optimize>
     <Deterministic>true</Deterministic>
@@ -26,4 +30,7 @@
     <Reference Include="UnityEngine"><HintPath>$(KSPManaged)\UnityEngine.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="UnityEngine.CoreModule"><HintPath>$(KSPManaged)\UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
   </ItemGroup>
+  <Target Name="CheckKSPReferences" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(KSPManaged)\Assembly-CSharp.dll')" Text="KSP assemblies not found in '$(KSPManaged)'. Pass -p:KSPRoot=&quot;path\to\KSP&quot; or set the KSPDIR environment variable." />
+  </Target>
 </Project>

@@ -4,7 +4,7 @@
  "strategy": "bundle",
  "note": "Complete payload, committed in GameData/.",
  "file_count": 58,
- "total_size": 27098569,
+ "total_size": 27098609,
  "files": {
   "GameData/IronSeasKANES/4BladeFastScrew/Part.cfg": [
    2212,
@@ -211,8 +211,8 @@
    "2B8455E6A95FEC868965CFA62EC382A7DD364A4AEB89B2A357AF28BA2F5AFB6D"
   ],
   "GameData/IronSeasKANES/BalaoClassFleetBoat/Snorkel/part.cfg": [
-   1996,
-   "A5CB2FFD9BCCFB3EB515E835BF41D330272B2B05BF09AC4737F8817E053DFF7F"
+   2036,
+   "5384E8157C471C510D6E9772F8082D28AAEB84FC93700FDED9682A0F790836D0"
   ],
   "GameData/IronSeasKANES/BulletDefs/IronSeasKANES_Bullets.cfg": [
    1104,

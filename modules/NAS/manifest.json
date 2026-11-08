@@ -4,7 +4,7 @@
  "strategy": "rebuild",
  "note": "Expected result after extracting the upstream archive, applying delete.txt and copying GameData/ on top.",
  "file_count": 378,
- "total_size": 144451098,
+ "total_size": 144451610,
  "files": {
   "GameData/NAS/Agencies/Agents.cfg": [
    1550,
@@ -1479,8 +1479,8 @@
    "85E5FA3E7C831903F8A1AEBDAF95E7DBC2CD47B6911D00E8EAEF67671C090B36"
   ],
   "GameData/NAS/Plugins/AntiSubmarineWeapon.dll": [
-   31232,
-   "26696FE561AF99DC4AA5FEF6090BBA6391C61899D7712EF7800669F4C01F89D1"
+   31744,
+   "E106439222AB736840CDC0BE6284440A37C9AFF39D44F0A910EED9BB37A6567D"
   ],
   "GameData/NAS/Plugins/NASIcon.dds": [
    12464,

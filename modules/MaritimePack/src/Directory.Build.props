@@ -1,11 +1,12 @@
 <Project>
   <!--
     Shared build settings for the Maritime Pack plugins (KSP 1.12.x).
-    Override KSPRoot on the command line if your install lives elsewhere:
+    Point KSPRoot at a KSP 1.12.x install (or set the KSPDIR environment variable).
+    Run this inside Source\<Plugin>\ and copy bin\Release\<Plugin>.dll into GameData:
       dotnet build -c Release -p:KSPRoot="C:\path\to\Kerbal Space Program"
   -->
   <PropertyGroup>
-    <KSPRoot Condition="'$(KSPRoot)' == ''">D:\Epic Games\KerbalSpaceProgram\English</KSPRoot>
+    <KSPRoot Condition="'$(KSPRoot)' == ''">$(KSPDIR)</KSPRoot>
     <KSPManaged>$(KSPRoot)\KSP_x64_Data\Managed</KSPManaged>
     <TargetFramework>net472</TargetFramework>
     <LangVersion>latest</LangVersion>
@@ -30,4 +31,7 @@
     <Reference Include="UnityEngine.ImageConversionModule"><HintPath>$(KSPManaged)\UnityEngine.ImageConversionModule.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="UnityEngine.UI"><HintPath>$(KSPManaged)\UnityEngine.UI.dll</HintPath><Private>false</Private></Reference>
   </ItemGroup>
+  <Target Name="CheckKSPReferences" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(KSPManaged)\Assembly-CSharp.dll')" Text="KSP assemblies not found in '$(KSPManaged)'. Pass -p:KSPRoot=&quot;path\to\KSP&quot; or set the KSPDIR environment variable." />
+  </Target>
 </Project>

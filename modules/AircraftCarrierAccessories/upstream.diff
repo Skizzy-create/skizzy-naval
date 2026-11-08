@@ -1,23 +1,31 @@
-# upstream.diff - Aircraft Carrier Accessories (KFC): original extracted GameData vs patched GameData
-# a/ = naval/AircraftCarrierAccessories/extracted/GameData   b/ = patched/AircraftCarrierAccessories/GameData
+# upstream.diff - Aircraft Carrier Accessories (KFC) 1.9.1: original release vs the SkizzyNaval build
+# a/ = GameData of the original zip (SpaceDock 1.9.1 = CKAN AircraftCarrierAccessories 1:1.9.1)
+# b/ = GameData of the SkizzyNaval build
 #
-# Binary changes: none. KFC/Plugins/ACA.dll is shipped unchanged (verified to resolve fully against KSP 1.12.5).
-#   ADDED    KFC/Patches/zz_KSP1125_BDA113_Compat.cfg (text, shown below)
-#
-# Suggested upstream code fix (not applied - binary): in CLLS.OnStart, null-check BaseTransform/BaseRenderer, e.g.
-#   BaseTransform = part.FindModelTransform("Base");
-#   BaseRenderer  = BaseTransform != null ? BaseTransform.GetComponent<MeshRenderer>() : null;
-#   if (HighLogic.LoadedSceneIsFlight && BaseRenderer != null) BaseRenderer.enabled = false;
-# (then the CLLS MODEL workaround in the patch file can be deleted).
+# Binary changes:
+#   MODIFIED KFC/Plugins/ACA.dll  (rebuilt from the decompiled 1.9.1 DLL; source in src/ACA/)
+#            original: 88064 bytes, sha256 C209666F6B320F887CEADFB6B6A1CBD458DE19C67408B65E5C953376D87E68E5
+#            rebuilt:  84480 bytes, sha256 8FA2E4608CC5C5B277C022590FA6D7A27755EA0D5586F9FF23375975F4D9EB23
+#            CLLS.OnStart: null-check the missing "Base" transform before reading its MeshRenderer.
+#            Catapult: new persistent field launchGroup (default Custom07) replaces ActionGroups.groups[5]
+#              (Brakes) for arming/launching; with a custom group only aircraft that have it on are hooked;
+#              reset when the hooked aircraft disappears mid-launch; GetInfo describes the group.
+#            Full source-level diff: compare src/ACA/ with an ILSpy decompile of the original DLL.
+# Layout changes (same as CKAN's install of the original):
+#   REMOVED  KFC/Resource/ResourcesGeneric.cfg  (AntiProton/GNparticle definitions, unused by ACA parts)
+#   MOVED    KFC/Ships/SPH/CVN65 Enterprise.craft -> Ships/SPH/CVN65 Enterprise.craft (outside GameData)
+# Text changes:
+#   ADDED    KFC/Patches/zz_KSP1125_BDA113_Compat.cfg (shown below)
 #
 diff --git a/KFC/Patches/zz_KSP1125_BDA113_Compat.cfg b/KFC/Patches/zz_KSP1125_BDA113_Compat.cfg
 new file mode 100644
-index 0000000..0f8540f
+index 0000000..fae3abd
 --- /dev/null
 +++ b/KFC/Patches/zz_KSP1125_BDA113_Compat.cfg
-@@ -0,0 +1,43 @@
+@@ -0,0 +1,36 @@
 +// =====================================================================================
 +// Aircraft Carrier Accessories (KFC) - compatibility patch for KSP 1.12.5 (+ BDArmory 1.13)
++// Part of the SkizzyNaval build of ACA, which also ships a rebuilt KFC/Plugins/ACA.dll.
 +// Separate file on purpose: the original part configs are untouched.
 +// =====================================================================================
 +
@@ -35,27 +43,19 @@ index 0000000..0f8540f
 +}
 +
 +// -------------------------------------------------------------------------------------
-+// 2) STOPGAP for CLLS ("Carrier Landing And Launching System").
-+//    ACA.dll CLLS.OnStart does
-+//        BaseTransform = part.FindModelTransform("Base");
-+//        BaseRenderer  = BaseTransform.gameObject.GetComponent(typeof(MeshRenderer)) ...
-+//    but CLLS.mu has no transform called "Base" (it has LaunchSystem, Core, Guide1,
-+//    Guide2, Instruction, Trigger, Collider). OnStart therefore throws a
-+//    NullReferenceException (logged as "Module CLLS threw during OnStart") before it
-+//    applies the saved Activate/Launcher state, in the editor and in flight.
-+//    Workaround: add a second, 1/1000-scale stock model whose hierarchy contains a
-+//    "Base" transform with a MeshRenderer (stock tail fin). CLLS hides that renderer
-+//    in flight itself (BaseRenderer.enabled = false). Proper fix belongs in ACA.dll:
-+//    null-check BaseTransform/BaseRenderer in CLLS.OnStart.
-+//    Delete this block if a fixed ACA.dll is installed.
++// 2) Catapult: the rebuilt ACA.dll arms and fires the catapult from a custom action group
++//    of the aircraft (default AG7) instead of its Brakes, which BDArmory's pilot AI sets
++//    and releases by itself. The group is a per-catapult part-menu setting
++//    ("Arm/launch with aircraft"); "Brakes" restores the original behaviour. This block
++//    only states the default and rewrites the description to match.
++//    (The CLLS start-up crash is fixed in ACA.dll itself, so the old stopgap MODEL block
++//    for CLLS is gone.)
 +// -------------------------------------------------------------------------------------
-+@PART[CLLS]
++@PART[Catapult]:HAS[@MODULE[Catapult]]
 +{
-+	MODEL
++	@description = Steam catapult. Stop the aircraft with a wheel on the shuttle and switch the aircraft's action group 7 on (key 7): the shuttle hooks it and its light turns yellow. Switch AG7 off again to launch; switching it on during the stroke aborts. Aircraft with AG7 off are not hooked, so AI aircraft taxi across. The group is set per catapult in the part menu ("Arm/launch with aircraft"; Brakes = the original hold-the-brakes behaviour). Installation: hide the rail under the deck and leave the block on the deck.
++	@MODULE[Catapult]
 +	{
-+		model = Squad/Parts/Aero/airplaneFins/TailFin
-+		position = 0.0, 0.0, 0.0
-+		scale = 0.001, 0.001, 0.001
-+		rotation = 0, 0, 0
++		%launchGroup = Custom07
 +	}
 +}

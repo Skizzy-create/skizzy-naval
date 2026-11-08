@@ -41,7 +41,7 @@ The full list, with reasons, is in `CHANGES.md`. In short:
 - The guns aim and fire through SkizzyRig's invisible turret transforms (the meshes stay still).
 - The deck guns are rebalanced to their real weapons, including a new 4"/50 HC shell.
 - The hull collapses at about 224 m, and the boat spawns surfaced.
-- The antenna, periscope and snorkel get real descriptions.
+- The antenna, periscope and snorkel get real descriptions, and the snorkel intake works (it named a transform the model does not have).
 - Fallback patches cover missing optional mods.
 - The folders are grouped under `GameData/IronSeasKANES/`.
 

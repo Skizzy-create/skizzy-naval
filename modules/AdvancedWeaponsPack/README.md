@@ -18,6 +18,6 @@ Upstream: AWP 0.22 from SpaceDock, the exact file CKAN lists (SHA-256 `008C167E.
 
 | Path | Contents |
 |---|---|
-| `GameData/Advanced Weapons Pack/Patches/zz_AWP_BDA113_Compat.cfg` | The new patch (Castle Bravo: ModuleShockwave to BDModuleNuke) |
+| `GameData/Advanced Weapons Pack/Patches/zz_AWP_BDA113_Compat.cfg` | The new patch (Castle Bravo: ModuleShockwave to BDModuleNuke; BDArmory AI never selects it, manual use only) |
 | `manifest.json` | All 47 files of the finished build |
 | `upstream.diff` | Adds the patch file |

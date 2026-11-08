@@ -9,7 +9,7 @@ BDArmory Plus 1.13.x (BrettRyland). It also fixes the problems that matter for n
 |---|---|
 | `GameData/Johnny/MMPatches/MNWS_BDA113.cfg` | Compatibility and correctness fixes. Required. |
 | `GameData/Johnny/MMPatches/MNWS_BDA113_Balance.cfg` | Optional balance pass. Delete it to keep the author's numbers. |
-| `GameData/Johnny/Plugins/MNWSFix.dll` | Small helper plugin (section 8): creates the launch transforms for the AVLS VLS variants and links missiles to the hull bay doors. Optional; without it the patches that need it are skipped. |
+| `GameData/Johnny/Plugins/MNWSFix.dll` | Small helper plugin (section 8): creates the launch transforms for the VLS variants, links missiles to the hull bay doors and labels the SSBN002 door buttons. Optional; without it the patches that need it are skipped. |
 | `src/MNWSFix/` | Source and project file of `MNWSFix.dll`. Not needed in game. |
 
 The two `.cfg` files are generated from a script. Every value below matches what is in them.
@@ -26,8 +26,9 @@ The two `.cfg` files are generated from a script. Every value below matches what
 4. Start KSP. ModuleManager re-patches automatically because the config hash changes.
 
 To run without the plugin, delete `Johnny/Plugins`. The patches marked `:NEEDS[MNWSFix]` are then
-skipped: the AVLS VLS variants (AVLS11V/22V/33V) do not exist, and the automatic "In Cargo Bay"
-and "Custom Bay" settings must be made by hand (sections 4 and 5).
+skipped: the VLS variants (AVLS11V/22V/33V and MissleCell2050V) do not exist, the automatic "In
+Cargo Bay" and "Custom Bay" settings must be made by hand (sections 4 and 5), and SSBN002 shows two
+plain "Open" door buttons.
 
 ### Disk usage
 
@@ -100,11 +101,11 @@ patched configs, checked against the BDArmory source, the stock `ModuleCargoBay`
     fuzing, the closest 1.13 equivalent for a CIWS round. The literal mapping would be
     `Proximity`; edit that one line if you prefer it.
 
-### 4. AVLS11 / AVLS22 / AVLS33 missile cells
+### 4. AVLS11 / AVLS22 / AVLS33 and MissleCell2050 missile cells
 
 There are now two versions of each cell block.
 
-#### 4a. AVLS11V, AVLS22V, AVLS33V: real BDArmory VLS (needs MNWSFix.dll)
+#### 4a. AVLS11V, AVLS22V, AVLS33V, MissleCell2050V: real BDArmory VLS (needs MNWSFix.dll)
 
 These are new parts, copied from the originals with `+PART[AVLS11]` and so on. Their titles are
 "AVLS11 VLS (8 cells, BDArmory launcher)", "AVLS22 VLS (32 cells, ...)" and "AVLS33 VLS (72
@@ -132,6 +133,21 @@ up like BDArmory's own VLS (`bahaVLSQuad`):
   through the closed doors.
 * Mass, the 1/5 equipment mass factor and HP (6000) are the same as the rack versions.
 * The original AVLS11/22/33 are unchanged racks (4b), so existing craft still load.
+
+**MissleCell2050V** (new in SkizzyNaval 0.1.2) is the same conversion of MissleCell2050, titled
+"MissleCell2050 VLS (43 cells, BDArmory launcher)":
+
+* MissleCell2050 is a block of 43 open hexagonal tubes, 0.17 m across the flats and 1.95 m deep
+  (base plate top at y = 0.05, tube tops at y = 2.0). It has no doors and no animation, so the
+  `MultiMissileLauncher` has no `deployAnimationName` (BDA then treats the launcher as always
+  deployed and fires at once). Everything else matches the AVLS copies: `ModuleInjectTransforms`
+  with 43 cells and `alignMissileTail`, `missileType = launcher`, `salvoSize = 1`,
+  `rippleRPM = 120`, `OverrideDropSettings`, `ignoreLauncherColliders`, and `ModuleMissileRearm`
+  with `railAmmo = maxAmmo = 43`, `reloadTime = 30`, `AccountForAmmo = true`.
+* Missiles must fit a 0.17 m tube: CUDA (0.15 m, 1.9 m long) fits completely, HHQX (0.16 m, 2.0 m)
+  shows its nose 5 cm above the tubes. Wider missiles still fire but clip through the tube walls.
+* Mass, the 1/5 mass factor, HP 6000 and the 10000 ElectricCharge are the same as MissleCell2050.
+  The original MissleCell2050 is unchanged, so existing craft still load.
 
 #### 4b. AVLS11 / AVLS22 / AVLS33 (original part names): racks with working doors
 
@@ -165,6 +181,11 @@ BDArmory about the doors, so it fired into closed doors. They are linked in two 
   the simulator output was checked for this.
 * The door events are renamed `Open` and `Close`, which BDA requires. The action names are kept
   readable (for example "Toggle Missile Bay").
+* SSBN002 has two such doors, which gave two identical "Open" buttons in the part menu. With the
+  plugin, `ModuleMNWSBayLink` (`doorLabels`, section 8) hides both door buttons and shows "Open
+  Missile Tubes" and "Open Torpedo Door" instead ("Close ..." while that door is open). The
+  labelled buttons toggle the same doors. BDA still reads the hidden door events, which keep the
+  exact "Open"/"Close" text, so the bay link is unchanged.
 * `useBayContainer = true` points at a collider far from the bay. This turns KSP's enclosure test
   into a plain lookup-sphere test. Otherwise the hull's own colliders block the enclosure ray.
 * Each sphere covers the bay's attach nodes and anything hung on them. `baycheck.py` checks the
@@ -289,7 +310,7 @@ would ride far lower or sink. Affected parts:
 
 * AAMS, AAMSL, AAMSLM, AAMSR, FRADAR
 * HHQXL, HHQXL2, HHQXX, SAAM, YUXX, MK58L, RML, LLauncher, AS_ML
-* AVLS11/22/33, AVLS11V/22V/33V, AVLSX1/2/3, MissleCell2050
+* AVLS11/22/33, AVLS11V/22V/33V, AVLSX1/2/3, MissleCell2050, MissleCell2050V
 * DDG2002 RAIL (120 → 24 t), RGBB (520 → 104 t)
 * MSWSWT, MSWSWT1–4, MSWSM4X
 
@@ -305,7 +326,7 @@ Missiles, aircraft, the 3X truck and its turrets are unchanged.
 
 ## 8. MNWSFix.dll (plugin)
 
-The plugin is about 19 KB. It targets .NET Framework 4.8 and references only `Assembly-CSharp`,
+The plugin is about 20 KB. It targets .NET Framework 4.8 and references only `Assembly-CSharp`,
 `UnityEngine.CoreModule`, `mscorlib` and `System.Core`. It has **no BDArmory reference**: BDA
 fields are read and written by name through KSP's field list, so the modules do nothing when BDA
 is absent. It registers as `KSPAssembly("MNWSFix", 1, 0)`, which is the name the
@@ -344,7 +365,9 @@ The module creates them from cfg data:
 
 * `flagCargoBayMissiles` (default on): in flight, about every 2 s, sets `inCargoBay = true` on
   every part whose `airstreamShields` contains one of this part's `ModuleCargoBay` modules.
-  BDA opens a bay only for such missiles (see 4b).
+  BDA opens a bay only for such missiles (see 4b). Since SkizzyNaval 0.1.2 each scan first drops
+  fired or destroyed missiles from the module's set of already-reported missiles, so the set no
+  longer keeps their dead modules and parts in memory for the rest of the flight.
 * `zones`, `zoneBayGroup`, `zoneDoorModuleIndex`, `zoneDoorAnimation`: the action-group link from
   section 5. Spheres are given in the part frame, and the test uses the missile's renderer
   centroid.
@@ -352,17 +375,26 @@ The module creates them from cfg data:
   order. It is checked in the editor and in flight. A wrong index is re-pointed at the right door
   module, with a warning in the log. BDA reads `DeployModuleIndex` when it fires, so the repair
   takes effect.
+* `doorLabels` (SSBN002: `SSBN002DD: Missile Tubes; SSBN002TD: Torpedo Door`): labelled part-menu
+  buttons for door modules whose own button must read a bare "Open"/"Close" for BDA. In the editor
+  and in flight the module adds one event per listed door (found by animation name). The event
+  calls the door's own `Toggle` event, and its text is the door's current text plus the label
+  ("Open Missile Tubes", "Close Missile Tubes"). The door's own button is hidden; its visibility
+  settings move to the labelled button, and the labelled button is hidden while the door moves,
+  like the door's own. The door's event and action are otherwise untouched, and BDA calls
+  `Toggle()` on the door directly, so the bay link and the action groups work as before.
 * `debug = true` logs every change. Normally each missile is reported once, as
   `[MNWSFix.ModuleMNWSBayLink]: <missile> (...): inCargoBay = true ...`.
 
 ### Building
 
 `src/MNWSFix/MNWSFix.csproj` is an SDK-style project. Build it with
-`dotnet build -c Release` (needs the .NET Framework 4.8 targeting pack). It references the game's
-`KSP_x64_Data/Managed` DLLs through the `KSPRoot` property. The default is
-`D:\Epic Games\KerbalSpaceProgram\English`; override it with `-p:KSPRoot=...`. Copy
-`bin/Release/MNWSFix.dll` to `GameData/Johnny/Plugins/`. The shipped DLL was built this way, with
-0 warnings and 0 errors.
+`dotnet build -c Release -p:KSPRoot="C:\path\to\KSP"` (needs the .NET Framework 4.8 targeting
+pack). It references the game's `KSP_x64_Data/Managed` DLLs through the `KSPRoot` property, which
+defaults to the `KSPDIR` environment variable. Release builds have no debug information, so no
+PDB path is embedded in the DLL, and the build is deterministic (the same source gives a
+byte-identical DLL). Copy `bin/Release/MNWSFix.dll` to `GameData/Johnny/Plugins/`. The shipped
+DLL was built this way, with 0 warnings and 0 errors.
 
 ## 9. How the cell positions and bay volumes were derived
 
@@ -394,6 +426,19 @@ belong to the generator scripts that write the two `.cfg` files.
 
 The doors (`Left`/`Right`) sit at y = 9.05–9.13 and the clip `AVLS` (1 s) swings them 90°. The
 launch-point order follows the author's node order.
+
+**MissleCell2050 tubes.** The model has 43 complete hexagonal tube meshes (0.2 m corner to corner
+along X, 0.1732 m across the flats along Z, y = 0 to 2.0) and 12 part-tubes around the rim that
+are walls (they and the base plate `Cylinder031`, top at y = 0.05, are the only colliders). Each
+cell centre is the centre of a complete tube's mesh bounds. The launch point is that centre at
+floor + 2 cm (y = 0.07). The author's 47 `node_stack_missile1` nodes are 43 unique positions, each
+within 0.3 mm of a tube centre.
+
+| VLS part | Cells | Cell width m | Floor y | Depth to top m | Cell X centres | Cell Z centres |
+|---|---|---|---|---|---|---|
+| MissleCell2050V | 43 | 0.173 | 0.05 | 1.95 | 0, ±0.15, ±0.3, ±0.45, ±0.6 | x = 0 and ±0.3: 0, ±0.174, ±0.348, ±0.522; x = ±0.15: ±0.087, ±0.261, ±0.435; x = ±0.45: ±0.087, ±0.261; x = ±0.6: 0 |
+
+The launch points are ordered by X, then Z.
 
 **Hull bays (`mnws_vls.py`, checked by `baycheck.py`).**
 
@@ -481,7 +526,7 @@ numbers.
   * AAMS family: 80000 → 3000
   * 3X turrets, AS_ML, MSWSWT/1/2/3/4, MSWSM4X: 25000 → 4000
   * HHQXL/HHQXL2/HHQXX/SAAM: 8000 → 5000. FRADAR: 20000 → 5000.
-  * AVLS11/22/33, AVLS11V/22V/33V, AVLSX1/2/3 and MissleCell2050: 6000. They had no explicit
+  * AVLS11/22/33, AVLS11V/22V/33V, AVLSX1/2/3, MissleCell2050 and MissleCell2050V: 6000. They had no explicit
     value before.
   * DDG2002 RAIL: 20000 → 8000. RGBB: 50000 → 15000.
   * Jets: 8000–15000 → 5000. H20A/B: 50000 → 12000. NH80, UCAV1/2, UH60 and V22: 4000.
@@ -495,9 +540,10 @@ numbers.
   need several blocks, or the rack versions.
 * **AVLS VLS blocks are fixed launchers.** They have no turret, so `overrideReferenceTransform`
   aims by vessel heading. This is the same as BDA's own VLS.
-* **Doors with two bays on one hull (SSBN002).** Both door events read "Open"/"Close" in the part
-  menu, because BDA needs exactly that text. The action-group names stay distinct ("Toggle
-  Missile Bay", "Toggle Torpedo Door").
+* **Doors with two bays on one hull (SSBN002).** Both door events must read "Open"/"Close",
+  because BDA needs exactly that text. With the plugin the part menu shows labelled buttons
+  instead (section 5); without it, it shows two plain "Open" buttons. The action-group names stay
+  distinct either way ("Toggle Missile Bay", "Toggle Torpedo Door").
 * **Lookup spheres catch whatever is inside them.** A part surface-attached to the deck close to
   a bay can also be shielded. The SSBN002 sphere covers the sail. Shielded parts lose aero drag
   (irrelevant for ships). A shielded missile gets In Cargo Bay, so BDA opens that bay's door
@@ -507,9 +553,11 @@ numbers.
 * **Action-group doors (CGNX2050, CGX065 torpedoes)** toggle the whole AG8. If the doors are
   already open when BDA starts a launch, the toggle closes them. Leave them closed and let BDA
   handle them.
-* **MissleCell2050** (50 cells) could become a VLS the same way, but it was not in scope.
+* **MissleCell2050V tubes are open.** There are no doors, so loaded missiles are visible and
+  exposed, and only CUDA-size missiles fit inside a 0.17 m tube.
 * **Duplicate attach-node IDs** are left as they are. They occur on SSBN002, CGNX2050, AMB,
-  AMBII, MSWS111, DDG030 (`node_stack_4`) and MissleCell2050 (50 × `node_stack_missile1`).
+  AMBII, MSWS111, DDG030 (`node_stack_4`) and MissleCell2050/MissleCell2050V (47 ×
+  `node_stack_missile1` on 43 tubes).
   Renaming them would break existing craft. When a craft reloads, parts on duplicate nodes can
   re-attach to the first node with that ID.
 * **Submarine buoyancy.** The BDA AI steers depth with pitch only and does not manage ballast.
@@ -541,7 +589,7 @@ numbers.
      "Using default value" lines and no "def ... already exists".
    * Once ACA is installed, `Tailhook` should load without a `wiretension` parse error.
    * `[MNWSFix.ModuleInjectTransforms]: ...: created 'mnwsVLS' under 'model' with 8 children
-     (missile1..missile8)`, and the same with 32 and 72 children, during loading. There should be
+     (missile1..missile8)`, and the same with 32, 72 and 43 children, during loading. There should be
      no `ModuleInjectTransforms` errors, and no `Cannot find a PartModule of typename
      'ModuleInjectTransforms'` (which would mean the DLL is missing).
    * The ModuleManager log lists `MNWSFix` among the loaded assemblies.
@@ -560,8 +608,12 @@ numbers.
      the cells, tails on the floor and noses below the doors. The part menu should show the
      loaded missile name, a salvo size slider (1–32) and the rail ammo. The launcher's "Open"
      button should swing the doors open, and "Close" should shut them. Repeat with AVLS11V and SM_KKV, and with AVLS33V and HHQX.
-   * **Hull bays.** On SSBN002, AMB, MSWS111 and FDG057, the door's part-menu event should read
-     "Open". On CGNX2050 and CGX065, the action group editor should show "Toggle Torpedo Doors
+   * **MissleCell2050V.** Place "MissleCell2050 VLS (43 cells, BDArmory launcher)" and attach one
+     CUDA to any tube node. 43 CUDA should appear standing in the tubes, tails on the floor.
+     There is no door button.
+   * **Hull bays.** On AMB, MSWS111 and FDG057, the door's part-menu event should read "Open".
+     SSBN002 should show "Open Missile Tubes" and "Open Torpedo Door" (and no plain "Open"); each
+     should open its own door and then read "Close ...". On CGNX2050 and CGX065, the action group editor should show "Toggle Torpedo Doors
      (AG8)" in Custom 8 for a newly placed hull.
 3. **Water handling.** Spawn a destroyer in the ocean (VesselMover is installed) and compare its
    waterline with the original. It should match. Check acceleration, turning and top speed.
@@ -608,7 +660,8 @@ numbers.
     Custom08`.
 11. **Without the plugin.** Delete `Johnny/Plugins` and check the following:
     * MM still loads cleanly.
-    * AVLS11V/22V/33V are gone, and the rack AVLS and hull bays remain.
+    * AVLS11V/22V/33V and MissleCell2050V are gone, and the rack AVLS and hull bays remain.
+    * SSBN002 shows two plain "Open" buttons again.
     * With In Cargo Bay set by hand on a rack or bay missile, the doors still open.
 
 ## Notes for an upstream PR

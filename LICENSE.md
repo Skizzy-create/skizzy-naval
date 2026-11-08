@@ -17,8 +17,8 @@ them:
 - MNWS: CC BY-SA 4.0
 - Iron Seas KANES: GPL-2.0
 - BDArmory-Skizzy: CC BY-SA 2.0
-- The overlay patches for Aircraft Carrier Accessories (MIT), Fishy Weapons (CC BY-SA 4.0) and
-  TBAE (CC BY-SA 4.0)
+- Aircraft Carrier Accessories: MIT
+- The overlay patches for Fishy Weapons (CC BY-SA 4.0) and TBAE (CC BY-SA 4.0)
 
 "NC" licences forbid commercial use of those modules.
 

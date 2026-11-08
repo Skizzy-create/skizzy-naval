@@ -21,7 +21,7 @@ Local build: `python scripts/skizzy.py package --version 0.0.0 --only MNWS`.
 |---|---|
 | `GameData/Johnny/MMPatches/MNWS_BDA113.cfg` | Required compatibility and AI fixes |
 | `GameData/Johnny/MMPatches/MNWS_BDA113_Balance.cfg` | Optional balance pass |
-| `GameData/Johnny/Plugins/MNWSFix.dll` | Helper plugin (AVLS launch transforms, hull bay links) |
+| `GameData/Johnny/Plugins/MNWSFix.dll` | Helper plugin (VLS launch transforms, hull bay links, SSBN002 door labels) |
 | `src/MNWSFix/` | Plugin source and project (net48) |
 | `manifest.json` | All 574 files of the finished `GameData/Johnny` |
 

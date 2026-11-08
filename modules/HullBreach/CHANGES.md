@@ -78,6 +78,8 @@ every check:
   cached per part. The submarine AI mode is re-read every 2 s by string comparison, because
   `BDModuleSurfaceAI.SurfaceType` calls `Enum.Parse`, which allocates.
 * Severity is only computed for `hull` parts.
+* Toolbar window (SkizzyNaval 0.1.2): the "Flood speed xN" label is rebuilt only when the multiplier
+  changes. `OnGUI` runs several times per frame, and it used to format a new string on every pass.
 
 ## API mapping (BDArmory 1.2 / KSP 1.4 → BDArmory Plus 1.13 / KSP 1.12)
 
@@ -169,13 +171,14 @@ Other distribution fixes:
 
 ```
 cd src
-dotnet build HullBreach.csproj -c Release -p:KSPRoot="<KSP folder>" -p:BDArmoryDll="<path>\BDArmory.dll"
+dotnet build HullBreach.csproj -c Release -p:KSPRoot="<KSP folder>" -p:BDArmoryDll="<path>\BDArmory.dll" -p:DebugType=none -p:DebugSymbols=false
 ```
 
 The result is 0 warnings and 0 errors. The output references only mscorlib, Assembly-CSharp,
 UnityEngine.CoreModule, UnityEngine.IMGUIModule and BDArmory 1.13.1.0. The shipped DLL was built
 against a copy of `GameData/BDArmory/Plugins/BDArmory.dll` 1.13.1.0. `Gui.cs` and
-`partModuleReference.cs` are kept for history but are not compiled.
+`partModuleReference.cs` are kept for history but are not compiled. Since 0.1.2 the shipped DLL is
+built without debug info, so it contains no local PDB path.
 
 ## Not verified (no in-game run was possible)
 
